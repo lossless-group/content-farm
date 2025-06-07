@@ -1,49 +1,99 @@
-import { App, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, Editor } from 'obsidian';
+import { App, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Editor } from 'obsidian';
 import * as crypto from 'crypto';
+import { MCPClient } from './src/mcp/client';
 
 interface ContentFarmSettings {
     mySetting: string;
     localLLMPath: string;
+    mcpServerUrl: string;
+    autoEnhanceOnOpen: boolean;
     requestBodyTemplate: string;
 }
 
 const DEFAULT_SETTINGS: ContentFarmSettings = {
     mySetting: 'default',
     localLLMPath: 'http://localhost:3030/api/search',
-    requestBodyTemplate: `{
-            "chatModel": {
-                "provider": "openai",
-                "name": "gpt-4o-mini"
-            },
-            "embeddingModel": {
-                "provider": "openai",
-                "name": "text-embedding-3-large"
-            },
-            "optimizationMode": "speed",
-            "focusMode": "webSearch",
-            "query": "What is Perplexicas architecture",
-            "history": [
-                ["human", "Hi, how are you?"],
-                ["assistant", "I am doing well, how can I help you today?"]
-            ],
-            "systemInstructions": "Focus on providing technical details about Perplexicas architecture.",
-            "stream": false
-        }`
+    mcpServerUrl: 'http://localhost:4444',
+    autoEnhanceOnOpen: false,
+    requestBodyTemplate: JSON.stringify({
+        chatModel: {
+            provider: 'ollama',
+            name: 'llama3.2:latest'
+        },
+        embeddingModel: {
+            provider: 'ollama',
+            name: 'llama3.2:latest'
+        },
+        optimizationMode: 'speed',
+        focusMode: 'webSearch',
+        query: 'What is Perplexicas architecture',
+        history: [
+            ['human', 'Hi, how are you?'],
+            ['assistant', 'I am doing well, how can I help you today?']
+        ],
+        systemInstructions: 'Focus on providing technical details about Perplexicas architecture.',
+        stream: false
+    }, null, 2)
 };
 
 export default class ContentFarmPlugin extends Plugin {
     public settings: ContentFarmSettings = DEFAULT_SETTINGS;
     private statusBarItemEl: HTMLElement | null = null;
     private ribbonIconEl: HTMLElement | null = null;
+    private mcpClient: MCPClient | null = null;
 
     async onload(): Promise<void> {
         await this.loadSettings();
 
         this.registerRibbonIcon();
         this.setupStatusBar();
+        this.setupMCPClient();
         this.registerCommands();
         this.addSettingTab(new ContentFarmSettingTab(this.app, this));
         this.registerCitationCommands();
+        
+        // Auto-enhance on open if enabled
+        this.app.workspace.on('file-open', (file) => {
+            if (file && file instanceof TFile && file.extension === 'md' && this.settings.autoEnhanceOnOpen) {
+                this.enhanceActiveNote();
+            }
+        });
+    }
+
+    private async setupMCPClient() {
+        this.mcpClient = new MCPClient(this.settings.mcpServerUrl);
+        try {
+            const connected = await this.mcpClient.connect();
+            new Notice(connected ? 'Connected to MCP server' : 'Failed to connect to MCP server');
+        } catch (error) {
+            console.error('MCP connection error:', error);
+            new Notice('Error connecting to MCP server');
+        }
+    }
+
+    private async enhanceActiveNote(editor?: Editor) {
+        try {
+            const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+            if (!view) return;
+
+            const currentEditor = editor || view.editor;
+            const content = currentEditor.getValue();
+            
+            if (!this.mcpClient) {
+                await this.setupMCPClient();
+            }
+
+            if (this.mcpClient) {
+                const enhancedContent = await this.mcpClient.enhanceWithResearch(content);
+                currentEditor.setValue(enhancedContent);
+                new Notice('Note enhanced with research');
+            } else {
+                throw new Error('MCP client not initialized');
+            }
+        } catch (error) {
+            console.error('Enhancement failed:', error);
+            new Notice('Failed to enhance note with research');
+        }
     }
 
     onunload(): void {
@@ -148,7 +198,7 @@ export default class ContentFarmPlugin extends Plugin {
         const citationMap = new Map<string, string>(); // Maps original ID to hex ID
         
         // First pass: collect all citations and generate hex IDs
-        const collectCitations = (match: string, prefix: string, id: string) => {
+        const collectCitations = (match: string, id: string) => {
             if (!citationMap.has(id)) {
                 citationMap.set(id, this.generateHexId());
             }
@@ -162,7 +212,7 @@ export default class ContentFarmPlugin extends Plugin {
         updatedContent = updatedContent.replace(/\[(\d+)\]/g, (match, id, offset) => {
             // Only collect if it's not part of a link
             if (!/\]\([^)]*$/.test(updatedContent.substring(0, offset))) {
-                return collectCitations(match, '', id);
+                return collectCitations(match, id);
             }
             return match;
         });
@@ -189,7 +239,7 @@ export default class ContentFarmPlugin extends Plugin {
         });
         
         // Ensure consistent formatting of all footnote definitions
-        updatedContent = updatedContent.replace(/\[\^([0-9a-f]{6})\]:\s*/gi, (match, hexId) => {
+        updatedContent = updatedContent.replace(/\[\^([0-9a-f]{6})\]:\s*/gi, (_match, hexId) => {
             return `[^${hexId.toLowerCase()}]: `; // Ensure consistent case
         });
         
@@ -347,6 +397,37 @@ export default class ContentFarmPlugin extends Plugin {
             name: 'Insert Sample Text',
             editorCallback: (editor: Editor) => {
                 editor.replaceSelection('Sample text from Content Farm');
+            }
+        });
+
+        // Command to enhance selected text with research
+        this.addCommand({
+            id: 'enhance-with-research',
+            name: 'Enhance with Research',
+            editorCallback: async (editor: Editor) => {
+                try {
+                    const selection = editor.getSelection();
+                    if (!selection) {
+                        new Notice('Please select some text to enhance');
+                        return;
+                    }
+
+                    if (!this.mcpClient) {
+                        await this.setupMCPClient();
+                    }
+
+                    if (this.mcpClient) {
+                        this.mcpClient.setEditor(editor);
+                        const enhancedContent = await this.mcpClient.enhanceWithResearch(selection);
+                        editor.replaceSelection(enhancedContent);
+                        new Notice('Text enhanced with research');
+                    } else {
+                        throw new Error('MCP client not initialized');
+                    }
+                } catch (error) {
+                    console.error('Enhancement failed:', error);
+                    new Notice('Failed to enhance text with research');
+                }
             }
         });
 
@@ -589,8 +670,8 @@ class ContentFarmModal extends Modal {
     onOpen(): void {
         const { contentEl } = this;
         contentEl.createEl('h2', { text: 'Content Farm' });
-        contentEl.createEl('p', { text: 'Welcome to Content Farm Plugin!' });
-    }
+        contentEl.createEl('p', { text: 'Content Farm plugin is active.' });
+        }
 
     onClose(): void {
         const { contentEl } = this;
