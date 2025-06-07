@@ -1,6 +1,7 @@
 import { App, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile, Editor } from 'obsidian';
 import * as crypto from 'crypto';
 import { MCPClient } from './src/mcp/client';
+import { streamToEditor } from './src/utils/streaming';
 
 interface ContentFarmSettings {
     mySetting: string;
@@ -8,6 +9,7 @@ interface ContentFarmSettings {
     mcpServerUrl: string;
     autoEnhanceOnOpen: boolean;
     requestBodyTemplate: string;
+    enhanceBodyTemplate: string;
 }
 
 const DEFAULT_SETTINGS: ContentFarmSettings = {
@@ -33,7 +35,26 @@ const DEFAULT_SETTINGS: ContentFarmSettings = {
         ],
         systemInstructions: 'Focus on providing technical details about Perplexicas architecture.',
         stream: false
-    }, null, 2)
+    }),
+    enhanceBodyTemplate: JSON.stringify({
+        chatModel: {
+            provider: 'ollama',
+            name: 'llama3.2:latest'
+        },
+        embeddingModel: {
+            provider: 'ollama',
+            name: 'llama3.2:latest'
+        },
+        optimizationMode: 'speed',
+        focusMode: 'webSearch',
+        query: 'The content of the markdown file is not as robust, and the citations are not as rigorous as we would like them to be. Please enhance the content with more research and citations, focusing on recent sources with links',
+        history: [
+            ['human', 'Hi, how are you?'],
+            ['assistant', 'I am doing well, how can I help you today?']
+        ],
+        systemInstructions: 'Focus on authoritative sources, or recognizable or reputable sources. Output content in Markdown with good structure.',
+        stream: false
+    })
 };
 
 export default class ContentFarmPlugin extends Plugin {
@@ -266,6 +287,67 @@ export default class ContentFarmPlugin extends Plugin {
         }
     }
 
+    private extractRequestTemplate(content: string): { template: any; content: string } {
+        // Check for code block with requestjson--perplexica language
+        const codeBlockRegex = /```requestjson--perplexica\s*([\s\S]*?)```/;
+        const match = content.match(codeBlockRegex);
+        
+        if (match && match[1]) {
+            try {
+                const template = JSON.parse(match[1]);
+                // Remove the code block from content if it exists
+                const cleanContent = content.replace(codeBlockRegex, '').trim();
+                return { template, content: cleanContent };
+            } catch (error) {
+                console.error('Error parsing request template:', error);
+                new Notice('Error parsing request template. Using default.');
+            }
+        }
+        
+        // Return default template if no valid template found
+        return {
+            template: JSON.parse(this.settings.enhanceBodyTemplate),
+            content
+        };
+    }
+
+    private async enhanceWithPerplexica(content: string, editor: Editor): Promise<void> {
+        try {
+            // Extract template and clean content
+            const { template, content: cleanContent } = this.extractRequestTemplate(content);
+            
+            // Prepare request data with template and content
+            const requestData = {
+                ...template,
+                query: cleanContent,
+                stream: true
+            };
+
+            const response = await fetch(this.settings.localLLMPath, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            await streamToEditor({
+                response,
+                editor,
+                insertPos: { line: editor.getCursor().line + 1, ch: 0 }
+            });
+        } catch (error) {
+            console.error('Error enhancing content with Perplexica:', error);
+            const errorMessage = `Error: ${error instanceof Error ? error.message : String(error)}`;
+            new Notice(errorMessage);
+            editor.replaceRange(`\n${errorMessage}`, editor.getCursor());
+        }
+    }
+
     private async sendRequest(jsonString: string, editor?: Editor): Promise<string> {
         try {
             const response = await fetch(this.settings.localLLMPath, {
@@ -283,50 +365,16 @@ export default class ContentFarmPlugin extends Plugin {
             // Parse JSON to check if it's a streaming request
             const requestData = JSON.parse(jsonString);
             if (requestData.stream && editor) {
-                // Insert a new line and get the position for streaming
                 const cursor = editor.getCursor();
                 const insertPos = { line: cursor.line + 1, ch: 0 };
                 editor.replaceRange('\n', cursor);
                 
-                // Handle streaming response directly to editor
-                const reader = response.body?.getReader();
-                if (!reader) throw new Error('No response body');
-                
-                let result = '';
-                let lastUpdate = Date.now();
-                const updateThreshold = 50; // ms between updates
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = new TextDecoder().decode(value);
-                    result += chunk;
-                    
-                    // Only update the editor at a throttled rate for performance
-                    const now = Date.now();
-                    if (now - lastUpdate >= updateThreshold) {
-                        editor.replaceRange(chunk, insertPos);
-                        lastUpdate = now;
-                    } else {
-                        // For the last chunk, make sure to update
-                        if (done) {
-                            editor.replaceRange(chunk, insertPos);
-                        }
-                    }
-                    
-                    // Move cursor to end of inserted text
-                    const lines = result.split('\n');
-                    const lastLine = lines[lines.length - 1] || ''; // Handle empty last line
-                    editor.setCursor({
-                        line: insertPos.line + Math.max(0, lines.length - 1), // Ensure non-negative line number
-                        ch: lastLine.length
-                    });
-                }
-                
-                // Final update with any remaining content
-                editor.replaceRange(result, insertPos);
-                return result;
+                // Use the shared streaming utility
+                return await streamToEditor({
+                    response,
+                    editor,
+                    insertPos
+                });
             } else {
                 if (!editor) {
                     new Notice('Error: No active editor');
@@ -400,6 +448,20 @@ export default class ContentFarmPlugin extends Plugin {
             }
         });
 
+        // Command to enhance selected text with Perplexica
+        this.addCommand({
+            id: 'enhance-with-perplexica',
+            name: 'Enhance with Perplexica',
+            editorCallback: async (editor: Editor) => {
+                const selection = editor.getSelection();
+                if (!selection) {
+                    new Notice('Please select some text to enhance');
+                    return;
+                }
+                await this.enhanceWithPerplexica(selection, editor);
+            }
+        });
+        
         // Command to enhance selected text with research
         this.addCommand({
             id: 'enhance-with-research',
