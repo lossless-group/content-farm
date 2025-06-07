@@ -65,8 +65,9 @@ export class MCPClient {
     } as McpClient;
   }
 
-  constructor(serverUrl: string) {
+  constructor(serverUrl: string, settings: MCPClientSettings = {}) {
     this.serverUrl = serverUrl;
+    this.settings = settings;
     this.client = this.createMockClient();
   }
 
@@ -118,10 +119,29 @@ export class MCPClient {
 
       console.log(`[MCP] Enhancing content with research for query: ${researchQuery}`);
 
+      // Use settings from main.ts or fallback to defaults
+      const requestTemplate = this.settings.enhanceBodyTemplate 
+        ? JSON.parse(this.settings.enhanceBodyTemplate)
+        : {
+            chatModel: { provider: 'ollama', name: 'llama3.2:latest' },
+            embeddingModel: { provider: 'ollama', name: 'llama3.2:latest' },
+            optimizationMode: 'speed',
+            focusMode: 'webSearch',
+            query: researchQuery,
+            history: [
+              ['human', 'Hi, how are you?'],
+              ['assistant', 'I am doing well, how can I help you today?']
+            ],
+            systemInstructions: 'Focus on providing technical details.',
+            stream: false
+          };
+
+      // Update the query with the actual research query
+      requestTemplate.query = researchQuery;
+      
       const researchResult = await this.client.execute('perplexica_research', {
-        query: researchQuery,
+        ...requestTemplate,
         maxResults: 3,
-        focus: 'webSearch',
         includeSummary: true
       });
 

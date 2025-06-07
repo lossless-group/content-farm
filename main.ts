@@ -82,7 +82,7 @@ export default class ContentFarmPlugin extends Plugin {
     }
 
     private async setupMCPClient() {
-        this.mcpClient = new MCPClient(this.settings.mcpServerUrl);
+        this.mcpClient = new MCPClient(this.settings.mcpServerUrl, this.settings);
         try {
             const connected = await this.mcpClient.connect();
             new Notice(connected ? 'Connected to MCP server' : 'Failed to connect to MCP server');
