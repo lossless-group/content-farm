@@ -1,30 +1,19 @@
 import { App, Modal, Notice } from 'obsidian';
-import FreepikPlugin from '../plugins/FreepikPlugin';
-import { FreepikService, FreepikImage } from '../services/freepikService';
-import { logger } from '../utils/logger';
+import { FreepikImage, FreepikSearchResult } from '../services/freepikService';
 
 export class FreepikModal extends Modal {
-    private freepikService: FreepikService | null = null;
     private searchQuery: string = '';
     private images: FreepikImage[] = [];
-    private selectedImage: FreepikImage | null = null;
     private onSelect: (image: FreepikImage) => Promise<void>;
-    private plugin: FreepikPlugin;
+    private resultsContainer!: HTMLElement;
 
     constructor(
         app: App,
-        plugin: FreepikPlugin,
+        private plugin: { freepikService: { searchImages: (query: string) => Promise<FreepikSearchResult> } },
         onSelect: (image: FreepikImage) => Promise<void>
     ) {
         super(app);
-        this.plugin = plugin;
-        this.freepikService = plugin.freepikService;
         this.onSelect = onSelect;
-        
-        if (!this.freepikService) {
-            logger.error('FreepikService not initialized in modal');
-            new Notice('Plugin not properly initialized. Please restart Obsidian.');
-        }
     }
 
     onOpen() {
@@ -59,7 +48,7 @@ export class FreepikModal extends Modal {
 
         // Results container
         this.contentEl.createEl('h3', { text: 'Search Results' });
-        const resultsContainer = this.contentEl.createDiv('freepik-results');
+        this.resultsContainer = this.contentEl.createDiv('freepik-results');
         
         // Initial search if there's a query
         if (this.searchQuery) {
@@ -68,113 +57,70 @@ export class FreepikModal extends Modal {
     }
 
     private async performSearch() {
-        const resultsContainer = this.contentEl.querySelector('.freepik-results');
-        if (!resultsContainer) {
-            logger.error('Results container not found in FreepikModal');
-            return;
-        }
-
-        resultsContainer.empty();
-        const statusEl = resultsContainer.createEl('p', { text: 'Searching...' });
-
-        if (!this.freepikService) {
-            logger.error('FreepikService not available for search');
-            statusEl.setText('Error: Service not available');
-            return;
-        }
+        if (!this.resultsContainer) return;
+        
+        this.resultsContainer.empty();
+        this.resultsContainer.createEl('p', { text: 'Searching...' });
 
         try {
-            logger.info(`Initiating search for: "${this.searchQuery}"`);
-            this.images = await this.freepikService.searchImages(this.searchQuery);
-            resultsContainer.empty();
+            const result = await this.plugin.freepikService.searchImages(this.searchQuery);
+            this.images = result?.data || [];
+            this.resultsContainer.empty();
 
             if (this.images.length === 0) {
-                const noResultsMsg = 'No images found. Try a different search term.';
-                logger.info(noResultsMsg, { query: this.searchQuery });
-                resultsContainer.createEl('p', { 
-                    text: noResultsMsg,
+                this.resultsContainer.createEl('p', { 
+                    text: 'No images found. Try a different search term.',
                     cls: 'freepik-no-results'
                 });
                 return;
             }
 
-            const grid = resultsContainer.createDiv('freepik-grid');
+            const grid = this.resultsContainer.createDiv('freepik-grid');
             this.images.forEach(image => {
                 const imgContainer = grid.createDiv('freepik-image-container');
                 
                 // Image thumbnail
-                imgContainer.createEl('img', { 
+                const img = imgContainer.createEl('img', { 
                     attr: { 
-                        src: image.thumbnail,
-                        alt: image.title
+                        src: image.image?.source?.url || '',
+                        alt: image.title || ''
                     },
                     cls: 'freepik-thumbnail'
                 });
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
 
                 // Image title
+                const title = image.title || 'Untitled';
                 imgContainer.createEl('p', { 
-                    text: image.title.length > 30 
-                        ? image.title.substring(0, 30) + '...' 
-                        : image.title,
+                    text: title.length > 30 ? title.substring(0, 30) + '...' : title,
                     cls: 'freepik-title'
                 });
 
-                // Select button
-                const selectButton = imgContainer.createEl('button', { 
-                    text: 'Select',
-                    cls: 'freepik-select-button'
-                });
-                
-                selectButton.onclick = async () => {
-                    this.selectedImage = image;
+                // Handle image click
+                imgContainer.onclick = async () => {
                     try {
-                        logger.debug('Selected image', { imageId: image.id });
                         await this.onSelect(image);
-                        logger.info('Image selection successful', { imageId: image.id });
                         this.close();
                     } catch (error) {
-                        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                        const errorDetails = error instanceof Error ? { stack: error.stack } : {};
-                        
-                        logger.error('Error selecting image', { 
-                            error: errorMessage,
-                            ...errorDetails,
-                            imageId: image?.id 
-                        });
-                        
-                        // Update the status message with the error
-                        statusEl.textContent = `Error: ${errorMessage}`;
-                        statusEl.addClass('freepik-error');
-                        
-                        // Show a more detailed error message in the UI
-                        resultsContainer.createEl('p', { 
-                            text: 'Failed to select image. Please check your API key and internet connection.',
-                            cls: 'freepik-error-message'
-                        });
-                        
-                        new Notice(`Image selection failed: ${errorMessage}`);
+                        console.error('Error selecting image:', error);
+                        new Notice('Failed to select image. Please try again.');
                     }
                 };
             });
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            const errorDetails = error instanceof Error ? { stack: error.stack } : {};
+            console.error('Error performing search:', error);
             
-            logger.error('Error performing search', { 
-                error: errorMessage,
-                ...errorDetails,
-                query: this.searchQuery 
-            });
-            
-            // Update the status message with the error
-            statusEl.textContent = `Error: ${errorMessage}`;
-            statusEl.addClass('freepik-error');
-            
-            // Show a more detailed error message in the UI
-            resultsContainer.createEl('p', { 
-                text: 'Failed to search Freepik. Please check your API key and internet connection.',
-                cls: 'freepik-error-message'
-            });
+            if (this.resultsContainer) {
+                this.resultsContainer.empty();
+                const errorEl = this.resultsContainer.createEl('div', { 
+                    text: `Error: ${errorMessage}`,
+                    cls: 'freepik-error-message'
+                });
+                errorEl.style.color = 'red';
+                errorEl.style.margin = '10px 0';
+            }
             
             new Notice(`Search failed: ${errorMessage}`);
         }
