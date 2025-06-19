@@ -1,4 +1,4 @@
-import { App, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, Editor } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import * as crypto from 'crypto';
 
 interface ContentFarmSettings {
@@ -9,26 +9,31 @@ interface ContentFarmSettings {
 
 const DEFAULT_SETTINGS: ContentFarmSettings = {
     mySetting: 'default',
-    localLLMPath: 'http://localhost:3030/api/search',
+    // Use host.docker.internal to connect to the host machine from Docker containers
+    localLLMPath: 'http://host.docker.internal:3030/api/search',
     requestBodyTemplate: `{
-            "chatModel": {
-                "provider": "openai",
-                "name": "gpt-4o-mini"
-            },
-            "embeddingModel": {
-                "provider": "openai",
-                "name": "text-embedding-3-large"
-            },
-            "optimizationMode": "speed",
-            "focusMode": "webSearch",
-            "query": "What is Perplexicas architecture",
-            "history": [
-                ["human", "Hi, how are you?"],
-                ["assistant", "I am doing well, how can I help you today?"]
-            ],
-            "systemInstructions": "Focus on providing technical details about Perplexicas architecture.",
-            "stream": false
-        }`
+  "chatModel": {
+    "provider": "ollama",
+    "name": "llama3.2:latest"
+  },
+  "embeddingModel": {
+    "provider": "ollama",
+    "name": "llama3.2:latest"
+  },
+  "optimizationMode": "speed",
+  "focusMode": "webSearch",
+  "query": "What is Perplexica's architecture?",
+  "history": [
+    {
+      "role": "user",
+      "content": "What is Perplexica's architecture?"
+    }
+  ],
+  "systemInstructions": "You are a helpful AI assistant. Provide clear, concise, and accurate information.",
+  "stream": false,
+  "maxTokens": 2048,
+  "temperature": 0.7
+}`
 };
 
 export default class ContentFarmPlugin extends Plugin {
@@ -39,11 +44,91 @@ export default class ContentFarmPlugin extends Plugin {
     async onload(): Promise<void> {
         await this.loadSettings();
 
+        // Debug: Log current settings
+        console.log('Current LLM Path:', this.settings.localLLMPath);
+        console.log('Full settings:', JSON.stringify(this.settings, null, 2));
+
         this.registerRibbonIcon();
         this.setupStatusBar();
         this.registerCommands();
         this.addSettingTab(new ContentFarmSettingTab(this.app, this));
         this.registerCitationCommands();
+
+        // Add command to update LLM URL
+        this.addCommand({
+            id: 'update-llm-url',
+            name: 'Update LLM URL',
+            callback: () => {
+                // Create a modal to get the new URL
+                const modal = new (class extends Modal {
+                    private urlInput!: HTMLInputElement; // Using definite assignment assertion
+                    
+                    constructor(app: App, private plugin: ContentFarmPlugin) {
+                        super(app);
+                    }
+                    
+                    onOpen() {
+                        const {contentEl} = this;
+                        contentEl.createEl('h2', {text: 'Update LLM API URL'});
+                        
+                        const form = contentEl.createEl('form');
+                        const div = form.createDiv({cls: 'setting-item'});
+                        
+                        div.createEl('label', {
+                            text: 'LLM API URL',
+                            attr: {for: 'llm-url-input'}
+                        });
+                        
+                        this.urlInput = div.createEl('input', {
+                            type: 'text',
+                            value: this.plugin.settings.localLLMPath,
+                            cls: 'text-input',
+                            attr: {id: 'llm-url-input'}
+                        });
+                        
+                        const buttonDiv = contentEl.createDiv({cls: 'setting-item'});
+                        const saveButton = buttonDiv.createEl('button', {
+                            text: 'Save',
+                            cls: 'mod-cta'
+                        });
+                        
+                        form.onsubmit = (e) => {
+                            e.preventDefault();
+                            this.onSubmit();
+                        };
+                        
+                        saveButton.onclick = () => this.onSubmit();
+                    }
+                    
+                    onSubmit() {
+                        const newUrl = this.urlInput.value.trim();
+                        if (newUrl) {
+                            this.plugin.settings.localLLMPath = newUrl;
+                            this.plugin.saveSettings();
+                            new Notice(`LLM URL updated to: ${newUrl}`);
+                            this.close();
+                        }
+                    }
+                    
+                    onClose() {
+                        const {contentEl} = this;
+                        contentEl.empty();
+                    }
+                })(this.app, this);
+                
+                modal.open();
+            }
+        });
+        
+        // Add command to show current settings
+        this.addCommand({
+            id: 'show-llm-settings',
+            name: 'Show LLM Settings',
+            callback: () => {
+                new Notice(`Current LLM URL: ${this.settings.localLLMPath}`);
+                console.log('LLM Settings:', this.settings);
+            }
+        });
     }
 
     onunload(): void {
@@ -148,7 +233,7 @@ export default class ContentFarmPlugin extends Plugin {
         const citationMap = new Map<string, string>(); // Maps original ID to hex ID
         
         // First pass: collect all citations and generate hex IDs
-        const collectCitations = (match: string, prefix: string, id: string) => {
+        const collectCitations = (_match: string, _prefix: string, id: string) => {
             if (!citationMap.has(id)) {
                 citationMap.set(id, this.generateHexId());
             }
@@ -216,18 +301,186 @@ export default class ContentFarmPlugin extends Plugin {
         }
     }
 
-    private async sendRequest(jsonString: string, editor?: Editor): Promise<string> {
+    private async testConnectivity(url: string): Promise<{success: boolean; error?: string; details?: any}> {
         try {
-            const response = await fetch(this.settings.localLLMPath, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: jsonString,
+            // Try a simple fetch to check connectivity
+            const response = await fetch(url, {
+                method: 'OPTIONS', // Use OPTIONS to avoid CORS preflight issues
+                mode: 'no-cors',
+                cache: 'no-store'
             });
+            
+            // If we get here, the request went through (even with CORS issues)
+            return { 
+                success: true,
+                details: {
+                    status: response.status,
+                    statusText: response.statusText,
+                    // Convert headers to a plain object
+                    headers: (() => {
+                        const headers: Record<string, string> = {};
+                        // @ts-ignore - Headers.entries() exists in browser environment
+                        for (const [key, value] of response.headers.entries()) {
+                            headers[key] = value;
+                        }
+                        return headers;
+                    })()
+                }
+            };
+        } catch (error) {
+            const err = error as Error;
+            return {
+                success: false,
+                error: err.message,
+                details: {
+                    name: err.name,
+                    stack: err.stack,
+                    isTypeError: err instanceof TypeError,
+                    isNetworkError: err.name === 'TypeError' && 
+                        (err.message.includes('fetch') || err.message.includes('network'))
+                }
+            };
+        }
+    }
 
+    private async sendRequest(jsonString: string, editor?: Editor): Promise<string> {
+        if (!editor) {
+            throw new Error('No active editor found. Please open a markdown file and try again.');
+        }
+        
+        const timestamp = new Date().toISOString();
+        const { localLLMPath } = this.settings;
+        
+        // Add diagnostic information
+        const diagnostics = `## Connection Diagnostics (${timestamp})
+
+### Current Configuration
+- **LLM URL**: \`${localLLMPath}\`
+- **Time**: ${timestamp}
+- **User Agent**: ${navigator.userAgent}
+
+### Testing connection...\n`;
+        
+        // Add diagnostics to the editor
+        const cursorPos = editor.getCursor();
+        editor.replaceRange('\n---\n' + diagnostics, cursorPos);
+        
+        // Test connectivity
+        const testResult = await this.testConnectivity(localLLMPath);
+        
+        // Add test results
+        const testResultMarkdown = testResult.success 
+            ? '✅ Connection successful!\n\n### Connection Details\n```json\n' + 
+              JSON.stringify(testResult.details, null, 2) + '\n```\n'
+            : `❌ Connection failed!
+
+### Error Details
+\`\`\`json
+${JSON.stringify(testResult.details, null, 2)}\n\`\`\`
+
+### Troubleshooting Steps
+1. **Check if the server is running**
+   - Ensure Perplexica is running in Docker
+   - Run \`docker ps\` to check container status
+
+2. **Verify the URL**
+   - For Docker on Mac/Windows: \`http://host.docker.internal:3030/api/search\`
+   - For Linux: You might need to use \`http://172.17.0.1:3030/api/search\`
+   - For local testing: \`http://localhost:3030/api/search\`
+
+3. **Check Docker network**
+   - Run \`docker network inspect bridge\`
+   - Look for \`Gateway\` IP address
+
+4. **Test from container**
+   \`\`\`bash
+   # Get container ID
+   docker ps
+   
+   # Test connection from container
+   docker exec -it <container_id> curl -v http://host.docker.internal:3030/api/search
+   \`\`\`
+
+5. **Update URL**
+   Run **Update LLM URL** command from command palette (Ctrl/Cmd+P) to change the URL.
+`;
+
+        editor.replaceRange(testResultMarkdown + '\n', editor.getCursor());
+        
+        if (!testResult.success) {
+            throw new Error(`Failed to connect to ${localLLMPath}: ${testResult.error}`);
+        }
+
+        // Add a separator before the request
+        const requestCursor = editor.getCursor();
+        const errorMarker = '```error\n';
+        const separator = '\n---\n';
+        editor.replaceRange(separator + '\n## LLM Request\n```json\n' + jsonString + '\n```\n', requestCursor);
+        
+        try {
+            console.log('Sending request to:', this.settings.localLLMPath);
+            console.log('Request body:', jsonString);
+            
+            let response: Response;
+            try {
+                response = await fetch(this.settings.localLLMPath, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonString,
+                });
+            } catch (error: unknown) {
+                const err = error as Error;
+                const errorDetails = `## Error Details
+- **Type**: Network Error
+- **Message**: ${err.message}
+- **URL**: ${this.settings.localLLMPath}
+- **Time**: ${new Date().toISOString()}
+
+### Stack Trace
+\`\`\`
+${err.stack || 'No stack trace available'}
+\`\`\``;
+                
+                // Move to end of document to append error
+                const endPos = editor.lastLine();
+                editor.setCursor(endPos);
+                editor.replaceRange('\n' + errorMarker + errorDetails + '\n```\n', editor.getCursor());
+                
+                console.error('Fetch error details:', {
+                    name: err.name,
+                    message: err.message,
+                    stack: err.stack,
+                    type: typeof err,
+                    isTypeError: err instanceof TypeError,
+                    isNetworkError: err.name === 'TypeError' && err.message.includes('fetch')
+                });
+                
+                throw new Error(`Network error: ${err.message}`);
+            }
+
+            console.log('Response status:', response.status, response.statusText);
+            
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text().catch(() => 'Could not read error response');
+                const errorDetails = `## Error Details
+- **Status**: ${response.status} ${response.statusText}
+- **URL**: ${this.settings.localLLMPath}
+- **Time**: ${new Date().toISOString()}
+
+### Response
+\`\`\`
+${errorText}
+\`\`\``;
+                
+                // Move to end of document to append error
+                const endPos = editor.lastLine();
+                editor.setCursor(endPos);
+                editor.replaceRange('\n' + errorMarker + errorDetails + '\n```\n', editor.getCursor());
+                
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
 
             // Parse JSON to check if it's a streaming request
@@ -301,17 +554,59 @@ export default class ContentFarmPlugin extends Plugin {
                 } catch (error) {
                     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                     new Notice(`Error: ${errorMessage}`);
-                    console.error('Request failed:', error);
-                    return '';
+                    throw error;
                 }
             }
-        } catch (error) {
-            console.error('Error sending request:', error);
-            const errorMessage = `Error: ${error instanceof Error ? error.message : String(error)}`;
-            if (editor) {
-                editor.replaceRange('\n' + errorMessage, editor.getCursor());
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                const errorDetails = `## Unhandled Error
+- **Type**: ${error.name}
+- **Message**: ${error.message}
+- **Time**: ${new Date().toISOString()}
+
+### Stack Trace
+\`\`\`
+${error.stack || 'No stack trace available'}
+\`\`\``;
+                
+                // Move to end of document to append error
+                const endPos = editor.lastLine();
+                editor.setCursor(endPos);
+                editor.replaceRange('\n' + errorMarker + errorDetails + '\n```\n', editor.getCursor());
+                
+                console.error('Error sending request:', {
+                    message: error.message,
+                    name: error.name,
+                    stack: error.stack,
+                    type: 'Error'
+                });
+                
+                // Still show a brief notice for immediate feedback
+                new Notice(`Error: ${error.message} (see document for details)`);
+                
+                // Re-throw to maintain the error chain
+                throw error;
+            } else {
+                const errorMessage = String(error);
+                const errorDetails = `## Unknown Error Type
+- **Time**: ${new Date().toISOString()}
+
+### Error
+\`\`\`
+${errorMessage}
+\`\`\``;
+                
+                // Move to end of document to append error
+                const endPos = editor.lastLine();
+                editor.setCursor(endPos);
+                editor.replaceRange('\n' + errorMarker + errorDetails + '\n```\n', editor.getCursor());
+                
+                console.error('Unknown error type:', error);
+                new Notice(`Error: ${errorMessage} (see document for details)`);
+                
+                // Re-throw to maintain the error chain
+                throw new Error(errorMessage);
             }
-            throw new Error(errorMessage);
         }
     }
 
@@ -422,9 +717,32 @@ export default class ContentFarmPlugin extends Plugin {
             id: 'send-perplexica-request',
             name: 'Send Perplexica Request',
             editorCallback: (editor) => {
+                const template = `{
+  "chatModel": {
+    "provider": "ollama",
+    "name": "llama3.2:latest"
+  },
+  "embeddingModel": {
+    "provider": "ollama",
+    "name": "llama3.2:latest"
+  },
+  "optimizationMode": "speed",
+  "focusMode": "webSearch",
+  "query": "Your query here",
+  "history": [
+    {
+      "role": "user",
+      "content": "Your query here"
+    }
+  ],
+  "systemInstructions": "You are a helpful AI assistant. Provide clear, concise, and accurate information.",
+  "stream": false,
+  "maxTokens": 2048,
+  "temperature": 0.7
+}`;
                 editor.replaceSelection(
                     '```requestjson--perplexica\n' + 
-                    this.settings.requestBodyTemplate + '\n' +
+                    template + '\n' +
                     '```'
                 );
             }
