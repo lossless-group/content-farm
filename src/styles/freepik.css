@@ -1,0 +1,91 @@
+/* Freepik Modal Styles */
+.freepik-search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.freepik-search-container input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background-color: var(--background-primary);
+    color: var(--text-normal);
+}
+
+.freepik-search-container button {
+    padding: 8px 16px;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.freepik-search-container button:hover {
+    background-color: var(--interactive-accent-hover);
+}
+
+.freepik-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.freepik-image-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    padding: 10px;
+    background-color: var(--background-primary);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.freepik-image-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.freepik-thumbnail {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.freepik-title {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.freepik-select-button {
+    margin-top: auto;
+    padding: 6px 12px;
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    align-self: flex-start;
+}
+
+.freepik-select-button:hover {
+    background-color: var(--interactive-accent-hover);
+}
+
+.freepik-error {
+    color: var(--text-error);
+    padding: 10px;
+    background-color: var(--background-modifier-error);
+    border-radius: 4px;
+    border-left: 3px solid var(--text-error);
+}

@@ -1,10 +1,18 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import * as crypto from 'crypto';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import * as dotenv from 'dotenv';
+import FreepikPlugin from './src/plugins/FreepikPlugin';
+import { citationService } from './src/services/citationService';
+
+// Load environment variables
+dotenv.config({ path: `${process.cwd()}/.env` });
 
 interface ContentFarmSettings {
     mySetting: string;
     localLLMPath: string;
     requestBodyTemplate: string;
+    freepikApiKey: string;
+    freepikDefaultLicense: 'free' | 'premium';
+    freepikDefaultImageCount: number;
 }
 
 const DEFAULT_SETTINGS: ContentFarmSettings = {
@@ -33,36 +41,47 @@ const DEFAULT_SETTINGS: ContentFarmSettings = {
   "stream": false,
   "maxTokens": 2048,
   "temperature": 0.7
-}`
+}`,
+    freepikApiKey: process.env.FREEPIK_API_KEY || '',
+    freepikDefaultLicense: 'free',
+    freepikDefaultImageCount: 10
 };
 
 export default class ContentFarmPlugin extends Plugin {
+    private freepikPlugin: FreepikPlugin | null = null;
     public settings: ContentFarmSettings = DEFAULT_SETTINGS;
     private statusBarItemEl: HTMLElement | null = null;
     private ribbonIconEl: HTMLElement | null = null;
 
     async onload(): Promise<void> {
         await this.loadSettings();
-
+        
         // Debug: Log current settings
         console.log('Current LLM Path:', this.settings.localLLMPath);
         console.log('Full settings:', JSON.stringify(this.settings, null, 2));
 
-        this.registerRibbonIcon();
-        this.setupStatusBar();
-        this.registerCommands();
+        // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new ContentFarmSettingTab(this.app, this));
+        
+        // Initialize Freepik plugin with required arguments
+        this.freepikPlugin = new FreepikPlugin(this.app, this.manifest);
+        await this.freepikPlugin.load();
+        
+        this.registerCommands();
         this.registerCitationCommands();
+        this.registerFreepikCommands();
+        
+        // Load Freepik styles
+        this.loadFreepikStyles();
 
-        // Add command to update LLM URL
+        // Create a modal to get the new URL
         this.addCommand({
             id: 'update-llm-url',
             name: 'Update LLM URL',
             callback: () => {
-                // Create a modal to get the new URL
                 const modal = new (class extends Modal {
                     private urlInput!: HTMLInputElement; // Using definite assignment assertion
-                    
+
                     constructor(app: App, private plugin: ContentFarmPlugin) {
                         super(app);
                     }
@@ -150,7 +169,7 @@ export default class ContentFarmPlugin extends Plugin {
                 try {
                     const content = editor.getValue();
                     console.log('Processing content length:', content.length);
-                    const result = this.processCitations(content);
+                    const result = citationService.convertCitations(content);
                     
                     if (result.changed) {
                         console.log('Citations changed, updating editor');
@@ -171,125 +190,62 @@ export default class ContentFarmPlugin extends Plugin {
         console.log('Citation commands registered');
     }
 
-    /**
-     * Process citations in the content
-     * @param content - The markdown content to process
-     * @returns Object with updated content and statistics
-     */
-    private processCitations(content: string): {
-        updatedContent: string;
-        changed: boolean;
-        stats: {
-            citationsConverted: number;
-        };
-    } {
-        // Extract code blocks to avoid processing them
-        const codeBlocks: { placeholder: string; original: string }[] = [];
-        let processableContent = content;
+    private async loadSettings() {
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
         
-        // Extract fenced code blocks
-        processableContent = processableContent.replace(/```[\s\S]*?```/g, (match) => {
-            const placeholder = `__CODE_BLOCK_${crypto.randomBytes(4).toString('hex')}__`;
-            codeBlocks.push({ placeholder, original: match });
-            return placeholder;
-        });
-
-        // Process citations
-        const result = this.convertCitations(processableContent);
-        
-        // Restore code blocks
-        for (const { placeholder, original } of codeBlocks) {
-            result.updatedContent = result.updatedContent.replace(placeholder, original);
-        }
-
-        return result;
-    }
-
-    /**
-     * Generate a random hex string of specified length
-     * @param length - Length of the hex string to generate
-     * @returns Random hex string
-     */
-    private generateHexId(length: number = 6): string {
-        return crypto.randomBytes(Math.ceil(length / 2))
-            .toString('hex')
-            .slice(0, length);
-    }
-
-    /**
-     * Convert all citations to random hex format
-     * @param content - The markdown content to process
-     * @returns Object with updated content and statistics
-     */
-    private convertCitations(content: string): {
-        updatedContent: string;
-        changed: boolean;
-        stats: {
-            citationsConverted: number;
-        };
-    } {
-        let updatedContent = content;
-        let citationsConverted = 0;
-        const citationMap = new Map<string, string>(); // Maps original ID to hex ID
-        
-        // First pass: collect all citations and generate hex IDs
-        const collectCitations = (_match: string, _prefix: string, id: string) => {
-            if (!citationMap.has(id)) {
-                citationMap.set(id, this.generateHexId());
+        // Initialize Freepik plugin if it exists
+        if (this.freepikPlugin) {
+            await this.freepikPlugin.loadSettings();
+            if (this.freepikPlugin.freepikService && this.settings.freepikApiKey) {
+                this.freepikPlugin.freepikService.updateApiKey(this.settings.freepikApiKey);
             }
-            return match; // Don't modify yet
-        };
-        
-        // Collect numeric citations [^123]
-        updatedContent = updatedContent.replace(/\[\^(\d+)\]/g, collectCitations);
-        
-        // Collect plain numeric citations [123] (only if not part of a link)
-        updatedContent = updatedContent.replace(/\[(\d+)\]/g, (match, id, offset) => {
-            // Only collect if it's not part of a link
-            if (!/\]\([^)]*$/.test(updatedContent.substring(0, offset))) {
-                return collectCitations(match, '', id);
-            }
-            return match;
-        });
-        
-        if (citationMap.size === 0) {
-            return { updatedContent, changed: false, stats: { citationsConverted: 0 } };
         }
-        
-        // Second pass: replace all collected citations with their hex IDs
-        citationMap.forEach((hexId, originalId) => {
-            // Replace inline citations [^123] or [123]
-            updatedContent = updatedContent.replace(
-                new RegExp(`\\[\\^?${originalId}\\]`, 'g'),
-                ` [^${hexId}]`
-            );
-            
-            // Replace footnote definitions [^123]: or [^hex]:
-            updatedContent = updatedContent.replace(
-                new RegExp(`\\[\\^${originalId}\\](:\\s*)`, 'g'),
-                `[^${hexId}]$1`
-            );
-            
-            citationsConverted++;
-        });
-        
-        // Ensure consistent formatting of all footnote definitions
-        updatedContent = updatedContent.replace(/\[\^([0-9a-f]{6})\]:\s*/gi, (match, hexId) => {
-            return `[^${hexId.toLowerCase()}]: `; // Ensure consistent case
-        });
-        
-        return {
-            updatedContent,
-            changed: citationsConverted > 0,
-            stats: { citationsConverted }
-        };
     }
 
-    private async loadSettings(): Promise<void> {
-        this.settings = { 
-            ...DEFAULT_SETTINGS, 
-            ...(await this.loadData() ?? {}) 
-        };
+    private async loadFreepikStyles() {
+        try {
+            const cssPath = this.manifest.dir + '/styles/freepik.css';
+            const response = await fetch(cssPath);
+            if (!response.ok) throw new Error('Failed to load Freepik CSS');
+            
+            const css = await response.text();
+            const styleEl = document.createElement('style');
+            styleEl.id = 'freepik-styles';
+            styleEl.textContent = css;
+            document.head.appendChild(styleEl);
+        } catch (error) {
+            console.error('Error loading Freepik styles:', error);
+        }
+    }
+
+    private registerFreepikCommands() {
+        this.addCommand({
+            id: 'open-freepik-modal',
+            name: 'Insert Freepik Image',
+            editorCallback: (editor: Editor) => {
+                if (!this.freepikPlugin?.freepikService) {
+                    new Notice('Freepik service not initialized');
+                    return;
+                }
+                
+                // Dynamically import to avoid circular dependencies
+                import('./src/modals/FreepikModal').then(({ FreepikModal }) => {
+                    const modal = new FreepikModal(this.app, this.freepikPlugin!, async (image) => {
+                        try {
+                            const markdown = `![${image.title}](${image.url})\n> Image by [Freepik](${image.url} "${image.title}")`;
+                            editor.replaceSelection(markdown);
+                        } catch (error) {
+                            console.error('Error inserting image:', error);
+                            new Notice('Failed to insert image');
+                        }
+                    });
+                    modal.open();
+                }).catch(err => {
+                    console.error('Failed to load FreepikModal:', err);
+                    new Notice('Failed to load Freepik modal');
+                });
+            }
+        });
     }
 
     public async saveSettings(): Promise<void> {
