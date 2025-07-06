@@ -1,4 +1,3 @@
-import { Notice } from 'obsidian';
 import { TFile, Vault } from 'obsidian';
 
 interface LogEntry {
@@ -11,7 +10,7 @@ interface LogEntry {
 
 export class FileLogger {
   private static instance: FileLogger;
-  private logFile: string = 'freepik-errors.json';
+  private logFile: string = 'session-log.json';
   private vault: Vault | null = null;
   private logEntries: LogEntry[] = [];
   private isSaving = false;
@@ -26,11 +25,19 @@ export class FileLogger {
     return FileLogger.instance;
   }
 
-  initialize(vault: Vault): void {
+  public initialize(vault: Vault): void {
+    console.log('Initializing logger with vault:', vault);
+    console.log('Log file will be created at:', this.logFile);
+    
     this.vault = vault;
+    
+    // Load existing logs if any
     this.loadLogs().catch(error => {
       console.error('Failed to load logs:', error);
     });
+    
+    // Log a test message to trigger file creation
+    this.info('Logger initialized', { timestamp: new Date().toISOString() });
   }
 
   private async loadLogs(): Promise<void> {
@@ -49,24 +56,78 @@ export class FileLogger {
   }
 
   private async saveLogs(): Promise<void> {
-    if (!this.vault || this.isSaving) {
-      // If already saving, queue this save for later
-      if (!this.isSaving) {
-        this.saveQueue.push(() => this.saveLogs());
-      }
+    if (!this.vault) {
+      console.error('Vault is not initialized');
+      return;
+    }
+    
+    if (this.isSaving) {
+      console.log('Already saving, queuing save operation');
+      this.saveQueue.push(() => this.saveLogs());
       return;
     }
 
     this.isSaving = true;
+    console.log('Starting save operation for log file:', this.logFile);
     
     try {
-      await this.vault.adapter.write(
-        this.logFile,
-        JSON.stringify(this.logEntries, null, 2)
-      );
+      const content = JSON.stringify(this.logEntries, null, 2);
+      console.log('Looking for file at path:', this.logFile);
+      
+      const file = this.vault.getAbstractFileByPath(this.logFile);
+      
+      if (file) {
+        console.log('File exists, checking if it\'s a TFile');
+        if (file instanceof TFile) {
+          console.log('Modifying existing file');
+          await this.vault.modify(file, content);
+          console.log('Successfully modified file');
+        } else {
+          console.warn('Path exists but is not a file:', file);
+        }
+      } else {
+        console.log('File does not exist, creating it');
+        // Ensure the directory exists
+        const dir = this.logFile.split('/').slice(0, -1).join('/');
+        console.log('Checking directory:', dir);
+        
+        if (dir) {
+          const dirExists = this.vault.getAbstractFileByPath(dir) !== null;
+          console.log('Directory exists:', dirExists);
+          
+          if (!dirExists) {
+            console.log('Creating directory:', dir);
+            try {
+              await this.vault.createFolder(dir);
+              console.log('Successfully created directory');
+            } catch (dirError) {
+              console.error('Failed to create directory:', dirError);
+              throw dirError;
+            }
+          }
+        }
+        
+        console.log('Creating log file:', this.logFile);
+        try {
+          await this.vault.create(this.logFile, content);
+          console.log('Successfully created log file');
+        } catch (createError) {
+          console.error('Failed to create file:', createError);
+          throw createError;
+        }
+      }
     } catch (error) {
-      console.error('Failed to save logs:', error);
-      new Notice('Failed to save error logs. Check console for details.');
+      // Log to console if available
+      if (typeof console !== 'undefined') {
+        console.error('Failed to save logs:', error);
+      }
+      
+      // If we're here, the vault operations failed - try direct file system access as last resort
+      try {
+        await this.vault.adapter.write(this.logFile, JSON.stringify(this.logEntries, null, 2));
+      } catch (e) {
+        console.error('Failed to save logs (fallback):', e);
+      }
     } finally {
       this.isSaving = false;
       

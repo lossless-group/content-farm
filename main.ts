@@ -2,6 +2,7 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 import * as dotenv from 'dotenv';
 import FreepikPlugin from './src/plugins/FreepikPlugin';
 import { citationService } from './src/services/citationService';
+import { logger } from './src/utils/logger';
 
 // Load environment variables
 dotenv.config({ path: `${process.cwd()}/.env` });
@@ -60,9 +61,12 @@ export default class ContentFarmPlugin extends Plugin {
         console.log('Current LLM Path:', this.settings.localLLMPath);
         console.log('Full settings:', JSON.stringify(this.settings, null, 2));
 
+        // Initialize the logger with the vault
+        logger.initialize(this.app.vault);
+
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new ContentFarmSettingTab(this.app, this));
-        
+
         // Initialize Freepik plugin with required arguments
         this.freepikPlugin = new FreepikPlugin(this.app, this.manifest);
         await this.freepikPlugin.load();
