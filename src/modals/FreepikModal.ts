@@ -60,16 +60,20 @@ export class FreepikModal extends Modal {
         if (!this.resultsContainer) return;
         
         this.resultsContainer.empty();
-        this.resultsContainer.createEl('p', { text: 'Searching...' });
+        this.resultsContainer.createEl('p', { 
+            text: `Searching for "${this.searchQuery}"...`,
+            cls: 'freepik-status'
+        });
 
         try {
+            console.log('Performing search with term:', this.searchQuery);
             const result = await this.plugin.freepikService.searchImages(this.searchQuery);
             this.images = result?.data || [];
             this.resultsContainer.empty();
 
             if (this.images.length === 0) {
                 this.resultsContainer.createEl('p', { 
-                    text: 'No images found. Try a different search term.',
+                    text: `No images found for "${this.searchQuery}". Try a different search term.`,
                     cls: 'freepik-no-results'
                 });
                 return;
@@ -115,11 +119,21 @@ export class FreepikModal extends Modal {
             if (this.resultsContainer) {
                 this.resultsContainer.empty();
                 const errorEl = this.resultsContainer.createEl('div', { 
-                    text: `Error: ${errorMessage}`,
+                    text: `Error searching for "${this.searchQuery}": ${errorMessage}`,
                     cls: 'freepik-error-message'
                 });
                 errorEl.style.color = 'red';
                 errorEl.style.margin = '10px 0';
+                errorEl.style.padding = '10px';
+                errorEl.style.borderLeft = '3px solid red';
+                errorEl.style.backgroundColor = 'var(--background-modifier-error)';
+                
+                // Add retry button
+                const retryButton = this.resultsContainer.createEl('button', {
+                    text: 'Retry Search',
+                    cls: 'mod-cta'
+                });
+                retryButton.onclick = () => this.performSearch();
             }
             
             new Notice(`Search failed: ${errorMessage}`);

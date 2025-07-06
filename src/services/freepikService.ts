@@ -38,14 +38,22 @@ export class FreepikService {
         return !!this.apiKey;
     }
 
-    async searchImages(query: string, limit: number = 10): Promise<FreepikSearchResult> {
+    async searchImages(term: string, limit: number = 10): Promise<FreepikSearchResult> {
         if (!this.apiKey) {
             throw new Error('Please configure your Freepik API key in settings');
         }
 
+        // Build query parameters according to Freepik API documentation
+        const params = new URLSearchParams({
+            term: term,
+            per_page: limit.toString(),
+            page: '1',
+            clean_search: 'true'
+        });
+
         const curlCmd = `
             curl -X GET \
-                "${FreepikService.API_URL}/resources?query=${encodeURIComponent(query)}&limit=${limit}" \
+                "${FreepikService.API_URL}/resources?${params.toString()}" \
                 -H "Accept: application/json" \
                 -H "x-freepik-api-key: ${this.apiKey}" \
                 --silent --show-error
