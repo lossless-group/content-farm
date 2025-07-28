@@ -1,6 +1,6 @@
 {
 	"id": "content-farm",
-	"name": "Content Farm Obsidian Plugin",
+	"name": "Content Farm",
 	"version": "0.0.0.1",
 	"minAppVersion": "0.0.0.1",
 	"description": "A plugin for Obsidian that allows you to generate content using AI.",
