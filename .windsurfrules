@@ -34,7 +34,7 @@ BAD
 ```jsx
       <PostCardBare
         slug={p.slug}       
-        imageSrc={p.banner_image || p.portrait_image || '/images/placeholders/default-banner.jpg'}
+        imageSrc={p.banner_image || p.portrait_image || '/visuals/bannerImage__The-Lossless-Group.png'}
         imageAlt={p.imageAlt}
         title={p.title}
         date={p.date}
@@ -50,7 +50,7 @@ GOOD
 ```astro
       <PostCardBare
         slug={p.slug}       
-        imageSrc={p.banner_image || p.portrait_image || '/images/placeholders/default-banner.jpg'}
+        imageSrc={p.banner_image || p.portrait_image || '/visuals/bannerImage__The-Lossless-Group.png'}
         imageAlt={p.imageAlt}
         title={p.title}
         date={p.date}

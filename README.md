@@ -4,6 +4,18 @@ This is an attempt to unify a lot of content generating scripts into one plugin.
 
 ***
 
+# Modules in Content Farm
+![Cite Wide: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/CJ18gyp.png)
+***
+![Image Gin Plugin for Obsidian by The Lossless Group](https://i.imgur.com/jp2ME1E.png)
+***
+![Perplexed: An Obsidian Plugin for Perplexity and Perplexica](https://i.imgur.com/MVOK3rk.png)
+***
+![LMStud Yo Plugin for Obsidian by The Lossless Group](https://i.imgur.com/jp2ME1E.png)
+***
+![Open Graph Fetcher: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/0v6sPkv.png)
+***
+
 ## Features
 
  - Generate images via API from an image prompt
