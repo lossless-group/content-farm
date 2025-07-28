@@ -1,0 +1,3 @@
+[submodule "plugin-modules/lmstud-yo"]
+	path = plugin-modules/lmstud-yo
+	url = https://github.com/lossless-group/lmstud-yo.git
