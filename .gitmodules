@@ -1,3 +1,6 @@
 [submodule "plugin-modules/lmstud-yo"]
 	path = plugin-modules/lmstud-yo
 	url = https://github.com/lossless-group/lmstud-yo.git
+[submodule "plugin-modules/obsidian-git"]
+	path = plugin-modules/obsidian-git
+	url = https://github.com/lossless-group/obsidian-git.git
