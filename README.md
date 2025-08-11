@@ -5,16 +5,30 @@ This is an attempt to unify a lot of content generating scripts into one plugin.
 ***
 
 # Modules in Content Farm
-![Cite Wide: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/CJ18gyp.png)
+
+## Lossless created Obsidian Plugins:
+
+## AI API Modules for Content Generation:
+![Perplexed: An Obsidian Plugin for Perplexity and Perplexica](https://i.imgur.com/MVOK3rk.png)
 ***
 ![Image Gin Plugin for Obsidian by The Lossless Group](https://i.imgur.com/jp2ME1E.png)
 ***
-![Perplexed: An Obsidian Plugin for Perplexity and Perplexica](https://i.imgur.com/MVOK3rk.png)
+![LMStud Yo: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/qZbLKzJ.png)
 ***
-![LMStud Yo Plugin for Obsidian by The Lossless Group](https://i.imgur.com/jp2ME1E.png)
+
+## Content Metadata Modules for better, unique Citations and connecting to Open Graph metadata from the web:
+![Cite Wide: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/CJ18gyp.png)
 ***
 ![Open Graph Fetcher: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/0v6sPkv.png)
 ***
+
+## Third Party Obsidian Plugins:
+![Obsidian Git: A fork of Obsidian Git by [Vinzent03](https://github.com/Vinzent03)](https://i.imgur.com/0v6sPkv.png)
+
+Thanks to [Vinzent03](https://github.com/Vinzent03) for his [Obsidian Git](https://github.com/Vinzent03/obsidian-git) plugin.
+
+***
+
 
 ## Features
 
