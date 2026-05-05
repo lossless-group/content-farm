@@ -4,3 +4,31 @@
 [submodule "plugin-modules/obsidian-git"]
 	path = plugin-modules/obsidian-git
 	url = https://github.com/lossless-group/obsidian-git.git
+[submodule "plugin-modules/cite-wide"]
+	path = plugin-modules/cite-wide
+	url = https://github.com/lossless-group/cite-wide.git
+	branch = main
+[submodule "plugin-modules/grab-reference"]
+	path = plugin-modules/grab-reference
+	url = https://github.com/lossless-group/grab-reference.git
+	branch = master
+[submodule "plugin-modules/image-gin"]
+	path = plugin-modules/image-gin
+	url = https://github.com/lossless-group/image-gin.git
+	branch = master
+[submodule "plugin-modules/perplexed"]
+	path = plugin-modules/perplexed
+	url = https://github.com/lossless-group/perplexed-plugin.git
+	branch = development
+[submodule "plugin-modules/plunk-it"]
+	path = plugin-modules/plunk-it
+	url = https://github.com/lossless-group/plunk-it.git
+	branch = development
+[submodule "plugin-modules/filestarter"]
+	path = plugin-modules/filestarter
+	url = https://github.com/lossless-group/obsidian-plugin-starter.git
+	branch = development
+[submodule "plugin-modules/file-transporter"]
+	path = plugin-modules/file-transporter
+	url = https://github.com/lossless-group/google-docs-api-plugin.git
+	branch = development
