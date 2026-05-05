@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PluginCard from '../components/PluginCard.astro';
+import { STATIC_SEO } from '../lib/seo';
 
 const base = import.meta.env.BASE_URL;
 
@@ -58,7 +59,7 @@ const philosophyPoints = [
 const repoUrl = 'https://github.com/lossless-group/content-farm';
 ---
 
-<BaseLayout title="Content Farm — A suite of Obsidian plugins for AI-augmented writing">
+<BaseLayout title={STATIC_SEO.root.title} description={STATIC_SEO.root.description}>
   <header class="topbar">
     <div class="container topbar-inner">
       <a class="topbar-brand" href={base}>
@@ -165,6 +166,7 @@ const repoUrl = 'https://github.com/lossless-group/content-farm';
               <div class={p.data.featured ? 'plugin-cell plugin-cell--wide' : 'plugin-cell'}>
                 <PluginCard
                   title={p.data.title ?? p.id}
+                  slug={p.id}
                   lede={p.data.lede}
                   status={p.data.status}
                   repo={p.data.repo}

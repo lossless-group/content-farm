@@ -1,0 +1,284 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const plugins = await getCollection('plugin-highlights');
+  return plugins.map((plugin) => ({
+    params: { slug: plugin.id },
+    props: { plugin },
+  }));
+}
+
+const { plugin } = Astro.props;
+const { Content } = await render(plugin);
+const base = import.meta.env.BASE_URL;
+
+// Recent ship notes from this plugin (top 5).
+let pluginChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+try {
+  pluginChangelog = (await getCollection('changelog'))
+    .filter((e) => e.data.from === plugin.id && e.data.publish !== false)
+    .sort((a, b) => {
+      const da = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
+      const db = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      return new Date(db).getTime() - new Date(da).getTime();
+    })
+    .slice(0, 5);
+} catch {
+  pluginChangelog = [];
+}
+
+// banner_image lives in passthrough frontmatter — narrow defensively.
+const banner = typeof plugin.data.banner_image === 'string' ? plugin.data.banner_image : undefined;
+const title = plugin.data.title ?? plugin.id;
+const lede = plugin.data.lede;
+const description = lede ?? `${title} — an Obsidian plugin from content-farm.`;
+const repo = plugin.data.repo;
+const status = plugin.data.status;
+const tags = plugin.data.tags ?? [];
+const icon = plugin.data.icon;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogImage={banner}
+  ogType="article"
+>
+  <main class="container plugin-page">
+    <p class="back">
+      <a href={base}>← All plugins</a>
+    </p>
+
+    <header class="plugin-head">
+      <div class="plugin-head-row">
+        {icon && <div class="plugin-icon" aria-hidden="true">{icon}</div>}
+        <div class="plugin-title-block">
+          <h1 class="plugin-title">{title}</h1>
+          <div class="plugin-meta">
+            {status && <span class="pill" data-status={status}>{status}</span>}
+            {tags.map((t) => <span class="card-tag">{t}</span>)}
+          </div>
+        </div>
+      </div>
+      {lede && <p class="plugin-lede">{lede}</p>}
+      {repo && (
+        <p class="plugin-actions">
+          <a href={repo} target="_blank" rel="noopener" class="btn btn-primary">
+            View on GitHub →
+          </a>
+        </p>
+      )}
+    </header>
+
+    {banner && (
+      <figure class="plugin-banner">
+        <img src={banner} alt={`${title} — banner`} loading="lazy" decoding="async" />
+      </figure>
+    )}
+
+    <article class="prose">
+      <Content />
+    </article>
+
+    {pluginChangelog.length > 0 && (
+      <section class="plugin-changelog">
+        <h2>Recent ship notes</h2>
+        <ul class="changelog-list">
+          {pluginChangelog.map((entry) => {
+            const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+            return (
+              <li>
+                <a href={`${base}changelog/${entry.id}`}>
+                  <div class="changelog-meta">
+                    {date && (
+                      <time class="mono" datetime={new Date(date).toISOString()}>
+                        {new Date(date).toISOString().slice(0, 10)}
+                      </time>
+                    )}
+                    {entry.data.at_semantic_version && (
+                      <span class="pill mono">{entry.data.at_semantic_version}</span>
+                    )}
+                  </div>
+                  <h3>{entry.data.title ?? entry.id}</h3>
+                  {entry.data.lede && <p>{entry.data.lede}</p>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .plugin-page .prose {
+    max-width: 70ch;
+    margin: 0 auto;
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .plugin-page .prose h1,
+  .plugin-page .prose h2,
+  .plugin-page .prose h3 {
+    color: var(--clr-text);
+    margin-top: 2.5em;
+    margin-bottom: 0.5em;
+  }
+  .plugin-page .prose p { margin: 1em 0; }
+  .plugin-page .prose a { color: var(--clr-cyan); text-decoration: underline; text-underline-offset: 3px; }
+  .plugin-page .prose a:hover { color: var(--clr-aquamarine); }
+</style>
+
+<style>
+  .plugin-page {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .back {
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-8);
+  }
+  .plugin-head {
+    max-width: 70ch;
+    margin: 0 auto var(--space-12);
+  }
+  .plugin-head-row {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .plugin-icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--clr-border);
+  }
+  .plugin-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .plugin-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-family: var(--ff-mono);
+    line-height: 1.1;
+    color: var(--clr-text);
+  }
+  .plugin-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .plugin-lede {
+    margin-top: var(--space-6);
+    color: var(--clr-text-soft);
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+  .plugin-actions {
+    margin-top: var(--space-6);
+  }
+  .plugin-banner {
+    margin: 0 0 var(--space-12);
+    max-width: 1000px;
+    margin-inline: auto;
+  }
+  .plugin-banner img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border);
+    display: block;
+  }
+  .plugin-changelog {
+    max-width: 70ch;
+    margin: var(--space-16) auto 0;
+  }
+  .plugin-changelog h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+  }
+  .changelog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .changelog-list a {
+    display: block;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .changelog-list a:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+    color: var(--clr-text);
+  }
+  .changelog-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    color: var(--clr-text-dim);
+    font-size: 0.8rem;
+    margin-bottom: var(--space-2);
+  }
+  .changelog-list h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-2);
+  }
+  .changelog-list p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+  }
+
+  .card-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--clr-text-dim);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    color: #0a0a0f;
+    font-weight: 600;
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    color: #0a0a0f;
+    box-shadow: 0 12px 32px rgba(4, 229, 229, 0.35);
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPluginOgImage } from '../../lib/seo';
 
 export async function getStaticPaths() {
   let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
@@ -19,9 +20,31 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
 const base = import.meta.env.BASE_URL;
+
+// SEO derivation — per-page metadata pulled from the entry, with the OG
+// image falling back to the originating plugin's banner_image when the
+// entry came from a plugin submodule.
+const pageTitle = entry.data.title ?? entry.id;
+const pageDescription =
+  entry.data.lede ?? entry.data.summary ?? entry.data.description ??
+  `Ship note from ${entry.data.from ?? 'content-farm'}.`;
+const pluginOg = await getPluginOgImage(entry.data.from);
+const publishedTime = (entry.data.date_first_published ?? entry.data.date_created ?? entry.data.date)?.toISOString();
+const modifiedTime = (entry.data.date_modified ?? entry.data.date_created ?? entry.data.date)?.toISOString();
+const articleAuthor = entry.data.authors?.[0];
+const articleTags = entry.data.tags;
 ---
 
-<BaseLayout title={`${entry.data.title ?? entry.id} — content-farm changelog`}>
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  ogImage={pluginOg}
+  ogType="article"
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+  author={articleAuthor}
+  tags={articleTags}
+>
   <main class="container reading">
     <p class="reading-back">
       <a href={`${base}changelog`}>← All ship notes</a>

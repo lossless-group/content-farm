@@ -1,14 +1,46 @@
 ---
+import MetaTags from '../components/basics/MetaTags.astro';
+import { STATIC_SEO } from '../lib/seo';
+
 interface Props {
+  /** Bare title — the suffix is appended automatically by MetaTags. */
   title: string;
+  /** Meta description / og:description / twitter:description. */
   description?: string;
+  /** Override the default OG image. Path under /public or absolute URL. */
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogImageType?: string;
+  ogImageAlt?: string;
+  /** "website" (default), "article", etc. */
+  ogType?: string;
+  /** Defaults to false (public splash). */
+  noindex?: boolean;
+  /** Override the canonical URL. */
+  canonical?: string;
+  /** Article-only metadata. */
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+  tags?: string[];
 }
 
 const {
   title,
-  description = "A suite of Obsidian plugins for streamlined content creation and AI-powered workflows. Part of The Lossless Group's content-farm pseudomonorepo.",
+  description = STATIC_SEO.root.description,
   ogImage,
+  ogImageWidth,
+  ogImageHeight,
+  ogImageType,
+  ogImageAlt,
+  ogType,
+  noindex,
+  canonical,
+  publishedTime,
+  modifiedTime,
+  author,
+  tags,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -19,13 +51,22 @@ const base = import.meta.env.BASE_URL;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <MetaTags
+      title={title}
+      description={description}
+      ogImage={ogImage}
+      ogImageWidth={ogImageWidth}
+      ogImageHeight={ogImageHeight}
+      ogImageType={ogImageType}
+      ogImageAlt={ogImageAlt}
+      ogType={ogType}
+      noindex={noindex}
+      canonical={canonical}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      author={author}
+      tags={tags}
+    />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

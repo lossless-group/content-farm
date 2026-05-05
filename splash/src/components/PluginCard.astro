@@ -1,20 +1,51 @@
 ---
 interface Props {
+  /** Display title. */
   title: string;
+  /** Plugin slug (used to build the /plugins/<slug>/ share URL). */
+  slug?: string;
   lede?: string;
   status?: string;
   repo?: string;
   icon?: string;
   featured?: boolean;
   tags?: string[];
+  /** Optional override for the card's primary link. Defaults to repo. */
   href?: string;
 }
 
-const { title, lede, status, repo, icon, featured = false, tags = [], href } = Astro.props;
+const {
+  title,
+  slug,
+  lede,
+  status,
+  repo,
+  icon,
+  featured = false,
+  tags = [],
+  href,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+
+// The card's primary link still points to the GitHub repo (or `href` if
+// the caller overrode it). The share button always points to the per-plugin
+// splash URL so the recipient unfurls the plugin's banner_image instead of
+// the site default.
+const primaryHref = href ?? repo ?? '#';
+const primaryExternal = !href;
+const shareUrl = slug ? `${base}plugins/${slug}/` : undefined;
+const shareTitle = title;
+const shareText = lede ?? `${title} — content-farm plugin.`;
 ---
 
 <article class={`card ${featured ? 'card--featured' : ''}`}>
-  <a class="card-link" href={href ?? repo ?? '#'} target={href ? '_self' : '_blank'} rel={href ? '' : 'noopener'}>
+  <a
+    class="card-link"
+    href={primaryHref}
+    target={primaryExternal ? '_blank' : '_self'}
+    rel={primaryExternal ? 'noopener' : undefined}
+  >
     <div class="card-inner">
       <header class="card-head">
         {icon && <div class="card-icon" aria-hidden="true">{icon}</div>}
@@ -35,6 +66,36 @@ const { title, lede, status, repo, icon, featured = false, tags = [], href } = A
       </footer>
     </div>
   </a>
+
+  {shareUrl && (
+    <button
+      type="button"
+      class="card-share"
+      data-share-url={shareUrl}
+      data-share-title={shareTitle}
+      data-share-text={shareText}
+      aria-label={`Share ${title}`}
+      title={`Share ${title}`}
+    >
+      <svg
+        class="card-share-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+      <span class="card-share-feedback" aria-live="polite"></span>
+    </button>
+  )}
 </article>
 
 <style>
@@ -106,6 +167,8 @@ const { title, lede, status, repo, icon, featured = false, tags = [], href } = A
     display: flex;
     gap: var(--space-4);
     align-items: flex-start;
+    /* Reserve space so the share button never overlaps the title. */
+    padding-right: 36px;
   }
   .card-icon {
     font-size: 1.75rem;
@@ -174,6 +237,75 @@ const { title, lede, status, repo, icon, featured = false, tags = [], href } = A
   .card:hover .card-cta {
     transform: translateX(4px);
   }
+
+  /* ───── Share button ─────
+     Sibling of .card-link so it isn't a button-inside-anchor. Sits
+     absolutely top-right of the card, subtle by default and brightens
+     on hover/focus. */
+  .card-share {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--clr-border);
+    background: rgba(10, 10, 15, 0.55);
+    color: var(--clr-text-dim);
+    cursor: pointer;
+    transition:
+      color 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      transform 180ms ease;
+  }
+  .card-share:hover,
+  .card-share:focus-visible {
+    color: var(--card-accent);
+    border-color: var(--clr-border-accent);
+    background: rgba(4, 229, 229, 0.08);
+    transform: translateY(-1px);
+  }
+  .card-share:focus-visible {
+    outline: 2px solid var(--clr-cyan);
+    outline-offset: 2px;
+  }
+  .card-share-icon {
+    width: 14px;
+    height: 14px;
+  }
+  /* Visual feedback when clipboard fallback fires. */
+  .card-share[data-copied='true'] {
+    color: var(--clr-aquamarine);
+    border-color: rgba(111, 255, 214, 0.4);
+    background: rgba(111, 255, 214, 0.08);
+  }
+  .card-share-feedback {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    padding: 4px 8px;
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--clr-text);
+    background: var(--clr-bg-elevated);
+    border: 1px solid var(--clr-border-strong);
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(2px);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+  .card-share[data-copied='true'] .card-share-feedback {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 
 <script>
@@ -186,6 +318,56 @@ const { title, lede, status, repo, icon, featured = false, tags = [], href } = A
       const y = ((event.clientY - rect.top) / rect.height) * 100;
       (card as HTMLElement).style.setProperty('--mx', `${x}%`);
       (card as HTMLElement).style.setProperty('--my', `${y}%`);
+    });
+  });
+
+  // Share button — Web Share API with clipboard fallback.
+  // The shared URL points to /plugins/<slug>/ on this site, which carries
+  // the plugin's banner_image as og:image. So the recipient unfurls the
+  // plugin's specific OG, not the splash default.
+  document.querySelectorAll<HTMLButtonElement>('.card-share').forEach((button) => {
+    button.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const relPath = button.dataset.shareUrl;
+      const title = button.dataset.shareTitle ?? '';
+      const text = button.dataset.shareText ?? '';
+      if (!relPath) return;
+
+      // Resolve to absolute URL so platforms that prefetch get a clean target.
+      const fullUrl = new URL(relPath, window.location.origin).toString();
+
+      const showCopied = (label: string) => {
+        const feedback = button.querySelector('.card-share-feedback');
+        if (feedback) feedback.textContent = label;
+        button.dataset.copied = 'true';
+        window.setTimeout(() => {
+          delete button.dataset.copied;
+        }, 1800);
+      };
+
+      // Prefer the native share sheet when available (mobile + some desktops).
+      if (typeof navigator.share === 'function') {
+        try {
+          await navigator.share({ title, text, url: fullUrl });
+          return;
+        } catch (err) {
+          // AbortError = user dismissed; fall through to clipboard only on
+          // genuine failure.
+          if ((err as DOMException)?.name === 'AbortError') return;
+        }
+      }
+
+      // Clipboard fallback.
+      try {
+        await navigator.clipboard.writeText(fullUrl);
+        showCopied('Link copied');
+      } catch {
+        // Last resort: open the share URL in a new tab so the user can
+        // copy it from the address bar.
+        window.open(fullUrl, '_blank', 'noopener');
+      }
     });
   });
 </script>
