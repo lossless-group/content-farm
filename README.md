@@ -13,7 +13,7 @@ This is an attempt to unify a lot of content generating scripts into one plugin.
 ***
 ![LMStud Yo Plugin for Obsidian by The Lossless Group](https://i.imgur.com/jp2ME1E.png)
 ***
-![Open Graph Fetcher: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/0v6sPkv.png)
+![Metafetch: An Obsidian Community Plugin by The Lossless Group](https://i.imgur.com/0v6sPkv.png)
 ***
 
 ## Features

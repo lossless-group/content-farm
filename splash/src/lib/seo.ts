@@ -6,8 +6,11 @@
  * via the helpers below.
  *
  * Defaults:
- *   - The default OG image is the local seedling-on-stack art at
- *     /ogimage__Content-Farm--Default.png (real dimensions 1408×704).
+ *   - The default OG image is the ImageKit-hosted content-farm banner
+ *     (Image-Gin wide format, 1200×630 webp). Hosting on a remote CDN
+ *     gives reliable unfurls in iMessage / WhatsApp / Slack — local
+ *     /public assets served from GitHub Pages were intermittently
+ *     ignored by those clients.
  *   - Per-plugin pages (changelog/context-v entries with a `from` slug)
  *     resolve to the plugin's `banner_image` from src/content/plugin-highlights/.
  *   - This is a public site (GitHub Pages); default robots is index,follow.
@@ -27,13 +30,24 @@ export const SITE_NAME = 'content-farm';
 export const SITE_TAGLINE =
   "A suite of Obsidian plugins for AI-augmented writing, from The Lossless Group.";
 
-/** Path (relative to /public, base prefix applied at render time). */
-export const DEFAULT_OG_IMAGE = '/ogimage__Content-Farm--Default.png';
-export const DEFAULT_OG_IMAGE_WIDTH = 1408;
-export const DEFAULT_OG_IMAGE_HEIGHT = 704;
-export const DEFAULT_OG_IMAGE_TYPE = 'image/png';
+/**
+ * Absolute URL to the site-wide default OG image (ImageKit CDN).
+ * Remote hosting fixes unfurls in iMessage / WhatsApp / Slack — local
+ * /public assets behind GitHub Pages were unreliable for those clients.
+ *
+ * Note on content-type: the URL ends in .webp, but ImageKit content-
+ * negotiates via `Vary: Accept` and serves image/jpeg to clients that
+ * don't advertise webp support — which is the case for most link
+ * unfurlers. We therefore declare `image/jpeg` so og:image:type matches
+ * the bytes those clients actually receive.
+ */
+export const DEFAULT_OG_IMAGE =
+  'https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_Obsidian-Community-Plugin__banner_image_1777970409758_9W0Tv78oy.webp';
+export const DEFAULT_OG_IMAGE_WIDTH = 1200;
+export const DEFAULT_OG_IMAGE_HEIGHT = 630;
+export const DEFAULT_OG_IMAGE_TYPE = 'image/jpeg';
 export const DEFAULT_OG_IMAGE_ALT =
-  'A seedling sprouting from a tidy stack of paper sheets — content-farm.';
+  'content-farm — a suite of Obsidian community plugins.';
 
 /** Plugin banner_image dimensions (Image-Gin standard wide format). */
 export const PLUGIN_OG_IMAGE_WIDTH = 1200;
