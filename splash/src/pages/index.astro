@@ -100,6 +100,40 @@ const repoUrl = 'https://github.com/lossless-group/content-farm';
             </svg>
             View on GitHub
           </a>
+          <a
+            class="support-callout"
+            href="https://coff.ee/losslessgroup"
+            target="_blank"
+            rel="noopener"
+            aria-label="Support our work on Buy Me a Coffee"
+          >
+            <span class="support-callout-icon" aria-hidden="true">
+              <img src={`${base}favicon__BuyMeACoffee.svg`} alt="" width="22" height="22" />
+            </span>
+            <span class="support-callout-text">
+              Support our work on Buy Me a Coffee.
+              <span class="support-callout-text-quiet">Even $5 gives good signal.</span>
+            </span>
+          </a>
+        </div>
+        <div class="contrib-band">
+          <p>
+            We invite contributors and idea-generators and complainers. At this point, we're
+            vibe-coding (agentic-engineering) all this, too.
+            <a
+              href="https://github.com/orgs/lossless-group/projects/2"
+              target="_blank"
+              rel="noopener"
+              >Submit ideas or look for contributions to make on our project board</a
+            >
+            or
+            <a
+              href="https://github.com/orgs/lossless-group/discussions"
+              target="_blank"
+              rel="noopener"
+              >make discussions</a
+            >, reach out!
+          </p>
         </div>
         <ul class="hero-stats">
           {
@@ -308,6 +342,58 @@ const repoUrl = 'https://github.com/lossless-group/content-farm';
     padding: clamp(4rem, 14vh, 9rem) 0 clamp(3rem, 8vh, 6rem);
     position: relative;
   }
+  /* Support callout — icon-left, text-right. Sits inline in the hero
+     actions row, pushed to the right edge via .hero-actions .support-callout. */
+  .support-callout {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 221, 0, 0.25);
+    background: rgba(255, 221, 0, 0.04);
+    color: var(--clr-text-soft);
+    text-decoration: none;
+    transition:
+      background 200ms ease,
+      border-color 200ms ease,
+      transform 200ms ease;
+    flex: 0 0 auto;
+  }
+  .support-callout:hover {
+    background: rgba(255, 221, 0, 0.08);
+    border-color: rgba(255, 221, 0, 0.45);
+    transform: translateY(-1px);
+    color: var(--clr-text);
+  }
+  .support-callout-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(255, 221, 0, 0.18);
+    flex-shrink: 0;
+  }
+  .support-callout-icon img {
+    display: block;
+  }
+  .support-callout-text {
+    font-size: 0.875rem;
+    line-height: 1.35;
+    max-width: 32ch;
+  }
+  .support-callout-text-quiet {
+    color: var(--clr-text-dim);
+    display: inline;
+  }
+  @media (max-width: 720px) {
+    /* On narrow viewports the actions row wraps; the support callout
+       no longer needs to push right since it stacks below the buttons. */
+    .hero-actions .support-callout {
+      margin-left: 0;
+    }
+  }
   .hero-title {
     margin-top: var(--space-4);
     font-size: clamp(2.5rem, 7vw, 5.25rem);
@@ -326,7 +412,48 @@ const repoUrl = 'https://github.com/lossless-group/content-farm';
     display: flex;
     gap: var(--space-3);
     flex-wrap: wrap;
+    align-items: center;
   }
+  /* Push the support callout to the right edge of the actions row,
+     keeping the two primary buttons left-aligned. */
+  .hero-actions .support-callout {
+    margin-left: auto;
+  }
+  /* Contributor band — thin full-width strip between the actions row and
+     the stats. Uses a 100vw breakout so it spans the viewport even though
+     it's nested inside the .container's max-width. */
+  .contrib-band {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-top: var(--space-12);
+    padding: var(--space-3) var(--space-6);
+    border-top: 1px solid var(--clr-border);
+    border-bottom: 1px solid var(--clr-border);
+    background: linear-gradient(
+      180deg,
+      rgba(4, 229, 229, 0.025),
+      rgba(191, 35, 247, 0.025)
+    );
+    text-align: center;
+  }
+  .contrib-band p {
+    max-width: 90ch;
+    margin: 0 auto;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--clr-text-dim);
+  }
+  .contrib-band a {
+    color: var(--clr-aquamarine);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  .contrib-band a:hover {
+    color: var(--clr-cyan);
+  }
+
   .hero-stats {
     margin-top: var(--space-16);
     display: grid;

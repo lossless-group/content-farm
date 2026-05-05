@@ -1,0 +1,195 @@
+---
+/**
+ * ContentCollectionSelector--Row
+ *
+ * A horizontal row of pill-buttons that filter a sibling list of entries by
+ * a data attribute. Click a pill → only items matching that value remain
+ * visible (everything else gets the native `hidden` attribute). Click "All"
+ * → everything visible again.
+ *
+ * Pure HTML + CSS + vanilla JS per the Astro Knots tech hierarchy. No state
+ * library, no framework. Works without JS too — buttons render, list shows
+ * everything, you just can't interact.
+ *
+ * Usage:
+ *
+ *   <ContentCollectionSelectorRow
+ *     options={[{ value: 'cite-wide', label: 'cite-wide', count: 8 }, ...]}
+ *     targetSelector=".archive-list"
+ *     matchAttribute="data-from"
+ *   />
+ *   <ul class="archive-list">
+ *     <li data-from="cite-wide">…</li>
+ *     <li data-from="content-farm">…</li>
+ *   </ul>
+ */
+
+interface Option {
+  /** The value to match against `matchAttribute` on list items. */
+  value: string;
+  /** Display label on the pill. */
+  label: string;
+  /** Optional count badge (renders next to the label). */
+  count?: number;
+}
+
+interface Props {
+  /** Sources to filter by. An "All" option is prepended automatically. */
+  options: Option[];
+  /** CSS selector for the list element whose children will be filtered. */
+  targetSelector: string;
+  /** Data attribute name (with `data-` prefix) carrying each item's source value. */
+  matchAttribute: string;
+  /** Initial selected value. Defaults to `all`. */
+  defaultValue?: string;
+  /** Aria label for the row of buttons. */
+  label?: string;
+  /** Optional id; useful only if multiple rows exist on the same page. */
+  id?: string;
+}
+
+const {
+  options,
+  targetSelector,
+  matchAttribute,
+  defaultValue = 'all',
+  label = 'Filter by source',
+  id,
+} = Astro.props;
+
+const totalCount = options.reduce((acc, o) => acc + (o.count ?? 0), 0);
+const merged: Option[] = [
+  { value: 'all', label: 'All', count: totalCount > 0 ? totalCount : undefined },
+  ...options,
+];
+---
+
+<nav
+  class="cc-selector"
+  {...(id ? { id } : {})}
+  aria-label={label}
+  data-target-selector={targetSelector}
+  data-match-attribute={matchAttribute}
+>
+  <ul class="cc-selector-list" role="list">
+    {
+      merged.map((opt) => (
+        <li>
+          <button
+            class="cc-selector-btn"
+            type="button"
+            data-cc-value={opt.value}
+            aria-pressed={opt.value === defaultValue ? 'true' : 'false'}
+          >
+            <span class="cc-selector-label">{opt.label}</span>
+            {opt.count != null && <span class="cc-selector-count">{opt.count}</span>}
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .cc-selector {
+    margin-bottom: var(--space-8);
+  }
+  .cc-selector-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .cc-selector-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--clr-border);
+    color: var(--clr-text-soft);
+    font-family: var(--ff-mono);
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 180ms ease,
+      background 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+  .cc-selector-btn:hover {
+    color: var(--clr-text);
+    border-color: var(--clr-border-strong);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .cc-selector-btn:focus-visible {
+    outline: 2px solid var(--clr-cyan);
+    outline-offset: 3px;
+  }
+  .cc-selector-btn[aria-pressed='true'] {
+    color: #0a0a0f;
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    border-color: transparent;
+    font-weight: 600;
+  }
+  .cc-selector-btn[aria-pressed='true']:hover {
+    color: #0a0a0f;
+    transform: translateY(-1px);
+  }
+  .cc-selector-count {
+    display: inline-flex;
+    align-items: center;
+    min-width: 1.25em;
+    justify-content: center;
+    font-size: 0.7rem;
+    opacity: 0.85;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.18);
+  }
+  .cc-selector-btn[aria-pressed='true'] .cc-selector-count {
+    background: rgba(0, 0, 0, 0.22);
+  }
+</style>
+
+<script>
+  // Wires up every ContentCollectionSelector--Row on the page.
+  // Each instance is independent: its target list and match attribute come
+  // from its own data-* attributes, so multiple selectors filtering different
+  // lists can coexist.
+  document.querySelectorAll<HTMLElement>('.cc-selector').forEach((root) => {
+    const targetSelector = root.dataset.targetSelector;
+    const matchAttribute = root.dataset.matchAttribute;
+    if (!targetSelector || !matchAttribute) return;
+
+    const list = document.querySelector(targetSelector);
+    if (!list) return;
+
+    const items = Array.from(list.querySelectorAll<HTMLElement>(`[${matchAttribute}]`));
+
+    root.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement | null;
+      const btn = target?.closest<HTMLButtonElement>('button[data-cc-value]');
+      if (!btn) return;
+
+      const value = btn.dataset.ccValue;
+      if (value === undefined) return;
+
+      // Update aria-pressed state across the row.
+      root.querySelectorAll<HTMLButtonElement>('button[data-cc-value]').forEach((b) => {
+        b.setAttribute('aria-pressed', b.dataset.ccValue === value ? 'true' : 'false');
+      });
+
+      // Filter items via the native `hidden` attribute. Preserves layout
+      // (no display: none flicker) and survives without any extra CSS.
+      items.forEach((item) => {
+        const matches = value === 'all' || item.getAttribute(matchAttribute) === value;
+        item.toggleAttribute('hidden', !matches);
+      });
+    });
+  });
+</script>

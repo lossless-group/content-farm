@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
 
 const base = import.meta.env.BASE_URL;
 
@@ -16,6 +17,24 @@ try {
 } catch {
   entries = [];
 }
+
+// Build the source-filter options from the entries we actually have.
+// content-farm comes first, then plugins alphabetical. Counts shown so
+// readers see at a glance who shipped how much.
+const counts = new Map<string, number>();
+for (const e of entries) {
+  const from = (e.data.from as string | undefined) ?? 'content-farm';
+  counts.set(from, (counts.get(from) ?? 0) + 1);
+}
+
+const filterOptions = [...counts.entries()]
+  .map(([value, count]) => ({ value, label: value, count }))
+  .sort((a, b) => {
+    // content-farm pinned first; everything else alphabetical.
+    if (a.value === 'content-farm') return -1;
+    if (b.value === 'content-farm') return 1;
+    return a.value.localeCompare(b.value);
+  });
 ---
 
 <BaseLayout title="Changelog — content-farm">
@@ -41,12 +60,20 @@ try {
           </p>
         </div>
       ) : (
-        <ul class="archive-list">
-          {entries.map((entry) => {
-            const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
-            return (
-              <li>
-                <a href={`${base}changelog/${entry.id}`}>
+        <>
+          <ContentCollectionSelectorRow
+            options={filterOptions}
+            targetSelector=".archive-list"
+            matchAttribute="data-from"
+            label="Filter changelog by source"
+          />
+          <ul class="archive-list">
+            {entries.map((entry) => {
+              const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+              const from = (entry.data.from as string | undefined) ?? 'content-farm';
+              return (
+                <li data-from={from}>
+                  <a href={`${base}changelog/${entry.id}`}>
                   <div class="archive-meta">
                     {entry.data.from && entry.data.from !== 'content-farm' && (
                       <span class="from-tag mono">{entry.data.from}</span>
@@ -63,13 +90,14 @@ try {
                       <span class="pill mono" title="From a legacy context-v/changelogs/ path">legacy</span>
                     )}
                   </div>
-                  <h2>{entry.data.title ?? entry.id}</h2>
-                  {entry.data.lede && <p>{entry.data.lede}</p>}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+                    <h2>{entry.data.title ?? entry.id}</h2>
+                    {entry.data.lede && <p>{entry.data.lede}</p>}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       )
     }
   </main>

@@ -12,7 +12,7 @@ git add src/rollup
 git commit -m "sync(rollup): refresh from <reason>"
 ```
 
-Last sync: 2026-05-05 — 22 changelog files, 30 context-v files.
+Last sync: 2026-05-05 — 24 changelog files, 30 context-v files.
 
 See `pseudomonorepos/references/content-rollup.md` (skill) for the
 convention this implements.

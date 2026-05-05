@@ -24,10 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Fetch submodules so context-v/ aggregations from plugin-modules
-          # are available at build time. Submodules also expose their own
-          # changelogs/specs if we choose to surface them later.
-          submodules: recursive
+          # No submodules needed — rolled-up content lives in splash/src/rollup/
+          # already, synced manually via `pnpm rollup:sync` and committed to
+          # the repo. Build is pure file IO.
           fetch-depth: 1
 
       - name: Setup pnpm
@@ -47,13 +46,9 @@ jobs:
 
       - name: Build
         run: pnpm build
-        env:
-          # Auth for the rollup loader's GitHub Content API calls.
-          # Raises the rate limit from 60 req/hr (anonymous) to 5000 req/hr.
-          # The default GITHUB_TOKEN is enough — public repo content is
-          # readable regardless of the token's repo scope; we just need an
-          # authenticated identity for the rate limit bucket.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # No GITHUB_TOKEN needed — rolled-up content is pre-synced in
+        # splash/src/rollup/. Run `pnpm rollup:sync` locally and commit
+        # to refresh.
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
