@@ -1,21 +1,23 @@
 [submodule "plugin-modules/lmstud-yo"]
 	path = plugin-modules/lmstud-yo
 	url = https://github.com/lossless-group/lmstud-yo.git
+	branch = development
 [submodule "plugin-modules/obsidian-git"]
 	path = plugin-modules/obsidian-git
 	url = https://github.com/lossless-group/obsidian-git.git
+	branch = development
 [submodule "plugin-modules/cite-wide"]
 	path = plugin-modules/cite-wide
 	url = https://github.com/lossless-group/cite-wide.git
-	branch = main
+	branch = development
 [submodule "plugin-modules/grab-reference"]
 	path = plugin-modules/grab-reference
 	url = https://github.com/lossless-group/grab-reference.git
-	branch = master
+	branch = development
 [submodule "plugin-modules/image-gin"]
 	path = plugin-modules/image-gin
 	url = https://github.com/lossless-group/image-gin.git
-	branch = master
+	branch = development
 [submodule "plugin-modules/perplexed"]
 	path = plugin-modules/perplexed
 	url = https://github.com/lossless-group/perplexed-plugin.git
