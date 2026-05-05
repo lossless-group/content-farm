@@ -13,7 +13,7 @@ square_image: "https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_
 ---
 
 A unified wide-modal interface for image work across multiple providers — Recraft, Ideogram, and Magnific (formerly Freepik). Pick the model, dial temperature, write the prompt, and drop the result straight into your note. Streaming previews, inline placement, and provider-agnostic settings.
-
+ 
 ```yaml
 # Image alt paths
 banner_image: "https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_Obsidian-Community-Plugin__banner_image_1777971039672_tutuZgxHX.webp"
