@@ -1,0 +1,586 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PluginCard from '../components/PluginCard.astro';
+
+const base = import.meta.env.BASE_URL;
+
+// Plugin highlights — sorted by order, alphabetical tiebreak by id (filename).
+const plugins = (await getCollection('plugin-highlights')).sort((a, b) => {
+  const orderA = a.data.order ?? 999;
+  const orderB = b.data.order ?? 999;
+  if (orderA !== orderB) return orderA - orderB;
+  return a.id.localeCompare(b.id);
+});
+
+// Latest changelog entries, if any. Tolerate the empty case — content-farm's
+// changelog/ may be sparse for a while.
+let latestChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+try {
+  const all = await getCollection('changelog');
+  latestChangelog = all
+    .filter((e) => e.data.publish !== false)
+    .sort((a, b) => {
+      const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
+      const dateB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    })
+    .slice(0, 3);
+} catch {
+  latestChangelog = [];
+}
+
+const stats = [
+  { value: '9', label: 'Plugins in the farm' },
+  { value: '1', label: 'Vault, many surfaces' },
+  { value: '∞', label: 'Workflows downstream' },
+];
+
+const philosophyPoints = [
+  {
+    h: 'Built where writing happens.',
+    p: 'Obsidian is where the drafts live. Tooling that asks you to leave the editor loses the moment. Every plugin here lands inside the vault, inside the modal, inside the flow.',
+  },
+  {
+    h: 'Many small tools, one shared shape.',
+    p: 'A unified wide-modal pattern across plugins. Same header, same submit gesture (Cmd/Ctrl+Enter), same temperature slider when temperature is a thing. Fewer surprises, more reuse.',
+  },
+  {
+    h: 'AI as ingredient, not destination.',
+    p: 'Local models via LM Studio. Hosted models via Perplexica, Recraft, Ideogram. The plugin asks; you decide. The note remains the source of truth.',
+  },
+  {
+    h: 'In public, on purpose.',
+    p: "Specs, plans, and chores live in the repo's context-v/. The work and the writing are the same activity. This splash page is one of those artifacts.",
+  },
+];
+
+const repoUrl = 'https://github.com/lossless-group/content-farm';
+---
+
+<BaseLayout title="Content Farm — A suite of Obsidian plugins for AI-augmented writing">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="topbar-brand" href={base}>
+        <span class="topbar-mark" aria-hidden="true">🌾</span>
+        <span class="topbar-name">content-farm</span>
+      </a>
+      <nav class="topbar-nav" aria-label="Primary">
+        <a href="#plugins">Plugins</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href={`${base}changelog`}>Changelog</a>
+        <a href={`${base}context-v`}>Notes</a>
+        <a href={repoUrl} target="_blank" rel="noopener" class="topbar-cta">
+          GitHub →
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <p class="eyebrow">A pseudomonorepo of Obsidian plugins · The Lossless Group</p>
+        <h1 class="hero-title">
+          A small farm of <span class="gradient-text">writing tools.</span>
+        </h1>
+        <p class="hero-lede">
+          Nine Obsidian plugins, one vault, working in chorus. AI-assisted drafting, citations, image
+          generation, search-augmented enhancement, and the connective tissue to keep them all in
+          step.
+        </p>
+        <div class="hero-actions">
+          <a href="#plugins" class="btn btn-primary">Browse the plugins</a>
+          <a href={repoUrl} target="_blank" rel="noopener" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+              ></path>
+            </svg>
+            View on GitHub
+          </a>
+        </div>
+        <ul class="hero-stats">
+          {
+            stats.map((s) => (
+              <li>
+                <span class="hero-stat-value">{s.value}</span>
+                <span class="hero-stat-label">{s.label}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- PLUGIN GALLERY -->
+    <section id="plugins" class="section">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow">What's growing</p>
+          <h2>The plugins</h2>
+          <p class="section-lede">
+            Each plugin is its own repo, included here as a git submodule. Cards link to the source.
+          </p>
+        </header>
+
+        <div class="plugin-grid">
+          {
+            plugins.map((p) => (
+              <div class={p.data.featured ? 'plugin-cell plugin-cell--wide' : 'plugin-cell'}>
+                <PluginCard
+                  title={p.data.title ?? p.id}
+                  lede={p.data.lede}
+                  status={p.data.status}
+                  repo={p.data.repo}
+                  icon={p.data.icon}
+                  featured={p.data.featured}
+                  tags={p.data.tags}
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section id="philosophy" class="section section--alt">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow">Why this exists</p>
+          <h2>A pseudomonorepo, on purpose.</h2>
+          <p class="section-lede">
+            Not a monorepo. Not loose repos. A parent that hosts cross-cutting context so the
+            plugins stay aware of each other.
+          </p>
+        </header>
+
+        <div class="philosophy-grid">
+          {
+            philosophyPoints.map((point) => (
+              <article class="philosophy-card">
+                <h3>{point.h}</h3>
+                <p>{point.p}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- LATEST CHANGELOG -->
+    {
+      latestChangelog.length > 0 && (
+        <section class="section">
+          <div class="container">
+            <header class="section-head">
+              <p class="eyebrow">Latest from the field</p>
+              <h2>Recent ship notes</h2>
+              <p class="section-lede">
+                What we shipped lately, with links back to the spec or blueprint that led to it.
+              </p>
+            </header>
+
+            <ul class="changelog-list">
+              {latestChangelog.map((entry) => {
+                const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+                return (
+                  <li class="changelog-item">
+                    <a href={`${base}changelog/${entry.id}`}>
+                      <div class="changelog-meta">
+                        {date && (
+                          <time class="mono" datetime={new Date(date).toISOString()}>
+                            {new Date(date).toISOString().slice(0, 10)}
+                          </time>
+                        )}
+                        {entry.data.at_semantic_version && (
+                          <span class="pill">{entry.data.at_semantic_version}</span>
+                        )}
+                      </div>
+                      <h3>{entry.data.title ?? entry.id}</h3>
+                      {entry.data.lede && <p>{entry.data.lede}</p>}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div class="section-foot">
+              <a href={`${base}changelog`} class="btn btn-ghost">All ship notes →</a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- CTA / NOTES -->
+    <section class="section section--alt">
+      <div class="container cta-block">
+        <div class="cta-text">
+          <h2>Read the notes.</h2>
+          <p>
+            Specs, plans, chores, blueprints — the thinking that underwrites the code, kept in the
+            repo's <code>context-v/</code>.
+          </p>
+        </div>
+        <div class="cta-actions">
+          <a href={`${base}context-v`} class="btn btn-primary">Browse context-v</a>
+          <a href={`${base}changelog`} class="btn btn-ghost">Changelog →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <p class="mono footer-mark">content-farm</p>
+        <p class="footer-tagline">
+          Built by <a href="https://www.lossless.group" target="_blank" rel="noopener">The Lossless Group</a>.
+          Part of the <a href="https://github.com/lossless-group/lossless-monorepo" target="_blank" rel="noopener">lossless-monorepo</a>.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href={repoUrl} target="_blank" rel="noopener">Source</a>
+        <a href="https://github.com/lossless-group" target="_blank" rel="noopener">Org</a>
+        <a href="https://www.lossless.group/projects/gallery/content-farm" target="_blank" rel="noopener">Gallery</a>
+      </nav>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(10, 10, 15, 0.7);
+    border-bottom: 1px solid var(--clr-border);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding-block: 14px;
+  }
+  .topbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--ff-mono);
+    font-size: 0.95rem;
+    color: var(--clr-text);
+  }
+  .topbar-brand:hover {
+    color: var(--clr-aquamarine);
+  }
+  .topbar-mark {
+    font-size: 1.1rem;
+  }
+  .topbar-nav {
+    display: flex;
+    gap: var(--space-6);
+    align-items: center;
+    font-size: 0.875rem;
+  }
+  .topbar-nav a {
+    color: var(--clr-text-soft);
+  }
+  .topbar-nav a:hover {
+    color: var(--clr-cyan);
+  }
+  .topbar-cta {
+    color: var(--clr-cyan) !important;
+    font-family: var(--ff-mono);
+  }
+  @media (max-width: 720px) {
+    .topbar-nav {
+      display: none;
+    }
+  }
+
+  /* HERO */
+  .hero {
+    padding: clamp(4rem, 14vh, 9rem) 0 clamp(3rem, 8vh, 6rem);
+    position: relative;
+  }
+  .hero-title {
+    margin-top: var(--space-4);
+    font-size: clamp(2.5rem, 7vw, 5.25rem);
+    line-height: 1.02;
+    font-weight: 800;
+    max-width: 18ch;
+  }
+  .hero-lede {
+    margin-top: var(--space-6);
+    max-width: 60ch;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    color: var(--clr-text-soft);
+  }
+  .hero-actions {
+    margin-top: var(--space-8);
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .hero-stats {
+    margin-top: var(--space-16);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-6);
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--clr-border);
+    padding-top: var(--space-6);
+  }
+  .hero-stats li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .hero-stat-value {
+    font-family: var(--ff-mono);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-stat-label {
+    color: var(--clr-text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    color: #0a0a0f;
+    font-weight: 600;
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    color: #0a0a0f;
+    box-shadow: 0 12px 32px rgba(4, 229, 229, 0.35);
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--clr-border-strong);
+    color: var(--clr-text);
+  }
+  .btn-ghost:hover {
+    color: var(--clr-text);
+    border-color: var(--clr-border-accent);
+    background: rgba(4, 229, 229, 0.08);
+  }
+
+  /* SECTION SHELL */
+  .section {
+    padding: clamp(4rem, 9vh, 7rem) 0;
+  }
+  .section--alt {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(17, 17, 26, 0.5) 50%,
+      transparent 100%
+    );
+  }
+  .section-head {
+    max-width: 720px;
+    margin-bottom: var(--space-12);
+  }
+  .section-head h2 {
+    margin-top: var(--space-3);
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+  .section-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+    max-width: 60ch;
+  }
+  .section-foot {
+    margin-top: var(--space-8);
+  }
+
+  /* PLUGIN GRID — asymmetric: featured wide, others narrow */
+  .plugin-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-4);
+  }
+  .plugin-cell {
+    grid-column: span 3;
+    display: flex;
+  }
+  .plugin-cell--wide {
+    grid-column: span 6;
+  }
+  .plugin-cell > :global(.card) {
+    width: 100%;
+  }
+  @media (min-width: 900px) {
+    .plugin-cell--wide {
+      grid-column: span 4;
+    }
+    .plugin-cell {
+      grid-column: span 2;
+    }
+  }
+  @media (max-width: 640px) {
+    .plugin-grid {
+      grid-template-columns: 1fr;
+    }
+    .plugin-cell,
+    .plugin-cell--wide {
+      grid-column: span 1;
+    }
+  }
+
+  /* PHILOSOPHY */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-6);
+  }
+  .philosophy-card {
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .philosophy-card h3 {
+    font-size: 1.05rem;
+    color: var(--clr-aquamarine);
+    margin-bottom: var(--space-3);
+  }
+  .philosophy-card p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* CHANGELOG TEASER */
+  .changelog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .changelog-item a {
+    display: block;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .changelog-item a:hover {
+    border-color: var(--clr-border-accent);
+    color: var(--clr-text);
+    transform: translateY(-2px);
+  }
+  .changelog-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    margin-bottom: var(--space-2);
+    color: var(--clr-text-dim);
+    font-size: 0.8rem;
+  }
+  .changelog-item h3 {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-2);
+  }
+  .changelog-item p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+  }
+
+  /* CTA */
+  .cta-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+    padding: var(--space-12);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--clr-border);
+    background: linear-gradient(
+      135deg,
+      rgba(4, 229, 229, 0.08),
+      rgba(191, 35, 247, 0.05)
+    );
+  }
+  .cta-text h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+  .cta-text p {
+    margin-top: var(--space-3);
+    color: var(--clr-text-soft);
+    max-width: 50ch;
+  }
+  .cta-text code {
+    font-family: var(--ff-mono);
+    background: rgba(4, 229, 229, 0.1);
+    color: var(--clr-cyan);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+  .cta-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: var(--space-12) 0 var(--space-16);
+    border-top: 1px solid var(--clr-border);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+  .footer-mark {
+    font-size: 1rem;
+    margin-bottom: var(--space-2);
+  }
+  .footer-tagline {
+    color: var(--clr-text-dim);
+    font-size: 0.875rem;
+    max-width: 50ch;
+  }
+  .footer-nav {
+    display: flex;
+    gap: var(--space-6);
+    align-items: flex-start;
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+try {
+  entries = (await getCollection('changelog'))
+    .filter((e) => e.data.publish !== false)
+    .sort((a, b) => {
+      const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
+      const dateB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    });
+} catch {
+  entries = [];
+}
+---
+
+<BaseLayout title="Changelog — content-farm">
+  <main class="container archive">
+    <header class="archive-head">
+      <p class="eyebrow">Ship log</p>
+      <h1>Changelog</h1>
+      <p class="archive-lede">
+        What landed, and when. Each entry links back to the spec or blueprint that asked for it.
+      </p>
+      <p class="archive-back">
+        <a href={base}>← Back to splash</a>
+      </p>
+    </header>
+
+    {
+      entries.length === 0 ? (
+        <div class="archive-empty">
+          <p>No published ship notes yet.</p>
+          <p class="dim">
+            content-farm's <code>changelog/</code> directory is empty or all entries are marked
+            <code>publish: false</code>. Check back after the next ship.
+          </p>
+        </div>
+      ) : (
+        <ul class="archive-list">
+          {entries.map((entry) => {
+            const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+            return (
+              <li>
+                <a href={`${base}changelog/${entry.id}`}>
+                  <div class="archive-meta">
+                    {date && (
+                      <time class="mono" datetime={new Date(date).toISOString()}>
+                        {new Date(date).toISOString().slice(0, 10)}
+                      </time>
+                    )}
+                    {entry.data.at_semantic_version && (
+                      <span class="pill">{entry.data.at_semantic_version}</span>
+                    )}
+                  </div>
+                  <h2>{entry.data.title ?? entry.id}</h2>
+                  {entry.data.lede && <p>{entry.data.lede}</p>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .archive {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .archive-head {
+    margin-bottom: var(--space-12);
+    max-width: 720px;
+  }
+  .archive-head h1 {
+    margin-top: var(--space-3);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  .archive-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+  }
+  .archive-back {
+    margin-top: var(--space-6);
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+  }
+  .archive-empty {
+    padding: var(--space-12);
+    border: 1px dashed var(--clr-border-strong);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--clr-text-soft);
+  }
+  .archive-empty .dim {
+    color: var(--clr-text-dim);
+    margin-top: var(--space-3);
+    font-size: 0.9rem;
+  }
+  .archive-empty code {
+    font-family: var(--ff-mono);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--clr-cyan);
+  }
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .archive-list a {
+    display: block;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .archive-list a:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+    color: var(--clr-text);
+  }
+  .archive-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    color: var(--clr-text-dim);
+    font-size: 0.8rem;
+    margin-bottom: var(--space-2);
+  }
+  .archive-list h2 {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-2);
+  }
+  .archive-list p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+  }
+</style>

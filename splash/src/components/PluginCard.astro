@@ -1,0 +1,191 @@
+---
+interface Props {
+  title: string;
+  lede?: string;
+  status?: string;
+  repo?: string;
+  icon?: string;
+  featured?: boolean;
+  tags?: string[];
+  href?: string;
+}
+
+const { title, lede, status, repo, icon, featured = false, tags = [], href } = Astro.props;
+---
+
+<article class={`card ${featured ? 'card--featured' : ''}`}>
+  <a class="card-link" href={href ?? repo ?? '#'} target={href ? '_self' : '_blank'} rel={href ? '' : 'noopener'}>
+    <div class="card-inner">
+      <header class="card-head">
+        {icon && <div class="card-icon" aria-hidden="true">{icon}</div>}
+        <div class="card-title-block">
+          <h3 class="card-title">{title}</h3>
+          {status && <span class="pill" data-status={status}>{status}</span>}
+        </div>
+      </header>
+      {lede && <p class="card-lede">{lede}</p>}
+      <slot />
+      <footer class="card-foot">
+        {tags.length > 0 && (
+          <div class="card-tags">
+            {tags.map((t) => <span class="card-tag">{t}</span>)}
+          </div>
+        )}
+        <span class="card-cta" aria-hidden="true">→</span>
+      </footer>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    --card-accent: var(--clr-cyan);
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: var(--clr-bg-card);
+    border: 1px solid var(--clr-border);
+    backdrop-filter: blur(8px);
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      400px circle at var(--mx, 50%) var(--my, 0%),
+      rgba(4, 229, 229, 0.08),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 200ms ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--clr-border-accent);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), var(--shadow-glow-cyan);
+  }
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card--featured {
+    --card-accent: var(--clr-aquamarine);
+    background: linear-gradient(
+      135deg,
+      rgba(4, 229, 229, 0.06),
+      rgba(191, 35, 247, 0.06)
+    ),
+    var(--clr-bg-card);
+  }
+
+  .card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+  }
+  .card-link:hover {
+    color: inherit;
+  }
+
+  .card-inner {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    height: 100%;
+  }
+
+  .card-head {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .card-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--clr-border);
+  }
+  .card-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+  .card-title {
+    font-size: 1.25rem;
+    font-family: var(--ff-mono);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--clr-text);
+  }
+  .card--featured .card-title {
+    font-size: 1.5rem;
+  }
+
+  .card-lede {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+
+  .card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--clr-border);
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .card-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--clr-text-dim);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .card-cta {
+    color: var(--card-accent);
+    font-size: 1.5rem;
+    transition: transform 220ms ease;
+  }
+  .card:hover .card-cta {
+    transform: translateX(4px);
+  }
+</style>
+
+<script>
+  // Pointer tracking for the radial highlight on hover. Vanilla JS, no deps.
+  document.querySelectorAll('.card').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const event = e as PointerEvent;
+      const rect = (card as HTMLElement).getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      (card as HTMLElement).style.setProperty('--mx', `${x}%`);
+      (card as HTMLElement).style.setProperty('--my', `${y}%`);
+    });
+  });
+</script>

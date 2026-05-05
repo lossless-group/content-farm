@@ -1,0 +1,199 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+let entries: Awaited<ReturnType<typeof getCollection<'context-v'>>> = [];
+try {
+  entries = (await getCollection('context-v')).filter((e) => e.data.publish !== false);
+} catch {
+  entries = [];
+}
+
+// Group by top-level directory under context-v/ (specs, plans, chores, blueprints, etc.).
+// Files at the root of context-v/ are grouped under "general".
+type Group = { key: string; label: string; entries: typeof entries };
+
+const groupMap = new Map<string, typeof entries>();
+for (const e of entries) {
+  const segments = e.id.split('/');
+  const key = segments.length > 1 ? segments[0] : 'general';
+  if (!groupMap.has(key)) groupMap.set(key, []);
+  groupMap.get(key)!.push(e);
+}
+
+// Stable section order — common types first, anything else after, alphabetical fallback.
+const sectionOrder = ['specs', 'blueprints', 'plans', 'prompts', 'chores', 'reminders', 'explorations', 'issues', 'habits', 'general'];
+const groups: Group[] = [...groupMap.entries()]
+  .map(([key, es]) => ({
+    key,
+    label: key.charAt(0).toUpperCase() + key.slice(1).replace(/-/g, ' '),
+    entries: es.sort((a, b) => (a.data.title ?? a.id).localeCompare(b.data.title ?? b.id)),
+  }))
+  .sort((a, b) => {
+    const ai = sectionOrder.indexOf(a.key);
+    const bi = sectionOrder.indexOf(b.key);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.key.localeCompare(b.key);
+  });
+---
+
+<BaseLayout title="Notes (context-v) — content-farm">
+  <main class="container archive">
+    <header class="archive-head">
+      <p class="eyebrow">The thinking</p>
+      <h1>Notes</h1>
+      <p class="archive-lede">
+        Specs, plans, blueprints, chores. Living documentation that underwrites the code, kept in
+        the repo's <code>context-v/</code> and rendered here when marked publishable.
+      </p>
+      <p class="archive-back">
+        <a href={base}>← Back to splash</a>
+      </p>
+    </header>
+
+    {
+      groups.length === 0 ? (
+        <div class="archive-empty">
+          <p>No published notes yet.</p>
+          <p class="dim">
+            Drop files into <code>content-farm/context-v/</code>, mark them <code>publish: true</code>
+            (or omit the field), and they'll appear here on the next deploy.
+          </p>
+        </div>
+      ) : (
+        <div class="groups">
+          {groups.map((g) => (
+            <section class="group">
+              <h2 class="group-label">{g.label}</h2>
+              <ul class="group-list">
+                {g.entries.map((entry) => (
+                  <li>
+                    <a href={`${base}context-v/${entry.id}`}>
+                      <h3>{entry.data.title ?? entry.id.split('/').pop()}</h3>
+                      {entry.data.lede && <p>{entry.data.lede}</p>}
+                      {!entry.data.lede && entry.data.description && <p>{entry.data.description}</p>}
+                      <div class="group-meta">
+                        {entry.data.status && <span class="pill" data-status={entry.data.status}>{entry.data.status}</span>}
+                        {entry.data.semantic_version && <span class="mono dim">v{entry.data.semantic_version}</span>}
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .archive {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .archive-head {
+    margin-bottom: var(--space-12);
+    max-width: 720px;
+  }
+  .archive-head h1 {
+    margin-top: var(--space-3);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  .archive-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+  }
+  .archive-lede code {
+    font-family: var(--ff-mono);
+    background: rgba(4, 229, 229, 0.1);
+    color: var(--clr-cyan);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .archive-back {
+    margin-top: var(--space-6);
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+  }
+  .archive-empty {
+    padding: var(--space-12);
+    border: 1px dashed var(--clr-border-strong);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--clr-text-soft);
+  }
+  .archive-empty .dim {
+    color: var(--clr-text-dim);
+    margin-top: var(--space-3);
+    font-size: 0.9rem;
+  }
+  .archive-empty code {
+    font-family: var(--ff-mono);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--clr-cyan);
+  }
+
+  .groups {
+    display: grid;
+    gap: var(--space-12);
+  }
+  .group-label {
+    font-size: 0.9rem;
+    font-family: var(--ff-mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--clr-aquamarine);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--clr-border);
+  }
+  .group-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-3);
+  }
+  .group-list a {
+    display: block;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    height: 100%;
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .group-list a:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+    color: var(--clr-text);
+  }
+  .group-list h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-2);
+    color: var(--clr-text);
+  }
+  .group-list p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-3);
+  }
+  .group-meta {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .dim { color: var(--clr-text-dim); }
+</style>

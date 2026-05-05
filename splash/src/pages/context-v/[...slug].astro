@@ -1,0 +1,168 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  let entries: Awaited<ReturnType<typeof getCollection<'context-v'>>> = [];
+  try {
+    entries = (await getCollection('context-v')).filter((e) => e.data.publish !== false);
+  } catch {
+    entries = [];
+  }
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const date = entry.data.date_modified ?? entry.data.date_updated ?? entry.data.date_created;
+const base = import.meta.env.BASE_URL;
+const sectionLabel = entry.id.includes('/') ? entry.id.split('/')[0] : 'general';
+---
+
+<BaseLayout title={`${entry.data.title ?? entry.id} — context-v`}>
+  <main class="container reading">
+    <p class="reading-back">
+      <a href={`${base}context-v`}>← All notes</a>
+    </p>
+
+    <article>
+      <header class="reading-head">
+        <p class="reading-section">{sectionLabel}</p>
+        <h1>{entry.data.title ?? entry.id.split('/').pop()}</h1>
+        {entry.data.lede && <p class="reading-lede">{entry.data.lede}</p>}
+        {!entry.data.lede && entry.data.description && <p class="reading-lede">{entry.data.description}</p>}
+        <div class="reading-meta">
+          {entry.data.status && <span class="pill" data-status={entry.data.status}>{entry.data.status}</span>}
+          {entry.data.semantic_version && <span class="pill mono">v{entry.data.semantic_version}</span>}
+          {date && (
+            <time class="mono dim" datetime={new Date(date).toISOString()}>
+              {new Date(date).toISOString().slice(0, 10)}
+            </time>
+          )}
+        </div>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .prose {
+    max-width: 70ch;
+    margin: 0 auto;
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    color: var(--clr-text);
+    margin-top: 2.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose h1 { font-size: 2rem; }
+  .prose h2 { font-size: 1.5rem; }
+  .prose h3 { font-size: 1.2rem; }
+  .prose p { margin: 1em 0; }
+  .prose ul, .prose ol { padding-left: 1.5em; margin: 1em 0; }
+  .prose li { margin: 0.4em 0; }
+  .prose a { color: var(--clr-cyan); text-decoration: underline; text-underline-offset: 3px; }
+  .prose a:hover { color: var(--clr-aquamarine); }
+  .prose code {
+    font-family: var(--ff-mono);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--clr-aquamarine);
+  }
+  .prose pre {
+    background: var(--clr-bg-soft);
+    border: 1px solid var(--clr-border);
+    padding: 1.25em;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+  .prose pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--clr-text-soft);
+  }
+  .prose blockquote {
+    margin: 1.5em 0;
+    padding-left: 1.25em;
+    border-left: 3px solid var(--clr-border-accent);
+    color: var(--clr-text-dim);
+    font-style: italic;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--clr-border);
+    margin: 3em 0;
+  }
+  .prose img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+  }
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+  }
+  .prose th, .prose td {
+    padding: 0.5em 0.75em;
+    border-bottom: 1px solid var(--clr-border);
+    text-align: left;
+  }
+  .prose th { color: var(--clr-text); font-weight: 600; }
+</style>
+
+<style>
+  .reading {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .reading-back {
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-8);
+  }
+  .reading-head {
+    max-width: 70ch;
+    margin: 0 auto var(--space-12);
+  }
+  .reading-section {
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--clr-aquamarine);
+    margin-bottom: var(--space-3);
+  }
+  .reading-head h1 {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.1;
+  }
+  .reading-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+  .reading-meta {
+    margin-top: var(--space-6);
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .dim { color: var(--clr-text-dim); }
+</style>

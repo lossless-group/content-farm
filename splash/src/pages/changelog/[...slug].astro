@@ -1,0 +1,148 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+  try {
+    entries = await getCollection('changelog');
+  } catch {
+    entries = [];
+  }
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={`${entry.data.title ?? entry.id} — content-farm changelog`}>
+  <main class="container reading">
+    <p class="reading-back">
+      <a href={`${base}changelog`}>← All ship notes</a>
+    </p>
+
+    <article>
+      <header class="reading-head">
+        <div class="reading-meta">
+          {date && (
+            <time class="mono" datetime={new Date(date).toISOString()}>
+              {new Date(date).toISOString().slice(0, 10)}
+            </time>
+          )}
+          {entry.data.at_semantic_version && (
+            <span class="pill">{entry.data.at_semantic_version}</span>
+          )}
+          {entry.data.status && <span class="pill" data-status={entry.data.status}>{entry.data.status}</span>}
+        </div>
+        <h1>{entry.data.title ?? entry.id}</h1>
+        {entry.data.lede && <p class="reading-lede">{entry.data.lede}</p>}
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  .prose {
+    max-width: 70ch;
+    margin: 0 auto;
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    color: var(--clr-text);
+    margin-top: 2.5em;
+    margin-bottom: 0.5em;
+  }
+  .prose h1 { font-size: 2rem; }
+  .prose h2 { font-size: 1.5rem; }
+  .prose h3 { font-size: 1.2rem; }
+  .prose p { margin: 1em 0; }
+  .prose ul, .prose ol { padding-left: 1.5em; margin: 1em 0; }
+  .prose li { margin: 0.4em 0; }
+  .prose a { color: var(--clr-cyan); text-decoration: underline; text-underline-offset: 3px; }
+  .prose a:hover { color: var(--clr-aquamarine); }
+  .prose code {
+    font-family: var(--ff-mono);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: var(--clr-aquamarine);
+  }
+  .prose pre {
+    background: var(--clr-bg-soft);
+    border: 1px solid var(--clr-border);
+    padding: 1.25em;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+  .prose pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--clr-text-soft);
+  }
+  .prose blockquote {
+    margin: 1.5em 0;
+    padding-left: 1.25em;
+    border-left: 3px solid var(--clr-border-accent);
+    color: var(--clr-text-dim);
+    font-style: italic;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--clr-border);
+    margin: 3em 0;
+  }
+  .prose img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+  }
+</style>
+
+<style>
+  .reading {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .reading-back {
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-8);
+  }
+  .reading-head {
+    max-width: 70ch;
+    margin: 0 auto var(--space-12);
+  }
+  .reading-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    color: var(--clr-text-dim);
+    font-size: 0.85rem;
+    margin-bottom: var(--space-4);
+  }
+  .reading-head h1 {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.1;
+  }
+  .reading-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+</style>
