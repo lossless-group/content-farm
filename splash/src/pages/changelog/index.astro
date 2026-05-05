@@ -48,6 +48,9 @@ try {
               <li>
                 <a href={`${base}changelog/${entry.id}`}>
                   <div class="archive-meta">
+                    {entry.data.from && entry.data.from !== 'content-farm' && (
+                      <span class="from-tag mono">{entry.data.from}</span>
+                    )}
                     {date && (
                       <time class="mono" datetime={new Date(date).toISOString()}>
                         {new Date(date).toISOString().slice(0, 10)}
@@ -55,6 +58,9 @@ try {
                     )}
                     {entry.data.at_semantic_version && (
                       <span class="pill">{entry.data.at_semantic_version}</span>
+                    )}
+                    {entry.data.legacy && (
+                      <span class="pill mono" title="From a legacy context-v/changelogs/ path">legacy</span>
                     )}
                   </div>
                   <h2>{entry.data.title ?? entry.id}</h2>

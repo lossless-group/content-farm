@@ -47,6 +47,13 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # Auth for the rollup loader's GitHub Content API calls.
+          # Raises the rate limit from 60 req/hr (anonymous) to 5000 req/hr.
+          # The default GITHUB_TOKEN is enough — public repo content is
+          # readable regardless of the token's repo scope; we just need an
+          # authenticated identity for the rate limit bucket.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

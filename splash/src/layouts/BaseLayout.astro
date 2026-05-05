@@ -250,4 +250,23 @@ const base = import.meta.env.BASE_URL;
     border-color: rgba(124, 92, 255, 0.45);
     background: rgba(124, 92, 255, 0.08);
   }
+
+  .from-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--clr-aquamarine);
+    background: rgba(111, 255, 214, 0.08);
+    border: 1px solid rgba(111, 255, 214, 0.25);
+  }
+  .from-tag::before {
+    content: '◆';
+    font-size: 0.6rem;
+    opacity: 0.8;
+  }
 </style>

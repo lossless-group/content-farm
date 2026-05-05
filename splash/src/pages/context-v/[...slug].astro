@@ -19,7 +19,10 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const date = entry.data.date_modified ?? entry.data.date_updated ?? entry.data.date_created;
 const base = import.meta.env.BASE_URL;
-const sectionLabel = entry.id.includes('/') ? entry.id.split('/')[0] : 'general';
+// Section is the second path segment (first is provenance). Root-level files
+// fall back to "general".
+const segments = entry.id.split('/');
+const sectionLabel = segments.length > 2 ? segments[1] : 'general';
 ---
 
 <BaseLayout title={`${entry.data.title ?? entry.id} — context-v`}>
@@ -34,7 +37,11 @@ const sectionLabel = entry.id.includes('/') ? entry.id.split('/')[0] : 'general'
         <h1>{entry.data.title ?? entry.id.split('/').pop()}</h1>
         {entry.data.lede && <p class="reading-lede">{entry.data.lede}</p>}
         {!entry.data.lede && entry.data.description && <p class="reading-lede">{entry.data.description}</p>}
+        {!entry.data.lede && !entry.data.description && entry.data.purpose && <p class="reading-lede">{entry.data.purpose}</p>}
         <div class="reading-meta">
+          {entry.data.from && entry.data.from !== 'content-farm' && (
+            <span class="from-tag">{entry.data.from}</span>
+          )}
           {entry.data.status && <span class="pill" data-status={entry.data.status}>{entry.data.status}</span>}
           {entry.data.semantic_version && <span class="pill mono">v{entry.data.semantic_version}</span>}
           {date && (

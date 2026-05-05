@@ -30,6 +30,9 @@ const base = import.meta.env.BASE_URL;
     <article>
       <header class="reading-head">
         <div class="reading-meta">
+          {entry.data.from && entry.data.from !== 'content-farm' && (
+            <span class="from-tag">{entry.data.from}</span>
+          )}
           {date && (
             <time class="mono" datetime={new Date(date).toISOString()}>
               {new Date(date).toISOString().slice(0, 10)}
@@ -39,6 +42,9 @@ const base = import.meta.env.BASE_URL;
             <span class="pill">{entry.data.at_semantic_version}</span>
           )}
           {entry.data.status && <span class="pill" data-status={entry.data.status}>{entry.data.status}</span>}
+          {entry.data.legacy && (
+            <span class="pill mono" title="From a legacy context-v/changelogs/ path">legacy</span>
+          )}
         </div>
         <h1>{entry.data.title ?? entry.id}</h1>
         {entry.data.lede && <p class="reading-lede">{entry.data.lede}</p>}
