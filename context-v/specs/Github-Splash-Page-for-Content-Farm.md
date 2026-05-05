@@ -87,9 +87,9 @@ content-farm/
 
 ## Follow-ups (for future phases)
 
+- **Content roll-up from submodules** (priority). The `/changelog` and `/context-v` listings currently surface only content-farm's own files. The intent is to roll up each plugin submodule's `changelog/` and `context-v/` into the same feeds via the GitHub Content API at build time, with provenance on each card so a reader can filter to a specific plugin. Authenticated calls keyed off `.gitmodules` (`url =` → `{owner}/{repo}`, `branch =` → `ref`). Token from `GITHUB_TOKEN` in CI, a local PAT in dev. See `pseudomonorepos/references/content-rollup.md` for the loader sketch and failure modes.
 - **LFM integration.** Add `@lossless-group/lfm` as a dep and wire the renderer for `.prose` content. Once the `lfm` skill ships, follow that for component-trigger syntax.
-- **Plugin-modules pages.** Optional: per-plugin detail page that aggregates the plugin's own README + changelog (read from the submodule directory). Out of scope for Phase 1.
+- **Plugin-modules pages.** Optional: per-plugin detail page that aggregates the plugin's own README + changelog (read from the submodule directory). Subsumed by roll-up if we also expose `/changelog?from=<plugin>` filters.
 - **OG image generation.** Static OG card generated at build time per-page. Currently only the global one is emitted.
-- **Changelog seeding.** content-farm has no `changelog/` directory yet. The list page renders an empty state until one exists.
 - **Refactor candidate.** This is the second instance of the splash pattern (memopop-site is the first). When a third repo wants the same thing, generalize a template — likely as an `astro-knots/sites/` stub or a CLI scaffold.
 
