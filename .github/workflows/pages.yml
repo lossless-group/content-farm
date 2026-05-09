@@ -42,7 +42,11 @@ jobs:
           cache-dependency-path: splash/pnpm-lock.yaml
 
       - name: Install
-        run: pnpm install --frozen-lockfile=false
+        # --ignore-workspace because the parent content-farm/pnpm-workspace.yaml
+        # would otherwise pull pnpm up to the repo root and skip installing
+        # splash's deps in splash/node_modules. Matches the lfm and astro-knots
+        # splash workflows.
+        run: pnpm install --frozen-lockfile=false --ignore-workspace
 
       - name: Build
         run: pnpm build
