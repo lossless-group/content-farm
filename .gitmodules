@@ -37,3 +37,6 @@
 [submodule "plugin-modules/metafetch"]
 	path = plugin-modules/metafetch
 	url = https://github.com/lossless-group/metafetch.git
+[submodule "plugin-modules/obsidian-textgenerator-plugin"]
+	path = plugin-modules/obsidian-textgenerator-plugin
+	url = https://github.com/nhaouari/obsidian-textgenerator-plugin.git
