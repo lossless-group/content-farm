@@ -1,0 +1,736 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const plugin = await getEntry('plugin-highlights', 'perplexed');
+
+const banner = typeof plugin?.data.banner_image === 'string' ? plugin.data.banner_image : undefined;
+const title = plugin?.data.title ?? 'perplexed';
+const lede = plugin?.data.lede;
+const repo = plugin?.data.repo ?? 'https://github.com/lossless-group/perplexed-plugin';
+const status = plugin?.data.status;
+
+// Recent ship notes from this plugin.
+let pluginChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+try {
+  pluginChangelog = (await getCollection('changelog'))
+    .filter((e) => e.data.from === 'perplexed' && e.data.publish !== false)
+    .sort((a, b) => {
+      const da = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
+      const db = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      return new Date(db).getTime() - new Date(da).getTime();
+    })
+    .slice(0, 5);
+} catch {
+  pluginChangelog = [];
+}
+
+// Four headline features. Each shows what the user is trying to do, the
+// command they reach for, and what comes back. The "clever" framing is that
+// every feature is described as a command-palette interaction — what you'd
+// type if your vault could research.
+const cores = [
+  {
+    name: 'Directory templates',
+    eyebrow: 'The headline feature',
+    lede: 'Fill empty profile files with researched content. One template per directory describes the entry shape; the plugin applies it across one file or a whole folder.',
+    accent: 'cyan',
+    commands: [
+      { palette: 'Apply directory template to current file', kind: 'editor' },
+      { palette: 'Apply directory template to folder', kind: 'batch' },
+      { palette: 'Stop directory template batch', kind: 'control' },
+    ],
+    bullets: [
+      'Streams to the file as Perplexity returns chunks — failures surface in seconds, not minutes.',
+      '[IMAGE N: …] markers swap to real embeds; fallback # Images section if the model misses.',
+      '# Sources footer in the canonical [N]: [Title](URL) form cite-wide accepts.',
+      'cf_last_run + cf_last_run_model stamped to frontmatter so you can query for staleness.',
+    ],
+  },
+  {
+    name: 'One-page article',
+    eyebrow: 'Quick research',
+    lede: 'Type a term, get a 600–800 word researched article streaming into the active note. Citations included. Optional image embedding.',
+    accent: 'magenta',
+    commands: [
+      { palette: 'Generate one-page article', kind: 'modal' },
+    ],
+    bullets: [
+      'sonar-pro by default; sonar-deep-research available with a compatibility warning.',
+      'Recency filter (day / week / month / year) when you need fresh-only sources.',
+      'Toggleable: citations, images, related questions, streaming.',
+    ],
+  },
+  {
+    name: 'Selection enhancement',
+    eyebrow: 'Improve a passage',
+    lede: 'Highlight prose, run a command, get a streaming rewrite that blends your selection with live web context. With or without inline imagery.',
+    accent: 'aqua',
+    commands: [
+      { palette: 'Enhance selected text with Perplexity', kind: 'editor' },
+      { palette: 'Enhance text with images', kind: 'editor' },
+    ],
+    bullets: [
+      'Citations woven inline, not appended as a footer.',
+      'The image variant pulls related visuals alongside the text rewrite.',
+    ],
+  },
+  {
+    name: 'Find images for selection',
+    eyebrow: 'Anchor visuals to prose',
+    lede: 'Highlight a passage, ask Perplexity for screenshots that visually illustrate it. Restricted to the entity\'s domain (frontmatter url) — no third-party stock imagery sneaking in.',
+    accent: 'cyan',
+    commands: [
+      { palette: 'Find images for selection', kind: 'editor' },
+    ],
+    bullets: [
+      'Splits selection into numbered paragraphs, distributes images across paragraph boundaries.',
+      'Strict client-side rejection of off-domain images — better to surface "none found" than to insert noise.',
+      'Falls back to even distribution when the model emits no placement markers.',
+    ],
+  },
+] as const;
+
+// The four shipped templates that get auto-deployed to the user's vault on
+// first plugin load. Listed here for at-a-glance discovery.
+const templates = [
+  {
+    file: 'concept-profile.md',
+    targets: 'concepts/**',
+    use: 'Encyclopedia entries on ideas, patterns, mental models. Anti-incumbent editorial stance baked in.',
+  },
+  {
+    file: 'vocabulary-profile.md',
+    targets: 'Vocabulary/**',
+    use: 'Term definitions with disambiguation through an innovation-consulting lens.',
+  },
+  {
+    file: 'source-profile.md',
+    targets: 'Sources/**',
+    use: 'Profiles of trusted sources — books, people, channels, magazines, journals, reports, events. Type-aware emphasis.',
+  },
+  {
+    file: 'toolkit-profile.md',
+    targets: 'Tooling/**',
+    use: 'Profiles of tools, products, platforms, frameworks.',
+  },
+] as const;
+
+// Direct-query commands grouped under one heading. Less headline, more
+// reference — every model surface gets a Cmd-P entry for ad-hoc questions.
+const directQueryCommands = [
+  { palette: 'Ask Perplexity', desc: 'One-shot research question, streaming response.' },
+  { palette: 'Ask Perplexica', desc: 'Local-first search-augmented LLM via your Perplexica instance.' },
+  { palette: 'Ask Claude', desc: 'Claude API direct.' },
+  { palette: 'Ask LM Studio', desc: 'Whatever model you have loaded locally in LM Studio.' },
+];
+---
+
+<BaseLayout
+  title={`${title} — directory templates and search-augmented enhancement`}
+  description={lede ?? 'Perplexed — the search-augmented Obsidian plugin from content-farm.'}
+  ogImage={banner}
+  ogType="article"
+>
+  <main class="container perplexed-page">
+    <p class="back">
+      <a href={base}>← All plugins</a>
+    </p>
+
+    <header class="perplexed-head">
+      <div class="head-row">
+        <div class="head-icon" aria-hidden="true">🔍</div>
+        <div class="head-title-block">
+          <h1>{title}</h1>
+          <div class="head-meta">
+            {status && <span class="pill" data-status={status}>{status}</span>}
+            <span class="card-tag">Search</span>
+            <span class="card-tag">AI</span>
+            <span class="card-tag">Directory templates</span>
+          </div>
+        </div>
+      </div>
+      <p class="head-lede">
+        Your vault, on a search engine. <span class="muted">Type into the command palette what you wish your notes could do.</span>
+      </p>
+      <p class="head-actions">
+        <a href={repo} target="_blank" rel="noopener" class="btn btn-primary">View on GitHub →</a>
+        <a href={`${base}changelog`} class="btn btn-ghost">Changelog</a>
+      </p>
+    </header>
+
+    {banner && (
+      <figure class="perplexed-banner">
+        <img src={banner} alt={`${title} — banner`} loading="lazy" decoding="async" />
+      </figure>
+    )}
+
+    <!-- Cmd-P teaser: a stylized command palette mock that says "this is what
+         using perplexed feels like". -->
+    <section class="palette-teaser" aria-label="Command palette teaser">
+      <div class="palette-window">
+        <div class="palette-bar">
+          <span class="palette-prompt">⌘P</span>
+          <span class="palette-cursor">apply directory template</span>
+        </div>
+        <ul class="palette-results">
+          <li><span class="palette-key">↵</span><span>Apply directory template to current file</span><em>perplexed</em></li>
+          <li><span class="palette-key">↵</span><span>Apply directory template to folder</span><em>perplexed</em></li>
+          <li><span class="palette-key">↵</span><span>Generate one-page article</span><em>perplexed</em></li>
+          <li><span class="palette-key">↵</span><span>Find images for selection</span><em>perplexed</em></li>
+          <li><span class="palette-key">↵</span><span>Enhance selected text with Perplexity</span><em>perplexed</em></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Four core features as cards, each tied to its command(s). -->
+    <section class="cores">
+      <header class="section-head">
+        <p class="eyebrow">The four cores</p>
+        <h2>What you reach for</h2>
+      </header>
+      <div class="cores-grid">
+        {cores.map((c) => (
+          <article class={`core core--${c.accent}`}>
+            <p class="core-eyebrow">{c.eyebrow}</p>
+            <h3>{c.name}</h3>
+            <p class="core-lede">{c.lede}</p>
+            <ul class="core-commands">
+              {c.commands.map((cmd) => (
+                <li>
+                  <span class="kbd-block">⌘P</span>
+                  <span class="kbd-cmd">{cmd.palette}</span>
+                </li>
+              ))}
+            </ul>
+            <ul class="core-bullets">
+              {c.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- The four shipped templates. Auto-deployed on first plugin load. -->
+    <section class="templates">
+      <header class="section-head">
+        <p class="eyebrow">Ships with the plugin</p>
+        <h2>Four templates, one paradigm</h2>
+        <p class="section-lede">
+          On first plugin load, perplexed creates <code>zz-cf-lib/templates/</code> in your vault and drops these in plus a README. Edit them. Add your own. The runtime never overwrites a customized template.
+        </p>
+      </header>
+      <div class="templates-table">
+        <div class="templates-row templates-row--head">
+          <div>File</div>
+          <div>Targets</div>
+          <div>Use for</div>
+        </div>
+        {templates.map((t) => (
+          <div class="templates-row">
+            <div class="mono">{t.file}</div>
+            <div class="mono muted">{t.targets}</div>
+            <div>{t.use}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Direct-query commands rounded up under one section. -->
+    <section class="direct-queries">
+      <header class="section-head">
+        <p class="eyebrow">Ask anything</p>
+        <h2>Direct queries</h2>
+        <p class="section-lede">
+          One Cmd-P entry per model surface for ad-hoc questions that don't need a template or a selection.
+        </p>
+      </header>
+      <ul class="direct-list">
+        {directQueryCommands.map((q) => (
+          <li>
+            <div class="direct-cmd">
+              <span class="kbd-block">⌘P</span>
+              <span class="kbd-cmd">{q.palette}</span>
+            </div>
+            <p class="direct-desc">{q.desc}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {pluginChangelog.length > 0 && (
+      <section class="plugin-changelog">
+        <h2>Recent ship notes</h2>
+        <ul class="changelog-list">
+          {pluginChangelog.map((entry) => {
+            const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+            return (
+              <li>
+                <a href={`${base}changelog/${entry.id}`}>
+                  <div class="changelog-meta">
+                    {date && (
+                      <time class="mono" datetime={new Date(date).toISOString()}>
+                        {new Date(date).toISOString().slice(0, 10)}
+                      </time>
+                    )}
+                    {entry.data.at_semantic_version && (
+                      <span class="pill mono">{entry.data.at_semantic_version}</span>
+                    )}
+                  </div>
+                  <h3>{entry.data.title ?? entry.id}</h3>
+                  {entry.data.lede && <p>{entry.data.lede}</p>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .perplexed-page {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .back {
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-8);
+  }
+
+  /* HEAD */
+  .perplexed-head {
+    max-width: 80ch;
+    margin: 0 auto var(--space-12);
+  }
+  .head-row {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .head-icon {
+    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--clr-border);
+    flex-shrink: 0;
+  }
+  .head-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .head-title-block h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-family: var(--ff-mono);
+    line-height: 1.1;
+  }
+  .head-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .head-lede {
+    margin-top: var(--space-6);
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--clr-text);
+  }
+  .head-lede .muted {
+    color: var(--clr-text-dim);
+    font-size: 1rem;
+  }
+  .head-actions {
+    margin-top: var(--space-6);
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .perplexed-banner {
+    margin: 0 0 var(--space-12);
+    max-width: 1000px;
+    margin-inline: auto;
+  }
+  .perplexed-banner img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border);
+    display: block;
+  }
+
+  /* PALETTE TEASER — fake Cmd-P window */
+  .palette-teaser {
+    max-width: 720px;
+    margin: 0 auto var(--space-16);
+  }
+  .palette-window {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border-strong);
+    background: var(--clr-bg-elevated);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), var(--shadow-glow-cyan);
+  }
+  .palette-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--clr-border);
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .palette-prompt {
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--clr-border-strong);
+    color: var(--clr-text-soft);
+  }
+  .palette-cursor {
+    font-family: var(--ff-mono);
+    color: var(--clr-cyan);
+    font-size: 0.95rem;
+    position: relative;
+  }
+  .palette-cursor::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    margin-left: 4px;
+    background: var(--clr-cyan);
+    vertical-align: text-bottom;
+    animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  .palette-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .palette-results li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--clr-border);
+    color: var(--clr-text-soft);
+  }
+  .palette-results li:last-child {
+    border-bottom: 0;
+  }
+  .palette-results li:first-child {
+    background: rgba(4, 229, 229, 0.06);
+    color: var(--clr-text);
+  }
+  .palette-results li em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 0.75rem;
+    color: var(--clr-text-dim);
+  }
+  .palette-key {
+    width: 18px;
+    text-align: center;
+    color: var(--clr-text-dim);
+  }
+
+  /* SECTION SHELLS */
+  .section-head {
+    max-width: 65ch;
+    margin: 0 auto var(--space-8);
+    text-align: center;
+  }
+  .section-head .eyebrow {
+    color: var(--clr-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-family: var(--ff-mono);
+  }
+  .section-head h2 {
+    margin-top: var(--space-3);
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+  .section-head .section-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* CORES — 2x2 card grid */
+  .cores {
+    margin-bottom: var(--space-16);
+  }
+  .cores-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 720px) {
+    .cores-grid { grid-template-columns: 1fr; }
+  }
+  .core {
+    --accent: var(--clr-cyan);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    transition: border-color 200ms ease, transform 200ms ease;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .core:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+  }
+  .core--cyan { --accent: var(--clr-cyan); }
+  .core--magenta { --accent: var(--clr-magenta, #bf23f7); }
+  .core--aqua { --accent: var(--clr-aquamarine); }
+  .core-eyebrow {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    font-family: var(--ff-mono);
+  }
+  .core h3 {
+    font-size: 1.4rem;
+    font-family: var(--ff-mono);
+  }
+  .core-lede {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .core-commands {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .core-commands li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--clr-border);
+  }
+  .kbd-block {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--clr-border-strong);
+    color: var(--clr-text-dim);
+    background: rgba(255, 255, 255, 0.04);
+    flex-shrink: 0;
+  }
+  .kbd-cmd {
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    color: var(--clr-text);
+  }
+  .core-bullets {
+    margin: 0;
+    padding-left: var(--space-5);
+    color: var(--clr-text-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  /* TEMPLATES TABLE */
+  .templates {
+    margin-bottom: var(--space-16);
+  }
+  .templates code {
+    font-family: var(--ff-mono);
+    background: rgba(4, 229, 229, 0.1);
+    color: var(--clr-cyan);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .templates-table {
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    background: var(--clr-bg-card);
+    overflow: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .templates-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 2fr;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--clr-border);
+    font-size: 0.9rem;
+    align-items: center;
+  }
+  .templates-row:last-child { border-bottom: 0; }
+  .templates-row--head {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--clr-text-dim);
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .templates-row .mono {
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+  }
+  .templates-row .muted {
+    color: var(--clr-text-dim);
+  }
+  @media (max-width: 720px) {
+    .templates-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+
+  /* DIRECT QUERIES */
+  .direct-queries {
+    margin-bottom: var(--space-16);
+  }
+  .direct-list {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 720px;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .direct-list li {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    background: var(--clr-bg-card);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .direct-cmd {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .direct-desc {
+    color: var(--clr-text-soft);
+    font-size: 0.9rem;
+    margin-left: 36px;
+  }
+
+  /* CHANGELOG */
+  .plugin-changelog {
+    max-width: 720px;
+    margin: var(--space-16) auto 0;
+  }
+  .plugin-changelog h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-6);
+  }
+  .changelog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .changelog-list a {
+    display: block;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    transition: border-color 200ms ease, transform 200ms ease;
+  }
+  .changelog-list a:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+    color: var(--clr-text);
+  }
+  .changelog-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    color: var(--clr-text-dim);
+    font-size: 0.8rem;
+    margin-bottom: var(--space-2);
+  }
+  .changelog-list h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-2);
+  }
+  .changelog-list p {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+  }
+
+  .card-tag {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--clr-text-dim);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    transition: transform 200ms ease, background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    color: #0a0a0f;
+    font-weight: 600;
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    color: #0a0a0f;
+    box-shadow: 0 12px 32px rgba(4, 229, 229, 0.35);
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--clr-border-strong);
+    color: var(--clr-text);
+  }
+  .btn-ghost:hover {
+    color: var(--clr-text);
+    border-color: var(--clr-border-accent);
+    background: rgba(4, 229, 229, 0.08);
+  }
+</style>

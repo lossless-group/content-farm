@@ -51,6 +51,8 @@ const pluginHighlights = defineCollection({
       icon: lenientString,
       featured: lenientBoolean,
       tags: lenientStringArray,
+      /** "ours" (default) or "inspirational" — drives section grouping on the index. */
+      category: lenientString,
     })
     .passthrough(),
 });

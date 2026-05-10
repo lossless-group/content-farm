@@ -4,10 +4,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
   const plugins = await getCollection('plugin-highlights');
-  return plugins.map((plugin) => ({
-    params: { slug: plugin.id },
-    props: { plugin },
-  }));
+  // Skip plugins that have a hand-rolled static page at /plugins/<slug>.astro.
+  // Right now: perplexed (custom command-palette layout).
+  const customPaged = new Set(['perplexed']);
+  return plugins
+    .filter((plugin) => !customPaged.has(plugin.id))
+    .map((plugin) => ({
+      params: { slug: plugin.id },
+      props: { plugin },
+    }));
 }
 
 const { plugin } = Astro.props;
