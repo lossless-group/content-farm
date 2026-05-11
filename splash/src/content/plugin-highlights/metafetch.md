@@ -3,7 +3,7 @@ title: metafetch
 lede: Open Graph & Metadata fetching for instant metadata generation on any website/article/page.
 order: 20
 status: Beta
-repo: https://github.com/lossless-group/cite-wide
+repo: https://github.com/lossless-group/metafetch
 icon: 📚
 featured: true
 tags: [Open-Graph-Metadata, Article-Metadata, Obsidian-Plugins]

@@ -1,0 +1,41 @@
+{
+  "created": "2026-05-11T07:27:27.425518+00:00",
+  "data": [
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles. The subject occupies only the bottom third of the frame",
+      "resolution": "1024x1024",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/790Hwlj7X4OXAZmnFxPOiw.png?exp=1778570856&sig=916bb9f0cedda26a3fe363e2a4df5b94e0c6fd5367f580650dbda43cce076fbf"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles. The subject occupies only the bottom third of the frame",
+      "resolution": "1024x1024",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/Ma00yg7HV5GPdjRLKcmMfQ.png?exp=1778570856&sig=fa4af80b5b1927461b1f1dc6da2a3663e75b195aa509b5c8827479458c4ba656"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles. The subject occupies only the bottom third of the frame",
+      "resolution": "1024x1024",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/a9Hbt2aZUzyO4QYl8r19aw.png?exp=1778570856&sig=8b5da99bb40e40756d6de7fdff4fd4d935a422bb2e19990a827725706e8ec169"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles. The subject occupies only the bottom third of the frame",
+      "resolution": "1024x1024",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/czKQ5tCyV6KCZEPpugFmiw.png?exp=1778570856&sig=4fb37f87a8a4ec71c84d3c23b90b07a6794c82a15ea408ff0f234c60211aab37"
+    }
+  ]
+}

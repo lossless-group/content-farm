@@ -178,6 +178,7 @@ const repoUrl = 'https://github.com/lossless-group/content-farm';
                   icon={p.data.icon}
                   featured={p.data.featured}
                   tags={p.data.tags}
+                  landingHref={p.id === 'perplexed' ? `${base}perplexed/` : undefined}
                 />
               </div>
             ))

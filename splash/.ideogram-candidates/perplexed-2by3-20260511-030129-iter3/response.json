@@ -1,0 +1,41 @@
+{
+  "created": "2026-05-11T08:02:14.095715+00:00",
+  "data": [
+    {
+      "is_image_safe": true,
+      "prompt": "Top 1/3 of frame is empty negative space, dark gradient sky. Bottom 2/3 contains an isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles.",
+      "resolution": "832x1248",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/8R3S03l5VsCSB1q4hc3YYQ.png?exp=1778572943&sig=c988ea83f23ba2de3bdd0c6567290662e30dd05bdd2f7327df80b7b209011569"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "Top 1/3 of frame is empty negative space, dark gradient sky. Bottom 2/3 contains an isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles.",
+      "resolution": "832x1248",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/ENkvVP-tUoCwKCeWmeHFLw.png?exp=1778572943&sig=881b81a86f5b3995ba6f1426c633575aa493b31b3d82f1a0662bb939aca830b1"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "Top 1/3 of frame is empty negative space, dark gradient sky. Bottom 2/3 contains an isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles.",
+      "resolution": "832x1248",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/LqHGhJbuVaSOi1QPNRY5IQ.png?exp=1778572943&sig=6d9175d33f07cca4616e5131f2100c76f4aacd04a144f5a28437ee490f8647b4"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "Top 1/3 of frame is empty negative space, dark gradient sky. Bottom 2/3 contains an isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles.",
+      "resolution": "832x1248",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/a6QxrQT4WuK1SjXDIIEbsA.png?exp=1778572943&sig=f6921416a190f655bc2c7fe35674172003666fdbe39d8391f36c0a0b0ac21b4c"
+    }
+  ]
+}

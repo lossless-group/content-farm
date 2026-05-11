@@ -9,6 +9,14 @@ related:
   - "[[Per-Directory-Profile-Templates]]"
 ---
 
+# Hotfix:
+
+The star around the underscore
+
+```md
+*_AI agents autonomously negotiate contracts by scanning clauses, flagging risks, suggesting edits, and coordinating multi-party changes, slashing review times from days to hours while enhancing compliance and strategic focus._*
+```
+
 # Nudging AI search to return contextually appropriate images
 
 ## Symptom

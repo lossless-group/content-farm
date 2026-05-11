@@ -1,0 +1,107 @@
+---
+// CtaButton — the gradient pill button used as the primary call-to-action
+// across the splash site. Extracted from the per-plugin landing page where
+// it was an inline `.btn .btn-primary` rule; promoted to a component so
+// every page uses the same shape.
+//
+// Variants:
+//   - primary  → cyan→aquamarine gradient, dark text, glow shadow (default)
+//   - ghost    → translucent surface, light text, neutral border
+//   - link     → no surface, dim text, used inline when "tertiary action"
+//
+// Usage:
+//   <CtaButton href="https://github.com/foo/bar" external>View on GitHub →</CtaButton>
+//   <CtaButton href={`${base}perplexed/`} variant="primary">View page →</CtaButton>
+//   <CtaButton href="/changelog" variant="ghost">Changelog</CtaButton>
+
+interface Props {
+  /** Destination URL. */
+  href: string;
+  /** Visual style. Defaults to `primary`. */
+  variant?: 'primary' | 'ghost' | 'link';
+  /** Sets target=_blank rel=noopener. Use for off-site links. */
+  external?: boolean;
+  /** Accessible label override (when the visual label is just an arrow / icon). */
+  ariaLabel?: string;
+  /** Optional extra class for one-off layout tweaks. */
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  external = false,
+  ariaLabel,
+  class: extraClass,
+} = Astro.props;
+---
+
+<a
+  class:list={['cta-btn', `cta-btn--${variant}`, extraClass]}
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+  aria-label={ariaLabel}
+>
+  <slot />
+</a>
+
+<style>
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition:
+      transform 200ms ease,
+      background 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease,
+      color 200ms ease;
+  }
+  .cta-btn:focus-visible {
+    outline: 2px solid var(--clr-cyan);
+    outline-offset: 3px;
+  }
+
+  /* Primary — the "I like that one" — cyan→aquamarine gradient over
+     dark background colour, glow shadow on default and on hover. */
+  .cta-btn--primary {
+    background: linear-gradient(120deg, var(--clr-cyan), var(--clr-aquamarine));
+    color: var(--clr-bg);
+    font-weight: 600;
+    box-shadow: var(--shadow-glow-cyan);
+  }
+  .cta-btn--primary:hover {
+    transform: translateY(-1px);
+    color: var(--clr-bg);
+    box-shadow: 0 12px 32px rgba(4, 229, 229, 0.35);
+  }
+
+  /* Ghost — translucent surface, light text. Pairs with a primary. */
+  .cta-btn--ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--clr-border-strong);
+    color: var(--clr-text);
+  }
+  .cta-btn--ghost:hover {
+    color: var(--clr-text);
+    border-color: var(--clr-border-accent);
+    background: rgba(4, 229, 229, 0.08);
+  }
+
+  /* Link — no surface, dim text. For tertiary "Plugin card" etc. */
+  .cta-btn--link {
+    padding: 12px 4px;
+    color: var(--clr-text-dim);
+  }
+  .cta-btn--link:hover {
+    color: var(--clr-cyan);
+  }
+</style>

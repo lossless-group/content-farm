@@ -7,9 +7,12 @@ repo: https://github.com/lossless-group/perplexed-plugin
 icon: 🔍
 featured: true
 tags: [Search, AI, Enhancement]
-banner_image: "https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_Obsidian-Community-Plugin__banner_image_1777969596699__Z6sj9VRY.webp"
-portrait_image: "https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_Obsidian-Community-Plugin__portrait_image_1777969597398_eQaupiP68.webp"
-square_image: "https://ik.imagekit.io/xvpgfijuw/Image-Gin/2026-05/Content-Farm-_Obsidian-Community-Plugin__square_image_1777969597756__beqjEMJa.webp"
+banner_image: "/ogimage__Perplexed--Default.jpg"
+banner_tall_image: "/ogimage__Perplexed--BannerTall.jpg"
+banner_tall_max_image: "/ogimage__Perplexed--BannerTallMax.jpg"
+portrait_image: "/ogimage__Perplexed--Portrait.jpg"
+portrait_tall_image: "/ogimage__Perplexed--PortraitTall.jpg"
+square_image: "/ogimage__Perplexed--Square.jpg"
 ---
 
 Select a passage, hit a key, and get a streaming enhancement that blends your selection with live web context — citations included. Built on Perplexica's `sonar-pro` model, with a parallel mode for pulling related imagery alongside the text.

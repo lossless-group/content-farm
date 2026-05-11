@@ -1,0 +1,41 @@
+{
+  "created": "2026-05-11T07:24:32.968898+00:00",
+  "data": [
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles, in the lower portion of the frame.",
+      "resolution": "864x1152",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/6-y0uGZcWheyz1Ev_gZsqg.png?exp=1778570682&sig=f7db85149ab20b06d6e55d22b3ec728ad985e85e1792a1dd851b7c97abc5981b"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles, in the lower portion of the frame.",
+      "resolution": "864x1152",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/ITwyaYc3Wj-Q57OgDGRnfg.png?exp=1778570682&sig=1843c08297d6c352dcc64b92328e11dbd337c3bf1b3afb98e7ae8ba404914640"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles, in the lower portion of the frame.",
+      "resolution": "864x1152",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/RNp8G1ilXB-Bsx_wFoPtpQ.png?exp=1778570682&sig=ee812277de0f3bb4ab2fcb3b9f74c247120dc6da663ca810a1aa5784db01a985"
+    },
+    {
+      "is_image_safe": true,
+      "prompt": "An isometric quill pen with paper-leaf feathers, growing from a stack of paper-cut card tiles, in the lower portion of the frame.",
+      "resolution": "864x1152",
+      "seed": 1138,
+      "style_type": "GENERAL",
+      "upscaled_resolution": null,
+      "url": "https://ideogram.ai/api/images/ephemeral/vCj5C9qaVu-B_Ny3Hk55yQ.png?exp=1778570682&sig=ccb6f556da92a711c1a202f5b2cd684d6184d6f419dba59108441ef93ed1c2a6"
+    }
+  ]
+}

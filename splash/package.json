@@ -1,7 +1,7 @@
 {
   "name": "content-farm-splash",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "GitHub Pages splash for the content-farm pseudomonorepo",
   "scripts": {
