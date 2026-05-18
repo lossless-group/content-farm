@@ -186,6 +186,20 @@ const {
     border-top: 1px solid var(--clr-border);
     color: var(--clr-text-soft);
     vertical-align: top;
+    /* The default browser table-layout: auto sizes columns to their longest
+       *unbroken* token. A 40-char URL in one cell forces that cell ~40
+       columns wide regardless of context, crushing genuinely-long prose
+       columns next to it. Letting URLs / paths / code wrap inside td
+       restores sane proportions across the auto-layout. */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  /* Inline links + code inside td also tend to be the long-token offenders
+     (full URLs, file paths, hex SHAs). Same wrap rule. */
+  .preader__prose :global(td a),
+  .preader__prose :global(td code) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .preader__prose :global(tbody tr:hover) {
     background: rgba(255, 255, 255, 0.025);
