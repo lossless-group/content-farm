@@ -40,3 +40,7 @@
 [submodule "plugin-modules/obsidian-textgenerator-plugin"]
 	path = plugin-modules/obsidian-textgenerator-plugin
 	url = https://github.com/nhaouari/obsidian-textgenerator-plugin.git
+[submodule "plugin-modules/image-wrangler"]
+	path = plugin-modules/image-wrangler
+	url = https://github.com/lossless-group/ai-image-wrangler-obsidian-plugin.git
+	branch = development
