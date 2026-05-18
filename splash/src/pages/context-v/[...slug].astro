@@ -1,6 +1,8 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { parseMarkdown } from '@lossless-group/lfm';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import MarkdownReader from '../../components/markdown/MarkdownReader.astro';
 import { getPluginOgImage } from '../../lib/seo';
 
 export async function getStaticPaths() {
@@ -17,7 +19,12 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+// LFM pipeline (same as changelog/[...slug].astro): parse the body into an
+// MDAST tree, then hand it to <MarkdownReader> which walks via <AstroMarkdown>
+// and renders callouts, code blocks, images, and hex-code citations through
+// the site's component registry.
+const tree = await parseMarkdown(entry.body ?? '');
+const citations = ((tree as any)?.data?.citations?.ordered ?? []) as any[];
 const date = entry.data.date_modified ?? entry.data.date_updated ?? entry.data.date_created;
 const base = import.meta.env.BASE_URL;
 // Section is the second path segment (first is provenance). Root-level files
@@ -50,10 +57,6 @@ const articleTags = entry.data.tags;
   tags={articleTags}
 >
   <main class="container reading">
-    <p class="reading-back">
-      <a href={`${base}context-v`}>← All notes</a>
-    </p>
-
     <article>
       <header class="reading-head">
         <p class="reading-section">{sectionLabel}</p>
@@ -76,7 +79,7 @@ const articleTags = entry.data.tags;
       </header>
 
       <div class="prose">
-        <Content />
+        <MarkdownReader tree={tree} citations={citations} backHref={`${base}context-v`} backLabelTxt="All notes" />
       </div>
     </article>
   </main>

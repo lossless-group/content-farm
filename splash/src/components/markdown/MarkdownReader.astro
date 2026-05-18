@@ -1,0 +1,144 @@
+---
+/* MarkdownReader
+   Generic LFM-rendered reading column. Used by /projects/[slug]/ and
+   /working-groups/[slug]/ (and any future detail page that wants the same
+   prose treatment). Wraps an MDAST tree in a 70ch column with prose styling.
+   Top chrome: optional back-link + optional "Edit on source" link.
+   Renders Sources at the bottom when citations are non-empty. */
+
+import AstroMarkdown from './AstroMarkdown.astro';
+import Sources from './Sources.astro';
+
+export interface Props {
+  tree: any;                  // MDAST root from parseMarkdown()
+  citations?: any[];          // tree.data.citations.ordered
+  editUrl?: string;
+  backHref?: string;          // default: '/projects/'
+  backLabelTxt?: string;      // default: 'All projects'
+}
+
+const {
+  tree,
+  citations = [],
+  editUrl,
+  backHref = '/projects/',
+  backLabelTxt = 'All projects',
+} = Astro.props;
+---
+
+<article class="preader">
+  <div class="preader__chrome">
+    <a class="preader__back" href={backHref}>
+      <span aria-hidden="true">←</span> {backLabelTxt}
+    </a>
+    {editUrl && (
+      <a class="preader__edit" href={editUrl} target="_blank" rel="noopener noreferrer">
+        Edit on source <span aria-hidden="true">↗</span>
+      </a>
+    )}
+  </div>
+
+  <div class="preader__prose">
+    <AstroMarkdown node={tree} />
+  </div>
+
+  {citations.length > 0 && (
+    <div class="preader__sources">
+      <Sources citations={citations} />
+    </div>
+  )}
+</article>
+
+<style>
+  .preader {
+    max-width: 70ch;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+  .preader__chrome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-family: var(--font-code);
+    font-size: 0.8125rem;
+  }
+  .preader__back,
+  .preader__edit {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .preader__back:hover,
+  .preader__edit:hover { color: var(--color-primary); }
+
+  .preader__prose {
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .preader__prose :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .preader__prose :global(h3) {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .preader__prose :global(p) {
+    margin: 0 0 1.125rem;
+  }
+  .preader__prose :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+  .preader__prose :global(ul),
+  .preader__prose :global(ol) {
+    margin: 0 0 1.25rem;
+    padding-left: 1.4rem;
+  }
+  .preader__prose :global(ul) { list-style: disc; }
+  .preader__prose :global(ol) { list-style: decimal; }
+  .preader__prose :global(li) { margin-bottom: 0.4rem; }
+  .preader__prose :global(code) {
+    font-family: var(--font-code);
+    font-size: 0.92em;
+    padding: 0.1em 0.35em;
+    border-radius: 0.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-primary);
+  }
+  .preader__prose :global(strong) { color: var(--color-text); }
+  .preader__prose :global(em) { color: var(--color-text); }
+  .preader__prose :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 0.875rem 1.125rem;
+    border-left: 3px solid var(--color-primary);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-style: italic;
+  }
+  .preader__prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 2rem 0;
+  }
+
+  .preader__sources {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+</style>
