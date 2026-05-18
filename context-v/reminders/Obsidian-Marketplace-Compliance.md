@@ -18,7 +18,7 @@ tags:
   - Marketplace-Compliance
 related_files:
   - context-v/issues/Obsidian-Review-Bot-Feedback-on-Perplexed-Submission.md
-  - plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md
+  - context-v/reminders/Obsidian-Type-Safety.md
 ---
 
 ## Why This Document Exists
@@ -27,7 +27,7 @@ related_files:
 
 The rules are **unambiguous**, **machine-checked**, and **non-negotiable**. There is one narrow exception (the `fetch` rule for streaming responses) that may warrant a `/skip` reply on the PR; everything else must just be fixed.
 
-For the `any`-rule and broader type-safety obligations, read **`plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md`** first — that's the load-bearing companion. This doc covers everything *else* the bot enforces.
+For the `any`-rule and broader type-safety obligations, read **`context-v/reminders/Obsidian-Type-Safety.md`** first — that's the load-bearing companion. This doc covers everything *else* the bot enforces.
 
 ## How the Review Loop Works
 
@@ -392,7 +392,7 @@ This is in the `### Optional` section of the bot's report, not `### Required` �
 
 ## What This Reminder Does NOT Cover
 
-- **The `any`-rule** and broader type-safety patterns → see [[plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md]]. That's the load-bearing companion.
+- **The `any`-rule** and broader type-safety patterns → see [[context-v/reminders/Obsidian-Type-Safety.md]]. That's the load-bearing companion.
 - **Manifest / package.json / versions.json shape** → see Obsidian's official [Plugins/Releasing/Plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
 - **Repo hygiene** (LICENSE file, README quality, fundingUrl, etc.) — covered case-by-case in each plugin's submission-prep plan, e.g. [[plugin-modules/perplexed/context-v/plans/2026-05-02_Submission-Blockers-Punch-List]].
 - **Reviewer-not-bot territory** — the human reviewer assesses things the bot can't (telemetry policy, network usage explanations, README clarity). Those come up *after* the bot is clean.
@@ -437,7 +437,7 @@ When scaffolding a new plugin (or before submitting an existing one):
 - **Verbatim source** — the [`obsidianmd/eslint-plugin`](https://github.com/obsidianmd/eslint-plugin) repo. Every eslint-bot rule above corresponds to a rule there.
 - **Issue log** — [[context-v/issues/Obsidian-Review-Bot-Feedback-on-Perplexed-Submission]] — the May-9 PR-queue-era journey doc plus the May-17/18 Appendix A capturing the post-PR-queue findings.
 - **Family-wide submission story** — [[content-farm/changelog/2026-05-18_01]] — *"Three plugins through the gauntlet"* — the six-round narrative covering every finding that drove a re-release across cite-wide, image-gin, and perplexed.
-- **Companion reminder** — [[plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md]] — the `any`-rule and type-safety patterns.
+- **Companion reminder** — [[context-v/reminders/Obsidian-Type-Safety.md]] — the `any`-rule and type-safety patterns.
 - **Dependabot triage** — [[context-v/issues/Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos]] — the three-bucket categorization + bulk-dismiss script for the alert wall that follows any push to master.
 - **Wide-modal CSS** — [[plugin-modules/perplexed/context-v/issues/Widen-Modals-in-Obsidian-using-CSS]] — the canonical `modalEl.addClass(...)` pattern and the matching CSS shape.
 - **Marketing-doctrine for release narratives** — `context-v/skills/changelog-conventions/SKILL.md` section *"These are marketing artifacts, not internal documentation"*.

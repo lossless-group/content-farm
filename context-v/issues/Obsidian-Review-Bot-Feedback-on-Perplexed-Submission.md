@@ -161,7 +161,7 @@ The exact line numbers were grouped with adjacent findings in the cleaned output
 
 > *"Invalid type 'unknown' of template literal expression."*
 
-Same fix as the rule mandated by Cite-Wide's existing [Obsidian-Type-Safety](../../plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md) reminder: narrow the `unknown` first (type guard, `instanceof Error`), or coerce with `String(...)`.
+Same fix as the rule mandated by Cite-Wide's existing [Obsidian-Type-Safety](../reminders/Obsidian-Type-Safety.md) reminder: narrow the `unknown` first (type guard, `instanceof Error`), or coerce with `String(...)`.
 
 ### 11. Native `fetch()` calls
 
@@ -227,7 +227,7 @@ That reminder is the *output* of this issue; this issue is the *journey*.
 
 ## What's NOT in this issue
 
-- The `any`-rule findings (already covered by [[plugin-modules/cite-wide/context-v/reminders/Obsidian-Type-Safety.md]])
+- The `any`-rule findings (already covered by [[context-v/reminders/Obsidian-Type-Safety.md]])
 - The four-part `epoch.major.minor.patch` versioning experiment (resolved earlier; perplexed is on standard semver `0.1.0` for the marketplace submission)
 - General plugin-quality criticisms outside the bot's scope (telemetry policy, fundingUrl, README quality) — those are reviewer-not-bot territory and come up only if the bot passes
 - Any image-gin or cite-wide work — explicitly out of scope here, though the lessons transfer

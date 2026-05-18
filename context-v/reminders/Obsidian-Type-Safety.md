@@ -1,16 +1,13 @@
 ---
-title: Obsidian Plugin Type Safety — Rules, Patterns, and Cite-Wide Conventions
-purpose: Reference document for everyone (human or AI) working in the cite-wide codebase. Captures the actual rejection criteria from Obsidian's community plugin review, the patterns we use to satisfy them, and the YAML-frontmatter coercion strategy that keeps content-creator drift from breaking the type system.
+title: "Obsidian Plugin Type Safety — Rules, Patterns, and Cite-Wide Conventions"
+purpose: "Reference document for everyone (human or AI) working in the cite-wide codebase. Captures the actual rejection criteria from Obsidian's community plugin review, the patterns we use to satisfy them, and the YAML-frontmatter coercion strategy that keeps content-creator drift from breaking the type system."
 status: Authoritative
 last_verified: 2026-05-01
 applies_to: cite-wide Obsidian community plugin
 authors:
   - Michael Staton
 augmented_with: Claude Code (Opus 4.7, 1M context)
-from: cite-wide
-from_path: reminders/Obsidian-Type-Safety.md
 ---
-<!-- Rolled up from cite-wide/context-v/reminders/Obsidian-Type-Safety.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
 
 ## Why This Document Exists
 
