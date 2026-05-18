@@ -77,75 +77,10 @@ const articleTags = entry.data.tags;
         {entry.data.lede && <p class="reading-lede">{entry.data.lede}</p>}
       </header>
 
-      <div class="prose">
-        <MarkdownReader tree={tree} citations={citations} backHref={`${base}changelog`} backLabelTxt="All ship notes" />
-      </div>
+      <MarkdownReader tree={tree} citations={citations} backHref={`${base}changelog`} backLabelTxt="All ship notes" />
     </article>
   </main>
 </BaseLayout>
-
-<style is:global>
-  .prose {
-    max-width: 70ch;
-    margin: 0 auto;
-    color: var(--clr-text-soft);
-    font-size: 1.05rem;
-    line-height: 1.7;
-  }
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4 {
-    color: var(--clr-text);
-    margin-top: 2.5em;
-    margin-bottom: 0.5em;
-  }
-  .prose h1 { font-size: 2rem; }
-  .prose h2 { font-size: 1.5rem; }
-  .prose h3 { font-size: 1.2rem; }
-  .prose p { margin: 1em 0; }
-  .prose ul, .prose ol { padding-left: 1.5em; margin: 1em 0; }
-  .prose li { margin: 0.4em 0; }
-  .prose a { color: var(--clr-cyan); text-decoration: underline; text-underline-offset: 3px; }
-  .prose a:hover { color: var(--clr-aquamarine); }
-  .prose code {
-    font-family: var(--ff-mono);
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    color: var(--clr-aquamarine);
-  }
-  .prose pre {
-    background: var(--clr-bg-soft);
-    border: 1px solid var(--clr-border);
-    padding: 1.25em;
-    border-radius: var(--radius-md);
-    overflow-x: auto;
-    font-size: 0.9rem;
-  }
-  .prose pre code {
-    background: transparent;
-    padding: 0;
-    color: var(--clr-text-soft);
-  }
-  .prose blockquote {
-    margin: 1.5em 0;
-    padding-left: 1.25em;
-    border-left: 3px solid var(--clr-border-accent);
-    color: var(--clr-text-dim);
-    font-style: italic;
-  }
-  .prose hr {
-    border: 0;
-    border-top: 1px solid var(--clr-border);
-    margin: 3em 0;
-  }
-  .prose img {
-    max-width: 100%;
-    border-radius: var(--radius-md);
-  }
-</style>
 
 <style>
   .reading {

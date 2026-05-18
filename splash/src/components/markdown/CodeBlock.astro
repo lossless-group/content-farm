@@ -1,4 +1,6 @@
 ---
+import { codeToHtml } from 'shiki';
+
 export interface Props {
   language?: string;
   code: string;
@@ -8,11 +10,44 @@ export interface Props {
 const { language, code } = Astro.props as Props;
 
 const langLabel = language ? language.toUpperCase() : undefined;
+
+// Shiki ships as a transitive dep of Astro (already in node_modules), so we
+// can call it directly here without adding it to package.json. Theme choice:
+// github-dark-default sits closest to content-farm's --clr-bg-elevated +
+// --clr-text palette. The `transformers` config below strips the wrapping
+// <pre> Shiki emits (we supply our own <pre class="ak-codeblock"> outside)
+// and lets the code-side HTML inline into our existing structure.
+//
+// Languages Shiki doesn't recognise (e.g. an unlabelled fence, or an exotic
+// lang ident) fall back to plaintext rather than throwing — that's important
+// for robustness against author-written content with `text`, `txt`, `out`,
+// etc. as labels.
+let highlighted: string;
+try {
+  highlighted = await codeToHtml(code, {
+    lang: language && language.length > 0 ? language : 'text',
+    theme: 'github-dark-default',
+    transformers: [
+      {
+        // Strip Shiki's outer <pre>/<code> wrappers — we want only the inner
+        // span structure so it slots into our own <pre class="ak-codeblock">.
+        pre(node) {
+          // Remove the wrapper element by replacing it with its children.
+          return { ...node, tagName: 'span', properties: { class: 'shiki-inner' } };
+        },
+      },
+    ],
+  });
+} catch {
+  // Unknown language, malformed code, or shiki bundler-time hiccup —
+  // gracefully fall back to plain unhighlighted text.
+  highlighted = `<code>${code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`;
+}
 ---
 
 <div class="ak-codeblock-wrap">
   {langLabel && <div class="ak-codeblock-lang">{langLabel}</div>}
-  <pre class="ak-codeblock"><code>{code}</code></pre>
+  <pre class="ak-codeblock" set:html={highlighted}></pre>
 </div>
 
 <style>
@@ -32,22 +67,28 @@ const langLabel = language ? language.toUpperCase() : undefined;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #64748b;
+    color: var(--clr-text-dim);
     pointer-events: none;
+    /* sit above the code so it's readable when the code starts at col 0 */
+    z-index: 1;
   }
 
   .ak-codeblock {
     padding: 1rem;
-    background: #0f172a;
-    color: #e2e8f0;
+    background: var(--clr-bg-elevated);
+    color: var(--clr-text);
     overflow-x: auto;
     font-size: 0.85rem;
     line-height: 1.6;
     margin: 0;
   }
 
-  .ak-codeblock code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
+  /* Shiki emits inline `style="color: #…"` per span — let that paint over
+     the parent's color. The font-family chain matches content-farm's
+     --ff-mono. The :global() escape lets the scoped style reach Shiki's
+     spans, which carry no astro-cid. */
+  .ak-codeblock :global(code),
+  .ak-codeblock :global(span.shiki-inner) {
+    font-family: var(--ff-mono);
   }
 </style>

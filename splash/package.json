@@ -15,6 +15,7 @@
     "@astrojs/sitemap": "^3.7.2",
     "@lossless-group/lfm": "npm:@jsr/lossless-group__lfm@^0.3.0",
     "astro": "^6.3.1",
-    "mdast-util-to-string": "^4.0.0"
+    "mdast-util-to-string": "^4.0.0",
+    "shiki": "^4.0.0"
   }
 }

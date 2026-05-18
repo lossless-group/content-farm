@@ -113,29 +113,8 @@
 .ak-callout--question  { --callout-accent: var(--clr-cyan); }
 .ak-callout--important { --callout-accent: var(--clr-purple); }
 
-/* ---- LIGHT MODE: deepen accents so they read against bone backgrounds ---- */
-[data-mode="light"] .ak-callout--note      { --callout-accent: var(--clr-text-dimmer); }
-[data-mode="light"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--clr-cyan) 30%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 38%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 38%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--warning   { --callout-accent: color-mix(in srgb, #fbbf24 55%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--clr-purple) 45%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--quote     { --callout-accent: var(--clr-violet); }
-[data-mode="light"] .ak-callout--example   { --callout-accent: var(--clr-violet); }
-[data-mode="light"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--clr-cyan) 30%, var(--clr-bg)); }
-[data-mode="light"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--clr-purple) 45%, var(--clr-bg)); }
+/* dark-only theme: light-mode + data-mode dark overrides removed (content-farm has no mode toggle) */
 
-/* ---- DARK MODE: gently desaturate the loudest accents so they don't burn ---- */
-[data-mode="dark"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--clr-cyan) 78%, var(--clr-text-dimmer)); }
-[data-mode="dark"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 80%, var(--clr-text-dimmer)); }
-[data-mode="dark"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 80%, var(--clr-text-dimmer)); }
-[data-mode="dark"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--clr-purple) 80%, var(--clr-text-dimmer)); }
-[data-mode="dark"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--clr-cyan) 78%, var(--clr-text-dimmer)); }
-[data-mode="dark"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--clr-purple) 80%, var(--clr-text-dimmer)); }
-/* warning + quote + example + note read fine raw in dark mode — no override. */
-
-/* Quote callouts read better in italic — preserves the original blockquote feel
- * while still benefiting from the accented container. */
 .ak-callout--quote .ak-callout-body { font-style: italic; }
 
 /* ---------------------------------------------------------------------------
