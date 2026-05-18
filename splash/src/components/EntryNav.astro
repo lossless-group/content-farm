@@ -1,0 +1,184 @@
+---
+/* EntryNav
+   Three-slot prev / back-to-list / next navigation used at the top AND
+   bottom of every changelog and context-v entry. The page resolves prev /
+   next entries from its own collection (since the date-field chains differ
+   between collections) and hands the resolved URL + title + date in. */
+
+export interface NavSlot {
+  /** Where this slot links. Omit (or pass undefined) to render as a dimmed disabled stub. */
+  href?: string;
+  /** Title shown in the slot — clamped to two lines via line-clamp. */
+  title?: string;
+  /** ISO date string shown below the title in mono. */
+  date?: string;
+  /** Override for the boundary "you're at the end" copy. */
+  disabledLabel?: string;
+}
+
+export interface Props {
+  /** ← Newer slot — typically the entry one position earlier in newest-first sort. */
+  prev?: NavSlot;
+  /** Older → slot — typically the entry one position later. */
+  next?: NavSlot;
+  /** Center pill — link back to the collection index. */
+  backHref: string;
+  /** Copy on the center pill, e.g. "Back to all ship notes". */
+  backLabel: string;
+  /** Optional aria-label override. Defaults to "Adjacent entries". */
+  ariaLabel?: string;
+  /** Visual variant. "compact" renders smaller padding for the top placement. */
+  variant?: 'default' | 'compact';
+}
+
+const {
+  prev,
+  next,
+  backHref,
+  backLabel,
+  ariaLabel = 'Adjacent entries',
+  variant = 'default',
+} = Astro.props;
+---
+
+<nav class={`entry-nav entry-nav--${variant}`} aria-label={ariaLabel}>
+  {prev?.href ? (
+    <a class="entry-nav__slot entry-nav__slot--prev" href={prev.href}>
+      <span class="entry-nav__direction">← Newer</span>
+      {prev.title && <span class="entry-nav__title">{prev.title}</span>}
+      {prev.date && <span class="entry-nav__date mono">{prev.date}</span>}
+    </a>
+  ) : (
+    <span class="entry-nav__slot entry-nav__slot--disabled">
+      <span class="entry-nav__direction">← Newer</span>
+      <span class="entry-nav__title entry-nav__title--dim">
+        {prev?.disabledLabel ?? "You're at the latest"}
+      </span>
+    </span>
+  )}
+
+  <a class="entry-nav__back" href={backHref}>
+    <span class="entry-nav__back-icon" aria-hidden="true">↩</span>
+    <span>{backLabel}</span>
+  </a>
+
+  {next?.href ? (
+    <a class="entry-nav__slot entry-nav__slot--next" href={next.href}>
+      <span class="entry-nav__direction">Older →</span>
+      {next.title && <span class="entry-nav__title">{next.title}</span>}
+      {next.date && <span class="entry-nav__date mono">{next.date}</span>}
+    </a>
+  ) : (
+    <span class="entry-nav__slot entry-nav__slot--disabled">
+      <span class="entry-nav__direction">Older →</span>
+      <span class="entry-nav__title entry-nav__title--dim">
+        {next?.disabledLabel ?? "You're at the earliest"}
+      </span>
+    </span>
+  )}
+</nav>
+
+<style>
+  .entry-nav {
+    max-width: 70ch;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-3);
+    align-items: stretch;
+  }
+  .entry-nav--default {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-8);
+  }
+  /* Compact = top placement. Smaller vertical padding on the slots so
+     it sits nicely above the date/H1/lede header without competing with
+     the title for visual weight. */
+  .entry-nav--compact {
+    margin-bottom: var(--space-10);
+  }
+  .entry-nav--compact .entry-nav__slot,
+  .entry-nav--compact .entry-nav__back {
+    padding: var(--space-3) var(--space-4);
+  }
+  .entry-nav--compact .entry-nav__title { font-size: 0.85rem; }
+  .entry-nav--compact .entry-nav__direction { font-size: 0.7rem; }
+  .entry-nav--compact .entry-nav__date { font-size: 0.72rem; }
+
+  .entry-nav__slot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    color: var(--clr-text);
+    text-decoration: none;
+    transition: border-color 180ms ease, transform 180ms ease;
+    min-width: 0;
+  }
+  .entry-nav__slot:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+    color: var(--clr-text);
+  }
+  .entry-nav__slot--next { text-align: right; }
+  .entry-nav__slot--disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .entry-nav__slot--disabled:hover {
+    border-color: var(--clr-border);
+    transform: none;
+  }
+  .entry-nav__direction {
+    font-family: var(--ff-mono);
+    font-size: 0.75rem;
+    color: var(--clr-text-dim);
+    letter-spacing: 0.04em;
+  }
+  .entry-nav__title {
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--clr-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .entry-nav__title--dim { color: var(--clr-text-dim); }
+  .entry-nav__date {
+    color: var(--clr-text-dim);
+    font-size: 0.78rem;
+  }
+  .entry-nav__back {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-soft);
+    color: var(--clr-text-soft);
+    text-decoration: none;
+    font-family: var(--ff-mono);
+    font-size: 0.85rem;
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    white-space: nowrap;
+  }
+  .entry-nav__back:hover {
+    color: var(--clr-cyan);
+    border-color: var(--clr-border-accent);
+    background: var(--clr-bg-card);
+  }
+  .entry-nav__back-icon { font-size: 1rem; }
+
+  @media (max-width: 640px) {
+    .entry-nav {
+      grid-template-columns: 1fr;
+    }
+    .entry-nav__slot--next { text-align: left; }
+    .entry-nav__back { justify-content: center; }
+  }
+</style>
