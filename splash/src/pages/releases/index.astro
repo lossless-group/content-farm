@@ -1,0 +1,256 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
+import { STATIC_SEO } from '../../lib/seo';
+
+const base = import.meta.env.BASE_URL;
+
+// Filter on path-shape (`from_path` starts with `releases/`) rather than on
+// `category: Release` frontmatter. Path is the authoritative signal per the
+// changelog-conventions skill: release narratives live under
+// `<repo>/changelog/releases/<version>.md`. This catches both the
+// magazine-style new narratives and any legacy releases that predate the
+// frontmatter convention.
+let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+try {
+  entries = (await getCollection('changelog'))
+    .filter((e) => {
+      if (e.data.publish === false) return false;
+      const fromPath = e.data.from_path as string | undefined;
+      if (fromPath?.startsWith('releases/')) return true;
+      if (e.data.category === 'Release') return true;
+      return false;
+    })
+    .sort((a, b) => {
+      // Newest first by date_modified > date_created > date.
+      const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
+      const dateB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      const cmp = new Date(dateB).getTime() - new Date(dateA).getTime();
+      if (cmp !== 0) return cmp;
+      // Tie-break: same date → group by plugin alphabetically.
+      const fromA = (a.data.from as string | undefined) ?? '';
+      const fromB = (b.data.from as string | undefined) ?? '';
+      return fromA.localeCompare(fromB);
+    });
+} catch {
+  entries = [];
+}
+
+// Build the source-filter row from the entries we actually have.
+const counts = new Map<string, number>();
+for (const e of entries) {
+  const from = (e.data.from as string | undefined) ?? 'content-farm';
+  counts.set(from, (counts.get(from) ?? 0) + 1);
+}
+
+const filterOptions = [...counts.entries()]
+  .map(([value, count]) => ({ value, label: value, count }))
+  .sort((a, b) => a.value.localeCompare(b.value));
+
+// Helper: derive version string for the version pill.
+function deriveVersion(entry: typeof entries[number]): string | undefined {
+  if (entry.data.release_tag) return String(entry.data.release_tag);
+  if (entry.data.at_semantic_version) return String(entry.data.at_semantic_version);
+  // Fallback: filename minus .md, e.g. "0.2.0" from "releases/0.2.0.md".
+  const fromPath = entry.data.from_path as string | undefined;
+  const match = fromPath?.match(/releases\/(.+)\.md$/);
+  return match?.[1];
+}
+---
+
+<BaseLayout title={STATIC_SEO.releasesIndex.title} description={STATIC_SEO.releasesIndex.description}>
+  <main class="container archive">
+    <header class="archive-head">
+      <p class="eyebrow">Versioned ship notes</p>
+      <h1>Releases</h1>
+      <p class="archive-lede">
+        One narrative per version, per plugin. Each release rolls up the per-day changelog work
+        underneath it into a single user-facing story — what's new, why it matters, what changed
+        in approach. Linked through to the GitHub release for the install assets.
+      </p>
+      <p class="archive-back">
+        <a href={base}>← Back to splash</a>
+        <span class="dim"> · </span>
+        <a href={`${base}changelog`}>See the full changelog →</a>
+      </p>
+    </header>
+
+    {
+      entries.length === 0 ? (
+        <div class="archive-empty">
+          <p>No release narratives published yet.</p>
+          <p class="dim">
+            Release narratives live at <code>&lt;plugin&gt;/changelog/releases/&lt;version&gt;.md</code>
+            in each plugin submodule and get rolled up here after <code>pnpm rollup:sync</code>.
+            Check back after the next versioned release.
+          </p>
+        </div>
+      ) : (
+        <>
+          <ContentCollectionSelectorRow
+            options={filterOptions}
+            targetSelector=".archive-list"
+            matchAttribute="data-from"
+            label="Filter releases by plugin"
+          />
+          <ul class="archive-list">
+            {entries.map((entry) => {
+              const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+              const from = (entry.data.from as string | undefined) ?? 'content-farm';
+              const version = deriveVersion(entry);
+              const releaseUrl = entry.data.release_url as string | undefined;
+              return (
+                <li data-from={from}>
+                  <article class="release-card">
+                    <a class="release-card-link" href={`${base}changelog/${entry.id}`}>
+                      <div class="release-meta">
+                        <span class="from-tag mono">{from}</span>
+                        {version && <span class="version-pill mono">{version}</span>}
+                        {date && (
+                          <time class="mono dim" datetime={new Date(date).toISOString()}>
+                            {new Date(date).toISOString().slice(0, 10)}
+                          </time>
+                        )}
+                      </div>
+                      <h2>{entry.data.title ?? entry.id}</h2>
+                      {entry.data.lede && <p class="release-lede">{entry.data.lede}</p>}
+                    </a>
+                    {releaseUrl && (
+                      <div class="release-actions">
+                        <a class="release-action mono" href={releaseUrl} rel="external noopener">
+                          View on GitHub ↗
+                        </a>
+                      </div>
+                    )}
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )
+    }
+  </main>
+</BaseLayout>
+
+<style>
+  .archive {
+    padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
+  }
+  .archive-head {
+    margin-bottom: var(--space-12);
+    max-width: 720px;
+  }
+  .archive-head h1 {
+    margin-top: var(--space-3);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+  }
+  .archive-lede {
+    margin-top: var(--space-4);
+    color: var(--clr-text-soft);
+    font-size: 1.05rem;
+  }
+  .archive-back {
+    margin-top: var(--space-6);
+    font-family: var(--ff-mono);
+    font-size: 0.875rem;
+  }
+  .archive-back .dim {
+    color: var(--clr-text-dim);
+  }
+  .archive-empty {
+    padding: var(--space-12);
+    border: 1px dashed var(--clr-border-strong);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--clr-text-soft);
+  }
+  .archive-empty .dim {
+    color: var(--clr-text-dim);
+    margin-top: var(--space-3);
+    font-size: 0.9rem;
+  }
+  .archive-empty code {
+    font-family: var(--ff-mono);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--clr-cyan);
+  }
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .release-card {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+    background: var(--clr-bg-card);
+    transition: border-color 200ms ease, transform 200ms ease;
+    overflow: hidden;
+  }
+  .release-card:hover {
+    border-color: var(--clr-border-accent);
+    transform: translateY(-2px);
+  }
+  .release-card-link {
+    display: block;
+    padding: var(--space-6) var(--space-6) var(--space-4);
+    color: var(--clr-text);
+  }
+  .release-card-link:hover {
+    color: var(--clr-text);
+  }
+  .release-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .from-tag {
+    color: var(--clr-cyan);
+    font-weight: 600;
+  }
+  .version-pill {
+    background: var(--clr-bg-elevated, rgba(255, 255, 255, 0.06));
+    color: var(--clr-text);
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--clr-border);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .release-meta .dim {
+    color: var(--clr-text-dim);
+  }
+  .release-card h2 {
+    font-size: 1.35rem;
+    margin: var(--space-2) 0 var(--space-2);
+    line-height: 1.25;
+  }
+  .release-lede {
+    color: var(--clr-text-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .release-actions {
+    padding: var(--space-3) var(--space-6) var(--space-4);
+    border-top: 1px solid var(--clr-border);
+    display: flex;
+    gap: var(--space-4);
+  }
+  .release-action {
+    color: var(--clr-text-dim);
+    font-size: 0.85rem;
+    transition: color 200ms ease;
+  }
+  .release-action:hover {
+    color: var(--clr-cyan);
+  }
+</style>

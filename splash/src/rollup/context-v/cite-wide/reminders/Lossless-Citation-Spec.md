@@ -1,9 +1,18 @@
 ---
+title: The Lossless Citation Open Specification
+date_created: 2024-09-06
+date_modified: 2025-04-22
+publish: true
+authors:
+  - Michael Staton
+tags:
+  - Extended-Markdown
+  - Markdown-Citations
+  - Obsidian-Flavored-Markdown
 from: cite-wide
 from_path: reminders/Lossless-Citation-Spec.md
 ---
 <!-- Rolled up from cite-wide/context-v/reminders/Lossless-Citation-Spec.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
-
 
 # Always use the Lossless Citation Spec for Cite Wide.
 

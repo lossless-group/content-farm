@@ -93,6 +93,11 @@ export const STATIC_SEO = {
     description:
       'Ship notes from the content-farm pseudomonorepo. What landed across the plugins, and the spec or blueprint that asked for it.',
   } satisfies SeoEntry,
+  releasesIndex: {
+    title: 'Releases',
+    description:
+      'Version-anchored release narratives for the content-farm plugin family — Cite-Wide, Image Gin, Perplexed, and siblings. Each release rolls up its underlying per-day changelog work into a single user-facing story.',
+  } satisfies SeoEntry,
   contextVIndex: {
     title: 'Notes (context-v)',
     description:
