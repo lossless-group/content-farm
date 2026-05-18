@@ -13,7 +13,7 @@
 
 .ak-callout {
   /* Accent default; per-type rules below override. */
-  --callout-accent: var(--color__graphite-400);
+  --callout-accent: var(--clr-text-dim);
 
   display: grid;
   grid-template-columns: auto 1fr;
@@ -25,7 +25,7 @@
   border-radius: 0.5rem;
   padding: 0.875rem 1rem;
   margin: 1.25rem 0;
-  color: var(--color-text);
+  color: var(--clr-text);
 }
 
 .ak-callout-icon {
@@ -102,36 +102,36 @@
  * retina-burn. Every callout MUST obey the mode switcher — this is law in
  * Astro-Knots projects (see context-v/blueprints/Maintain-Themes-Mode-...).
  * ------------------------------------------------------------------------- */
-.ak-callout--note      { --callout-accent: var(--color__graphite-400); }
-.ak-callout--info      { --callout-accent: var(--color__cyan-vapor); }
-.ak-callout--tip       { --callout-accent: var(--color__lime-terminal); }
-.ak-callout--success   { --callout-accent: var(--color__lime-terminal); }
-.ak-callout--warning   { --callout-accent: var(--color__amber-flare); }
-.ak-callout--danger    { --callout-accent: var(--color__magenta-fuse); }
-.ak-callout--quote     { --callout-accent: var(--color__violet-electric); }
-.ak-callout--example   { --callout-accent: var(--color__violet-electric); }
-.ak-callout--question  { --callout-accent: var(--color__cyan-vapor); }
-.ak-callout--important { --callout-accent: var(--color__magenta-fuse); }
+.ak-callout--note      { --callout-accent: var(--clr-text-dim); }
+.ak-callout--info      { --callout-accent: var(--clr-cyan); }
+.ak-callout--tip       { --callout-accent: var(--clr-aquamarine); }
+.ak-callout--success   { --callout-accent: var(--clr-aquamarine); }
+.ak-callout--warning   { --callout-accent: #fbbf24; }
+.ak-callout--danger    { --callout-accent: var(--clr-purple); }
+.ak-callout--quote     { --callout-accent: var(--clr-violet); }
+.ak-callout--example   { --callout-accent: var(--clr-violet); }
+.ak-callout--question  { --callout-accent: var(--clr-cyan); }
+.ak-callout--important { --callout-accent: var(--clr-purple); }
 
 /* ---- LIGHT MODE: deepen accents so they read against bone backgrounds ---- */
-[data-mode="light"] .ak-callout--note      { --callout-accent: var(--color__graphite-600); }
-[data-mode="light"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--color__cyan-vapor) 30%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--color__lime-terminal) 38%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--color__lime-terminal) 38%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--warning   { --callout-accent: color-mix(in srgb, var(--color__amber-flare) 55%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--color__magenta-fuse) 45%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--quote     { --callout-accent: var(--color__violet-deep); }
-[data-mode="light"] .ak-callout--example   { --callout-accent: var(--color__violet-deep); }
-[data-mode="light"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--color__cyan-vapor) 30%, var(--color__ink)); }
-[data-mode="light"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--color__magenta-fuse) 45%, var(--color__ink)); }
+[data-mode="light"] .ak-callout--note      { --callout-accent: var(--clr-text-dimmer); }
+[data-mode="light"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--clr-cyan) 30%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 38%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 38%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--warning   { --callout-accent: color-mix(in srgb, #fbbf24 55%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--clr-purple) 45%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--quote     { --callout-accent: var(--clr-violet); }
+[data-mode="light"] .ak-callout--example   { --callout-accent: var(--clr-violet); }
+[data-mode="light"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--clr-cyan) 30%, var(--clr-bg)); }
+[data-mode="light"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--clr-purple) 45%, var(--clr-bg)); }
 
 /* ---- DARK MODE: gently desaturate the loudest accents so they don't burn ---- */
-[data-mode="dark"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--color__cyan-vapor) 78%, var(--color__graphite-600)); }
-[data-mode="dark"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--color__lime-terminal) 80%, var(--color__graphite-600)); }
-[data-mode="dark"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--color__lime-terminal) 80%, var(--color__graphite-600)); }
-[data-mode="dark"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--color__magenta-fuse) 80%, var(--color__graphite-600)); }
-[data-mode="dark"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--color__cyan-vapor) 78%, var(--color__graphite-600)); }
-[data-mode="dark"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--color__magenta-fuse) 80%, var(--color__graphite-600)); }
+[data-mode="dark"] .ak-callout--info      { --callout-accent: color-mix(in srgb, var(--clr-cyan) 78%, var(--clr-text-dimmer)); }
+[data-mode="dark"] .ak-callout--tip       { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 80%, var(--clr-text-dimmer)); }
+[data-mode="dark"] .ak-callout--success   { --callout-accent: color-mix(in srgb, var(--clr-aquamarine) 80%, var(--clr-text-dimmer)); }
+[data-mode="dark"] .ak-callout--danger    { --callout-accent: color-mix(in srgb, var(--clr-purple) 80%, var(--clr-text-dimmer)); }
+[data-mode="dark"] .ak-callout--question  { --callout-accent: color-mix(in srgb, var(--clr-cyan) 78%, var(--clr-text-dimmer)); }
+[data-mode="dark"] .ak-callout--important { --callout-accent: color-mix(in srgb, var(--clr-purple) 80%, var(--clr-text-dimmer)); }
 /* warning + quote + example + note read fine raw in dark mode — no override. */
 
 /* Quote callouts read better in italic — preserves the original blockquote feel

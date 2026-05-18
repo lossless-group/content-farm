@@ -60,38 +60,38 @@ const {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    font-family: var(--font-code);
+    font-family: var(--ff-mono);
     font-size: 0.8125rem;
   }
   .preader__back,
   .preader__edit {
-    color: var(--color-text-muted);
+    color: var(--clr-text-soft);
     text-decoration: none;
     transition: color 150ms ease;
   }
   .preader__back:hover,
-  .preader__edit:hover { color: var(--color-primary); }
+  .preader__edit:hover { color: var(--clr-cyan); }
 
   .preader__prose {
-    color: var(--color-text);
-    font-family: var(--font-body);
+    color: var(--clr-text);
+    font-family: var(--ff-sans);
     font-size: 1.0625rem;
     line-height: 1.75;
   }
   .preader__prose :global(h2) {
-    font-family: var(--font-display);
+    font-family: var(--ff-sans);
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--clr-text);
     margin-top: 2.5rem;
     margin-bottom: 0.75rem;
     letter-spacing: -0.01em;
   }
   .preader__prose :global(h3) {
-    font-family: var(--font-display);
+    font-family: var(--ff-sans);
     font-size: 1.1875rem;
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--clr-text);
     margin-top: 1.75rem;
     margin-bottom: 0.5rem;
   }
@@ -99,7 +99,7 @@ const {
     margin: 0 0 1.125rem;
   }
   .preader__prose :global(a) {
-    color: var(--color-primary);
+    color: var(--clr-cyan);
     text-decoration: underline;
     text-underline-offset: 0.18em;
   }
@@ -112,33 +112,104 @@ const {
   .preader__prose :global(ol) { list-style: decimal; }
   .preader__prose :global(li) { margin-bottom: 0.4rem; }
   .preader__prose :global(code) {
-    font-family: var(--font-code);
+    font-family: var(--ff-mono);
     font-size: 0.92em;
     padding: 0.1em 0.35em;
     border-radius: 0.25rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-primary);
+    background: var(--clr-bg-soft);
+    border: 1px solid var(--clr-border);
+    color: var(--clr-cyan);
   }
-  .preader__prose :global(strong) { color: var(--color-text); }
-  .preader__prose :global(em) { color: var(--color-text); }
+  .preader__prose :global(strong) { color: var(--clr-text); }
+  .preader__prose :global(em) { color: var(--clr-text); }
   .preader__prose :global(blockquote) {
     margin: 1.5rem 0;
     padding: 0.875rem 1.125rem;
-    border-left: 3px solid var(--color-primary);
-    background: var(--color-surface);
-    color: var(--color-text);
+    border-left: 3px solid var(--clr-cyan);
+    background: var(--clr-bg-soft);
+    color: var(--clr-text);
     font-style: italic;
   }
   .preader__prose :global(hr) {
     border: none;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--clr-border);
     margin: 2rem 0;
+  }
+
+  /* Headings beyond h2/h3 — h1 rare in body (title comes from frontmatter)
+     but support it; h4 used for sub-sub-sections in long entries. */
+  .preader__prose :global(h1) {
+    font-family: var(--ff-sans);
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+  .preader__prose :global(h4) {
+    font-family: var(--ff-sans);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--clr-text);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Tables — the 2026-05-18 family changelog has six of them; GFM tables
+     come through structurally correct but un-styled by default. Treatment:
+     dim card background, soft borders, sticky-ish thead, mono in cells. */
+  .preader__prose :global(table) {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    background: var(--clr-bg-soft);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    font-size: 0.9375rem;
+  }
+  .preader__prose :global(thead) {
+    background: var(--clr-bg-elevated);
+  }
+  .preader__prose :global(th) {
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    font-weight: 600;
+    color: var(--clr-text);
+    border-bottom: 1px solid var(--clr-border-strong);
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+  }
+  .preader__prose :global(td) {
+    padding: 0.65rem 0.9rem;
+    border-top: 1px solid var(--clr-border);
+    color: var(--clr-text-soft);
+    vertical-align: top;
+  }
+  .preader__prose :global(tbody tr:hover) {
+    background: rgba(255, 255, 255, 0.025);
+  }
+  .preader__prose :global(td code),
+  .preader__prose :global(th code) {
+    font-size: 0.85em;
+  }
+
+  /* Anchor-TOC pattern: the inline `<a href="#section-id">` links at the top
+     of long entries (per the marketing-doctrine "TOC for long files" rule).
+     Headings get id attributes from LFM automatically; this just makes the
+     links look like nav links rather than body links. */
+  .preader__prose :global(h2) {
+    scroll-margin-top: 2rem;
+  }
+  .preader__prose :global(h3),
+  .preader__prose :global(h4) {
+    scroll-margin-top: 2rem;
   }
 
   .preader__sources {
     margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--clr-border);
   }
 </style>

@@ -58,14 +58,14 @@ const sorted = [...citations].sort((a, b) => a.index - b.index);
   .sources-section {
     margin-top: 4rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--border, #333);
+    border-top: 1px solid var(--clr-border);
   }
 
   .sources-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    color: var(--foreground, #e5e5e5);
+    color: var(--clr-text);
   }
 
   .sources-list {
@@ -87,7 +87,7 @@ const sorted = [...citations].sort((a, b) => a.index - b.index);
   .source-index {
     flex-shrink: 0;
     font-weight: 600;
-    color: var(--primary, #3b82f6);
+    color: var(--clr-cyan);
     min-width: 2rem;
     font-size: 0.8rem;
   }
@@ -99,26 +99,26 @@ const sorted = [...citations].sort((a, b) => a.index - b.index);
   }
 
   .source-title {
-    color: var(--foreground, #e5e5e5);
+    color: var(--clr-text);
     text-decoration: none;
   }
 
   a.source-title:hover {
     text-decoration: underline;
-    color: var(--primary, #3b82f6);
+    color: var(--clr-cyan);
   }
 
   .source-publication {
-    color: var(--muted-foreground, #888);
+    color: var(--clr-text-dim);
     font-size: 0.8rem;
   }
 
   .source-date {
-    color: var(--muted-foreground, #888);
+    color: var(--clr-text-dim);
     font-size: 0.75rem;
   }
 
   .source-raw {
-    color: var(--muted-foreground, #888);
+    color: var(--clr-text-dim);
   }
 </style>
