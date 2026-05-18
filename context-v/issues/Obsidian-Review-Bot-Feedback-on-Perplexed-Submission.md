@@ -1,10 +1,10 @@
 ---
 title: "Obsidian Review Bot Feedback on Perplexed Submission"
 date_created: 2026-05-09
-date_modified: 2026-05-09
-status: Open
-applies_to: perplexed Obsidian plugin (and by extension, any future Lossless plugin submitted to the community marketplace)
-authored_in_context_of: "GitHub PR obsidianmd/obsidian-releases#12513 — 'Add plugin: Perplexed'"
+date_modified: 2026-05-18
+status: Resolved (perplexed + cite-wide + image-gin all in the directory as of 2026-05-18)
+applies_to: perplexed, cite-wide, image-gin, and any future Lossless plugin submitted to the community marketplace
+authored_in_context_of: "GitHub PR obsidianmd/obsidian-releases#12513 — 'Add plugin: Perplexed' (the queue this PR sat in has since been retired; see Appendix A)"
 authors:
   - Michael Staton
 augmented_with:
@@ -15,12 +15,18 @@ tags:
   - Obsidian-Plugin-Submission
   - ObsidianReviewBot
   - Marketplace-Compliance
+  - Portal-Submission
 related_files:
   - plugin-modules/perplexed/main.ts
   - plugin-modules/perplexed/context-v/plans/2026-05-02_Submission-Blockers-Punch-List.md
   - plugin-modules/perplexed/context-v/plans/20206-05-02_Assuring-Obsidian-Community-Plugin-Requirements.md
   - plugin-modules/image-gin/context-v/plans/2026-05-03_Assuring-Obsidian-Community-Plugin-Requirements.md
+  - content-farm/context-v/issues/Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos.md
+  - content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md
+  - content-farm/changelog/2026-05-18_01.md
 ---
+
+> **2026-05-18 update — this document is now historical.** The PR-based queue this issue was written against (`obsidianmd/obsidian-releases#12513`) was retired by Obsidian sometime between 2026-05-09 and 2026-05-17. PR #12513 itself now returns 404. The submission flow as of writing is the hosted portal at **community.obsidian.md**, which runs an additional set of automated scans on top of the eslint-plugin findings captured below. All three Lossless plugins (cite-wide, image-gin, perplexed) shipped through the new portal on 2026-05-17 → 2026-05-18; the round-by-round story is captured in [`content-farm/changelog/2026-05-18_01.md`](../../changelog/2026-05-18_01.md). The forward-looking compliance checklist distilled from both this issue and the May 17-18 portal rounds lives at [`content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md`](../reminders/Obsidian-Marketplace-Compliance.md) — that's the doc to consult for new submissions. **See Appendix A below for the post-PR-queue findings that aren't in this issue's original body.**
 
 ## TL;DR
 
@@ -228,16 +234,128 @@ That reminder is the *output* of this issue; this issue is the *journey*.
 
 ## Status checklist
 
-- [ ] Adopt `obsidianmd/eslint-plugin` in `perplexed/eslint.config.mjs`
-- [ ] Confirm `pnpm build` reproduces all bot findings locally
-- [ ] Phase 2 — `console.log` audit (112 sites)
-- [ ] Phase 3 — command IDs / names cleanup
-- [ ] Phase 4 — `setHeading()` migration (5 sites)
-- [ ] Phase 5 — `element.style.*` → CSS classes (32 sites)
-- [ ] Phase 6 — `async` without `await` (13 sites)
-- [ ] Phase 7 — sentence-case audit
-- [ ] Phase 8 — floating-promise wrapping
-- [ ] Phase 9 — `throw new Error(...)`
-- [ ] Phase 10 — `fetch` → `requestUrl` (or `/skip` with justification)
-- [ ] Push, wait ≤ 6h, confirm bot re-scan is clean
-- [ ] Distill into `content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md`
+- [x] Adopt `obsidianmd/eslint-plugin` in `perplexed/eslint.config.mjs` *(landed in perplexed; image-gin and cite-wide adopted the equivalent rule set)*
+- [x] Confirm `pnpm build` reproduces all bot findings locally
+- [x] Phase 2 — `console.log` audit *(closed in perplexed's `chore(marketplace): pass ObsidianReviewBot lint cleanly` commit)*
+- [x] Phase 3 — command IDs / names cleanup
+- [x] Phase 4 — `setHeading()` migration
+- [x] Phase 5 — `element.style.*` → CSS classes
+- [x] Phase 6 — `async` without `await` *(also surfaced in image-gin and cite-wide, fixed across all three)*
+- [x] Phase 7 — sentence-case audit *(73 rewrites in perplexed; brand-name allowlist applied locally)*
+- [x] Phase 8 — floating-promise wrapping
+- [x] Phase 9 — `throw new Error(...)`
+- [x] Phase 10 — `fetch` → `requestUrl` *(refactored to `activeWindow.fetch` per the `no-restricted-globals` rule, which is the portal's actual ask; streaming preserved)*
+- [x] Push, wait ≤ 6h, confirm bot re-scan is clean
+- [x] Distill into `content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md`
+
+## Appendix A — The post-PR-queue findings (community.obsidian.md, 2026-05-17 → 2026-05-18)
+
+Everything above this section was true for the eslint-plugin-based bot review at the PR-queue stage. The hosted portal at community.obsidian.md runs an **additional** automated scan with rules that don't appear in `obsidianmd/eslint-plugin` — and that scan is what gates marketplace acceptance now. Six categories of finding showed up across the cite-wide / image-gin / perplexed submissions that this issue didn't anticipate:
+
+### A1. The PR queue is gone — the workflow itself is different
+
+The old `obsidianmd/obsidian-releases` PR-based workflow was retired sometime between 2026-05-09 (when this issue was authored) and 2026-05-17 (when we tried to look at PR #12513 and got a 404). The new submission path:
+
+1. Sign in at **community.obsidian.md** with your Obsidian account
+2. Link your GitHub account in profile settings (this is how the portal verifies repo ownership)
+3. Sidebar → **Plugins** → **New plugin** → paste the GitHub repo URL
+4. Agree to the developer policies, submit
+
+The portal then reads `manifest.json` at the HEAD of the default branch (for the directory listing) and the binary release assets at the GitHub release whose tag exactly matches `manifest.json`'s `version` field (for what users actually download on install). Automated review runs immediately; findings surface inline on the plugin's portal page as a "scorecard."
+
+### A2. Plugin description lives in THREE places, not one
+
+The single hardest lesson from the May 17-18 round. We fixed `manifest.json`'s `description` per the bot's recommendation, shipped a new release, and the portal *kept reporting the same warning*. After three iterations chasing the wrong surface:
+
+The portal reads from its own cached pre-rendered card for the plugin, which inherits its description from **the GitHub repo "About" field** — a piece of metadata set via GitHub's repo-settings UI sidebar, or via `gh repo edit <owner>/<repo> --description "..."`. It is NOT a file in the repo. Fixing only `manifest.json` is necessary but not sufficient; the corresponding text in the GitHub repo About field must also be updated.
+
+**For new submissions, fix all three at once:**
+1. `manifest.json` `description` field
+2. `package.json` `description` field (for tooling consistency)
+3. The GitHub repo "About" field: `gh repo edit lossless-group/<plugin> --description "..."`
+
+Then verify with `gh api /repos/lossless-group/<plugin> --jq '.description'` and a fresh download of the release asset's manifest.
+
+Memory anchor: `feedback_plugin_description_three_places.md` in `~/.claude/projects/<this-project>/memory/`.
+
+### A3. Release-tag rules (not in the eslint-plugin scope)
+
+| Rule | What we hit | Fix |
+|---|---|---|
+| **No `v` prefix on the release tag** | Initial cite-wide release was cut as `v0.2.0` → portal rejected with *"Make sure your GitHub release doesn't use a 'v' in front of the version number, it should be '1.0.0' not 'v1.0.0'"* | Cut tags as plain `0.2.0` |
+| **Strict three-digit semver across all four version fields** | Cite-wide's `versions.json` carried `"0.0.0.1"` from the Lossless internal 4-digit convention → invalid for Obsidian's parser | All of `manifest.json`, `package.json`, `versions.json` keys, and the git tag must be `MAJOR.MINOR.PATCH` only |
+| **`LICENSE` at repo root is required** | Cite-wide's `package.json` claimed MIT but no `LICENSE` file existed | Add MIT (or other) LICENSE file before submission |
+| **Realistic `minAppVersion`** | Cite-wide had `0.15.0` from a starter-template default; the plugin actually uses APIs that postdate 0.15.0 by years | Set to the actual API floor — `1.8.10` matches the rest of the Lossless family |
+
+### A4. Release-bundle: exactly three files
+
+The 0.2.0 and 0.2.1 cite-wide releases attached four assets (`main.js` + `manifest.json` + `styles.css` + `LICENSE`). Portal scorecard:
+
+> *Recommendation: The release contains additional files: `LICENSE`. Only `main.js`, `manifest.json`, and `styles.css` are supported. All other files will not be downloaded by Obsidian.*
+
+Cite-wide 0.2.2 ships exactly the three core assets. The `LICENSE` lives at the repo root (per A3) for anyone cloning the source.
+
+### A5. The "can't re-scan in place" rule
+
+The single most expensive procedural lesson. After fixing the manifest-description finding on cite-wide, the instinct was to re-upload the corrected `manifest.json` to the existing 0.2.0 GitHub release via `gh release upload 0.2.0 manifest.json --clobber` — same release, fresh asset. The portal scorecard kept reporting the OLD findings against 0.2.0.
+
+The portal's automated review **cannot differentiate an updated manifest asset on the same tag from a totally new release.** Bot scans are pinned to a `(tag, commit)` pair; re-uploading an asset doesn't re-trigger them.
+
+**For a re-scan you need a new tag.** Bump to the next patch version, cut a new release with fresh assets, push. The portal will run the scan against the new tag. Cite-wide went 0.2.0 → 0.2.1 → 0.2.2 over two days for exactly this reason.
+
+### A6. `fundingUrl` must be an actual tip-jar destination
+
+Cite-wide's original `manifest.json` had `fundingUrl: "https://lossless.group"` — the group homepage, no way to send money. The portal scorecard called this out (in our case during human review, not the bot's "Risks" panel — but it shows up in the user-facing plugin page). Replace with a real funding destination:
+
+- Buy Me a Coffee: `https://buymeacoffee.com/<account>`
+- GitHub Sponsors: `https://github.com/sponsors/<account>`
+- Open Collective, Ko-fi, etc.
+
+For Lossless plugins the standard is `https://buymeacoffee.com/losslessgroup`.
+
+### A7. `builtin-modules` npm dep is flagged
+
+A finding NOT in the eslint-plugin scope — surfaced by the portal's wider package-quality scan. The `builtin-modules` package (commonly used in `esbuild.config.mjs` to externalize Node built-ins) is flagged with a link to the es-tooling/module-replacements project. Modern alternative is dependency-free:
+
+```js
+// before:
+import builtins from 'builtin-modules';
+
+// after:
+import { builtinModules as builtins } from 'node:module';
+```
+
+Available since Node 14. Remove `builtin-modules` from `devDependencies` after the swap.
+
+### A8. GitHub artifact attestations (recommendation, not blocker)
+
+The portal scorecard flags this as a *Recommendation* tier finding (not Risk, not Warning):
+
+> *The `main.js` release asset does not have a GitHub artifact attestation. Artifact attestations let users cryptographically verify the provenance of the release assets…*
+
+Implementation requires a `.github/workflows/release.yml` that uses `actions/attest-build-provenance@v1` after the build step, before uploading the assets. Doesn't block approval; worth setting up once across the family since the workflow is reusable. **Deferred from all three plugins' 2026-05-17/18 releases; tracked as future work.**
+
+### A9. The wide-modal pattern (quality, not bot-flagged but called out by reviewers)
+
+Not strictly a bot finding, but the portal's human reviewers (and our own UX standards) want modals that use Obsidian's canonical full-width pattern. The two-line discovery:
+
+```ts
+// In Modal.onOpen():
+this.modalEl.addClass('my-modal');   // ← attach to the OUTER element
+// not:
+// this.contentEl.addClass('my-modal');   // ← inner content area only — width rules won't apply
+```
+
+Full details + the matching CSS lives at [`../../plugin-modules/perplexed/context-v/issues/Widen-Modals-in-Obsidian-using-CSS.md`](../../plugin-modules/perplexed/context-v/issues/Widen-Modals-in-Obsidian-using-CSS.md).
+
+### A10. The Dependabot story — separate but related
+
+Pushing the marketplace-prep commits to each plugin's master surfaced ~30 Dependabot alerts per plugin (86 across the three). The bulk-dismiss playbook with three buckets (removed / already-fixed / dev-tool-transitive) is at [`Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos.md`](Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos.md). Not strictly a marketplace requirement, but the alerts can spook a portal reviewer if the security tab shows a wall of unaddressed findings.
+
+### A11. Release narratives are MARKETING artifacts, not internal documentation
+
+A behavioral lesson that surfaced when we shipped multiple release narratives in a "internal punch-list" voice that the user immediately flagged. Distilled into the changelog-conventions skill (`SKILL.md` section *"These are marketing artifacts, not internal documentation"*) as the four-audience cascade: general → nerds passing by → nerds paying close attention → internal team, sequenced top-to-bottom in the document. Apply to every `README.md`, every `changelog/<date>.md` entry, and every `changelog/releases/<version>.md` for plugins being submitted.
+
+## Appendix B — Forward-looking checklist for the next plugin submission
+
+Use the comprehensive checklist at [`../reminders/Obsidian-Marketplace-Compliance.md`](../reminders/Obsidian-Marketplace-Compliance.md). This Appendix B is just a pointer; the live checklist is canonical.
