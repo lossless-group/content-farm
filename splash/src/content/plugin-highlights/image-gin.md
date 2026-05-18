@@ -4,6 +4,7 @@ lede: Generate, search, and place AI images without leaving Obsidian.
 order: 10
 status: Beta
 repo: https://github.com/lossless-group/image-gin
+community_url: https://community.obsidian.md/plugins/image-gin
 icon: 🖼️
 featured: true
 tags: [Imagery, AI, Modals]

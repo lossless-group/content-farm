@@ -4,6 +4,7 @@ lede: Citations as a first-class concern, not an afterthought.
 order: 20
 status: Beta
 repo: https://github.com/lossless-group/cite-wide
+community_url: https://community.obsidian.md/plugins/cite-wide
 icon: 📚
 featured: true
 tags: [Citation-Management-Tools, Research-Tools, Obsidian-Plugins]

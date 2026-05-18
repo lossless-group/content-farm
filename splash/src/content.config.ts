@@ -53,6 +53,13 @@ const pluginHighlights = defineCollection({
       tags: lenientStringArray,
       /** "ours" (default) or "inspirational" — drives section grouping on the index. */
       category: lenientString,
+      /**
+       * URL on community.obsidian.md when the plugin has been accepted into
+       * Obsidian's Community Plugins directory. Presence of this field is
+       * the visual differentiator on the index — published plugins get a
+       * "Community Plugin" pill and an Obsidian-icon link next to GitHub.
+       */
+      community_url: lenientString,
     })
     .passthrough(),
 });

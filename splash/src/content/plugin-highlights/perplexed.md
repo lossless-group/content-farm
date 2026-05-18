@@ -4,6 +4,7 @@ lede: Search-augmented text enhancement powered by Perplexica.
 order: 30
 status: Beta
 repo: https://github.com/lossless-group/perplexed-plugin
+community_url: https://community.obsidian.md/plugins/perplexed
 icon: 🔍
 featured: true
 tags: [Search, AI, Enhancement]
