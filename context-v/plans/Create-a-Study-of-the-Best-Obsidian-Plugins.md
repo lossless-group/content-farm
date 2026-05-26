@@ -86,6 +86,9 @@ These eight are flagged specifically as pins we'd want to clone into the studies
 
 - **[whisper](https://community.obsidian.md/plugins/whisper)** — voice-to-text transcription via OpenAI Whisper, recording inside Obsidian and inserting transcripts into the active note. Worth studying for the "kick off a long-running async job from a modal and stream results back into the editor" pattern — the same shape perplexed uses for streaming Perplexity responses.
 
+- **[neural-composer](https://github.com/oscampo/obsidian-neural-composer)** (oscampo) — a plugin for searching and context-aware content drafting.
+
+
 ## Evaluation dimensions
 
 For each plugin, capture:
