@@ -99,6 +99,26 @@ GitHub Dependabot will surface "N high / M moderate / K low vulnerabilities" on 
 
 The full triage playbook (three buckets — removed / already-fixed / dev-tool-transitive — plus the bulk-dismiss `gh api` script with categorized rationales, the 280-char comment cap and other API gotchas, and the historical 86-alert dismissal from 2026-05-17) lives at `../context-v/issues/Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos.md`. Read it before manually clicking dismiss in the GitHub UI; the script handles all three plugins in one pass with categorized comments. Do not propose `pnpm.overrides` as a Dependabot-shutup strategy — see the "What We Don't Recommend" section of the playbook for why.
 
+## Skills sync — opening & closing habit
+
+Lossless skills live in `context-v/skills/<name>/` at the anchor monorepo root
+(`/Users/mpstaton/code/lossless-monorepo/context-v/skills`). Claude Code only
+discovers a skill when it has its **own** direct-child symlink at
+`~/.claude/skills/<name>` — a symlinked *parent* dir does **not** expose the
+skills nested inside it. A skill that's authored but never linked is invisible
+to every session.
+
+- **Opening (session start):** sync so any skills added since last session are linked.
+- **Closing (after authoring or editing any skill):** sync again — newly-linked
+  skills load in the *next* session, not the current one.
+
+```bash
+bash /Users/mpstaton/code/lossless-monorepo/context-v/skills/sync-skills-symlinks.sh
+```
+
+Idempotent: links every `context-v/skills/*` dir with a top-level `SKILL.md`
+that isn't already linked; never clobbers a non-symlink. Re-run it freely.
+
 ## See also
 
 - `../CLAUDE.md` — root, the HARD STOP relocation rules and tree-wide guidance
