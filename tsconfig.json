@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     /* Base Options */
-    "baseUrl": ".",
     "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "skipLibCheck": true,
+    "types": ["node"],
     "resolveJsonModule": true,
 
     /* Strict Type-Checking */
@@ -40,12 +40,7 @@
     "inlineSources": true,
     "removeComments": true,
     "noEmitOnError": true,
-    "noEmit": true,
-
-    /* Paths */
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "noEmit": true
   },
   "include": [
     "**/*.ts",
@@ -53,6 +48,9 @@
   ],
   "exclude": [
     "node_modules",
+    "plugin-modules",
+    "splash",
+    "studies",
     "**/*.spec.ts",
     "**/*.test.ts"
   ]

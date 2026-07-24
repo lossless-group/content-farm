@@ -7,8 +7,9 @@ authors:
   - Michael Staton
 augmented_with:
   - Claude Code on Claude Fable 5
-semantic_version: 0.0.0.1
-status: Draft
+semantic_version: 0.0.0.2
+status: Partially-Shipped
+date_first_published: 2026-07-24
 loop_reference: "[[../loops/Dependency-Upgrade-Loop-For-Obsidian-Plugin-Family]]"
 tags:
   - Dependency-Upgrades
@@ -18,6 +19,28 @@ tags:
 ---
 
 # Dependency upgrades across the plugin family
+
+## Remaining work (as of 2026-07-24)
+
+Passes A and B **shipped** 2026-07-24: all nine original modules + the
+umbrella green on TypeScript 6.0.3 / ESLint 10.7 / esbuild 0.28.1, with
+per-module changelog entries and pushed `development` commits
+(campaign roll-up: `changelog/2026-07-24_01.md`; tracking issue
+[content-farm#7](https://github.com/lossless-group/content-farm/issues/7)).
+Notable in-flight discoveries: 22 dead dependency declarations removed
+across six repos (B13's `dev` among them), B6 zod and B7 typed.js both
+resolved by removal, marketplace semver fixed in umbrella + image-wrangler,
+and the umbrella's 3,910-error typecheck brought to zero (five real
+main.ts bugs fixed).
+
+Still open:
+
+- **Pass C — `obsidian-git`**: needs operator sign-off (CLAUDE.md marks it
+  do-not-modify); prefer upstream sync over independent bumps.
+- **Deferred majors**: TypeScript 7 (from the paid-up 6.x position, next
+  campaign); @types/node 24+ (when Obsidian's Electron bundles Node 24+).
+- **Human rung**: sandbox-vault smoke test, priority on metafetch's
+  rebuilt animation and the umbrella's revived citation/Freepik commands.
 
 The execution inventory for
 [[../loops/Dependency-Upgrade-Loop-For-Obsidian-Plugin-Family]]. Survey ran

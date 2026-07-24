@@ -1,5 +1,6 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import * as dotenv from 'dotenv';
+import { randomBytes } from 'crypto';
 import FreepikPlugin from './src/plugins/FreepikPlugin';
 import { citationService } from './src/services/citationService';
 
@@ -197,7 +198,7 @@ export default class ContentFarmPlugin extends Plugin {
         if (this.freepikPlugin) {
             await this.freepikPlugin.loadSettings();
             if (this.freepikPlugin.freepikService && this.settings.freepikApiKey) {
-                this.freepikPlugin.freepikService.updateApiKey(this.settings.freepikApiKey);
+                this.freepikPlugin.freepikService.setApiKey(this.settings.freepikApiKey);
             }
         }
     }
@@ -566,22 +567,10 @@ ${errorMessage}
         }
     }
 
-    private registerRibbonIcon(): void {
-        this.ribbonIconEl = this.addRibbonIcon(
-            'dice', 
-            'Content Farm', 
-            () => {
-                new Notice('This is Deep Lossless notice!');
-            }
-        );
-        this.ribbonIconEl?.addClass('content-farm-ribbon');
-    }
-
-    private setupStatusBar(): void {
-        this.statusBarItemEl = this.addStatusBarItem();
-        if (this.statusBarItemEl) {
-            this.statusBarItemEl.setText('Content Farm Active');
-        }
+    private generateHexId(length: number = 6): string {
+        return randomBytes(Math.ceil(length / 2))
+            .toString('hex')
+            .slice(0, length);
     }
 
     private registerCommands(): void {
