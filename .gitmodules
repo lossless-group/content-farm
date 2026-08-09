@@ -48,3 +48,7 @@
 	path = plugin-modules/obsidian-task-manager
 	url = https://github.com/lossless-group/obsidian-task-manager.git
 	branch = development
+[submodule "plugin-modules/stenographer"]
+	path = plugin-modules/stenographer
+	url = https://github.com/lossless-group/stenographer.git
+	branch = development
