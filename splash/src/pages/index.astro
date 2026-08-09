@@ -36,7 +36,10 @@ try {
 }
 
 const stats = [
-  { value: '9', label: 'Plugins in the farm' },
+  // Derived, not hand-counted — this sat at a stale "9" through two plugin
+  // additions. Counts `plugins` (ours) and deliberately excludes the
+  // inspirational section, which is other people's work.
+  { value: String(plugins.length), label: 'Plugins in the farm' },
   { value: '1', label: 'Vault, many surfaces' },
   { value: '∞', label: 'Workflows downstream' },
 ];
