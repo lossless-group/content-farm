@@ -44,3 +44,7 @@
 	path = plugin-modules/image-wrangler
 	url = https://github.com/lossless-group/ai-image-wrangler-obsidian-plugin.git
 	branch = development
+[submodule "plugin-modules/obsidian-task-manager"]
+	path = plugin-modules/obsidian-task-manager
+	url = https://github.com/lossless-group/obsidian-task-manager.git
+	branch = development
