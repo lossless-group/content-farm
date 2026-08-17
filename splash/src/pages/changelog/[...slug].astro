@@ -9,7 +9,7 @@ import { getPluginOgImage } from '../../lib/seo';
 // Helper to flatten the prev/next entry into the NavSlot shape EntryNav expects.
 function navSlotFor(e: any | undefined) {
   if (!e) return undefined;
-  const d = e.data.date_modified ?? e.data.date_created ?? e.data.date;
+  const d = e.data.date_modified ?? e.data.date_created ?? e.data.date ?? e.data.date_authored_current_draft ?? e.data.date_authored_initial_draft;
   return {
     href: `${import.meta.env.BASE_URL}changelog/${e.id}`,
     title: e.data.title ?? e.id,
@@ -38,7 +38,7 @@ const { entry } = Astro.props;
 // when remarkCitations finds any.
 const tree = await parseMarkdown(entry.body ?? '');
 const citations = ((tree as any)?.data?.citations?.ordered ?? []) as any[];
-const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft;
 const base = import.meta.env.BASE_URL;
 
 // Derive prev/next entries for the bottom nav. Sort matches the changelog
@@ -54,8 +54,8 @@ try {
   allEntries = (await getCollection('changelog'))
     .filter((e) => e.data.publish !== false)
     .sort((a, b) => {
-      const dA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
-      const dB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      const dA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);
+      const dB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? b.data.date_authored_current_draft ?? b.data.date_authored_initial_draft ?? new Date(0);
       return new Date(dB).getTime() - new Date(dA).getTime();
     });
 } catch {
@@ -73,8 +73,8 @@ const pageDescription =
   entry.data.lede ?? entry.data.summary ?? entry.data.description ??
   `Ship note from ${entry.data.from ?? 'content-farm'}.`;
 const pluginOg = await getPluginOgImage(entry.data.from);
-const publishedTime = (entry.data.date_first_published ?? entry.data.date_created ?? entry.data.date)?.toISOString();
-const modifiedTime = (entry.data.date_modified ?? entry.data.date_created ?? entry.data.date)?.toISOString();
+const publishedTime = (entry.data.date_first_published ?? entry.data.date_created ?? entry.data.date ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft)?.toISOString();
+const modifiedTime = (entry.data.date_modified ?? entry.data.date_created ?? entry.data.date ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft)?.toISOString();
 const articleAuthor = entry.data.authors?.[0];
 const articleTags = entry.data.tags;
 ---

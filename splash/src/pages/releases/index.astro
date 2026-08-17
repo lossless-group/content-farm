@@ -24,8 +24,8 @@ try {
     })
     .sort((a, b) => {
       // Newest first by date_modified > date_created > date.
-      const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? new Date(0);
-      const dateB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? new Date(0);
+      const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);
+      const dateB = b.data.date_modified ?? b.data.date_created ?? b.data.date ?? b.data.date_authored_current_draft ?? b.data.date_authored_initial_draft ?? new Date(0);
       const cmp = new Date(dateB).getTime() - new Date(dateA).getTime();
       if (cmp !== 0) return cmp;
       // Tie-break: same date → group by plugin alphabetically.
@@ -96,7 +96,7 @@ function deriveVersion(entry: typeof entries[number]): string | undefined {
           />
           <ul class="archive-list">
             {entries.map((entry) => {
-              const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date;
+              const date = entry.data.date_modified ?? entry.data.date_created ?? entry.data.date ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft;
               const from = (entry.data.from as string | undefined) ?? 'content-farm';
               const version = deriveVersion(entry);
               const releaseUrl = entry.data.release_url as string | undefined;
