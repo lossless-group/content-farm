@@ -65,8 +65,8 @@ export const GET: APIRoute = async () => {
   const changelogFroms = [...changelogByFrom.keys()].sort();
   for (const from of changelogFroms) {
     changelogByFrom.get(from)!.sort((a, b) => {
-      const da = (a.data as any).date_modified ?? (a.data as any).date_created ?? (a.data as any).date;
-      const db = (b.data as any).date_modified ?? (b.data as any).date_created ?? (b.data as any).date;
+      const da = (a.data as any).date_modified ?? (a.data as any).date_created ?? (a.data as any).date ?? (a.data as any).date_authored_current_draft ?? (a.data as any).date_authored_initial_draft;
+      const db = (b.data as any).date_modified ?? (b.data as any).date_created ?? (b.data as any).date ?? (b.data as any).date_authored_current_draft ?? (b.data as any).date_authored_initial_draft;
       const ta = da ? new Date(da).getTime() : 0;
       const tb = db ? new Date(db).getTime() : 0;
       if (ta !== tb) return tb - ta; // most recent first
