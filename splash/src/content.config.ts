@@ -108,6 +108,11 @@ const changelogSchema = z
     date_authored_current_draft: lenientDate,
     date_modified: lenientDate,
     date_first_published: lenientDate,
+    // Release narratives (changelog/releases/<version>.md) carry this one.
+    // Declared for the same reason as the editorial pair above: undeclared it
+    // arrives as a raw string through .passthrough(), and any date chain that
+    // falls through to it hands a string to .toISOString().
+    date_last_updated: lenientDate,
     tags: lenientStringArray,
     authors: lenientStringArray,
     publish: lenientBoolean,
@@ -115,6 +120,12 @@ const changelogSchema = z
     at_semantic_version: lenientString,
     augmented_with: lenientStringArray,
     files_changed: lenientStringArray,
+    // Release-narrative discriminators. `category: Release` is what separates a
+    // release page from a dated ship note in the same feed — declared so a
+    // filter or highlight treatment can rely on it rather than fishing it out
+    // of passthrough data.
+    category: lenientString,
+    release_tag: lenientString,
   })
   .passthrough();
 
