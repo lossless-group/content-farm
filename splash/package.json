@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
-    "@lossless-group/lfm": "npm:@jsr/lossless-group__lfm@^0.3.0",
+    "@lossless-group/lfm": "npm:@jsr/lossless-group__lfm@^0.5.1",
     "astro": "^6.3.1",
     "mdast-util-to-string": "^4.0.0"
   }

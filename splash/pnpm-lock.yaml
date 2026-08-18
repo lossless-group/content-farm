@@ -12,8 +12,8 @@ importers:
         specifier: ^3.7.2
         version: 3.7.2
       '@lossless-group/lfm':
-        specifier: npm:@jsr/lossless-group__lfm@^0.3.0
-        version: '@jsr/lossless-group__lfm@0.3.0'
+        specifier: npm:@jsr/lossless-group__lfm@^0.5.1
+        version: '@jsr/lossless-group__lfm@0.5.1'
       astro:
         specifier: ^6.3.1
         version: 6.3.1(@types/node@24.12.3)(rollup@4.60.3)
@@ -371,8 +371,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@jsr/lossless-group__lfm@0.3.0':
-    resolution: {integrity: sha512-YSikZtVnJ+qWjH+1CZsYh94ujgh3Jj1SQW801D6GP5oZwi3ty8Aa+fyBy0UFU5iZLpZOCpCSMLxSP3x/Lv7qdA==, tarball: https://npm.jsr.io/~/11/@jsr/lossless-group__lfm/0.3.0.tgz}
+  '@jsr/lossless-group__lfm@0.5.1':
+    resolution: {integrity: sha512-KfU+rZqAfFUdhluu4z0DZ14zPnaMDRpXhtrJNpw+RxlHBEHku4ZQVk5iqODxSJ5jtRSKOXhAQxhxSMA+gogENw==, tarball: https://npm.jsr.io/~/11/@jsr/lossless-group__lfm/0.5.1.tgz}
 
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
@@ -1721,7 +1721,7 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@jsr/lossless-group__lfm@0.3.0':
+  '@jsr/lossless-group__lfm@0.5.1':
     dependencies:
       '@types/mdast': 4.0.4
       remark-directive: 3.0.1
