@@ -1,10 +1,21 @@
 ---
+site_uuid: 384f0395-77d7-4a01-975a-e5633b65abee
+hex_code: l9ew0v
+title: Modal for Pasting LLM Native Content
+date_created: 2026-05-01
+date_authored_initial_draft: 2026-05-01
+date_authored_current_draft: 2026-05-01
+authors:
+  - Michael Staton
+at_semantic_version: 0.0.1.0
+tags:
+  - Spec
+lede: "Stop the parsing problem at the source: a paste-target textarea plus a Google/Perplexity selector, feeding the parser at the cursor."
+summary: Short spec for a cite-wide modal that intercepts LLM output before it lands in a note. It specifies only the UI surface and the insertion point; the parsing rules it delegates to are in Parse-Common-Citation-Formats.md and the output format is Lossless-Citation-Spec.md. Implementation likely requires refactoring the existing parsing logic so it can be called from both the modal and the current command.
 from: cite-wide
 from_path: specs/Modal-for-Pasting-LLM-Native-Content.md
 ---
 <!-- Rolled up from cite-wide/context-v/specs/Modal-for-Pasting-LLM-Native-Content.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
-
-
 
 # Goal:
 

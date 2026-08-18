@@ -1,10 +1,21 @@
 ---
+site_uuid: b8fac9ff-99f6-40df-807a-106a0dac6e6a
+hex_code: gsmolx
+title: Ideal and Overkill Schema for Max Flexibility
+date_created: 2026-05-02
+date_authored_initial_draft: 2026-05-02
+date_authored_current_draft: 2026-05-02
+authors:
+  - Michael Staton
+at_semantic_version: 0.0.1.0
+tags:
+  - Reminder
+lede: The citation schema this plugin depends on is documented in cite-wide's context-v, not here — three files, listed with paths.
+summary: Pointer reminder, not a spec. It exists because perplexed must emit citations conforming to a schema whose explanatory documents live in a sibling plugin. Follow the three links into cite-wide (the canonical-sources blueprint, the citation spec, the citation standards) before changing anything in perplexed that writes references. The links are absolute file:// URLs written before the repo moved under content-farm/plugin-modules and will need re-resolution.
 from: perplexed
 from_path: reminders/Ideal-and-Overkill-Schema-for-Max-Flexibility.md
 ---
 <!-- Rolled up from perplexed/context-v/reminders/Ideal-and-Overkill-Schema-for-Max-Flexibility.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
-
-
 
 # What and Why Schema for handing Citations and References?
 

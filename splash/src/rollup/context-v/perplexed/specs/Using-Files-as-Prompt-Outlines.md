@@ -1,10 +1,21 @@
 ---
+site_uuid: f33b9e0c-1ba5-4709-8c64-470981a84851
+hex_code: lr8oid
+title: Using Files as Prompt Outlines
+date_created: 2026-05-02
+date_authored_initial_draft: 2026-05-02
+date_authored_current_draft: 2026-05-02
+authors:
+  - Michael Staton
+at_semantic_version: 0.0.1.0
+tags:
+  - Spec
+lede: Prompt outlines become ordinary vault markdown, so adding one is dropping a file — and ArticleGeneratorModal stops being special-cased.
+summary: "Early spec sketching outline-as-file for perplexed: two new commands, three new settings paths under a Content-Dev folder, an outline frontmatter shape declaring provider/model pairs, and a suggested body structure. Level-1 headings are prohibited in outline bodies because they break the model's nesting of the response. Read it against the later and more developed template system in content-farm's Per-Directory-Profile-Templates spec and perplexed's partials-and-preambles issue, which cover much of the same ground."
 from: perplexed
 from_path: specs/Using-Files-as-Prompt-Outlines.md
 ---
 <!-- Rolled up from perplexed/context-v/specs/Using-Files-as-Prompt-Outlines.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
-
-
 
 # Using Files as Prompt Outlines
 

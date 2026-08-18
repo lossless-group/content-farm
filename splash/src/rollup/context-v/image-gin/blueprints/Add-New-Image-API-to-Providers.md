@@ -12,6 +12,11 @@ reference_implementation:
   - /Users/mpstaton/code/lossless-monorepo/image-gin/src/modals/CurrentFileModal.ts
 external_reference:
   - /Users/mpstaton/code/lossless-monorepo/astro-knots/sites/fullstack-vc/src/utils/api-connectors/ideogram.ts
+site_uuid: e2ab6c81-9b27-46c3-8698-ff161ae1ef73
+hex_code: 6bkhzd
+date_created: 2026-05-03
+lede: Recraft keeps brand style server-side as a style_id; Ideogram has none, so brand voice becomes a prefix/suffix prompt template in settings.
+summary: Blueprint for adding an image-generation provider to image-gin, worked through with Ideogram v3 as the example. The reusable parts are the trace of how Recraft uses frontmatter today, the settings-versus-frontmatter split table for the new provider, and the final-prompt assembly rule with its {prompt} placeholder convention. Image search providers (Magnific) follow a different shape and are out of scope here.
 from: image-gin
 from_path: blueprints/Add-New-Image-API-to-Providers.md
 ---

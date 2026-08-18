@@ -1,13 +1,23 @@
 ---
+site_uuid: ffdba051-707b-46e2-92eb-906bacfbe878
+hex_code: qji48z
+title: Getting Claude to Respond with Research
+date_created: 2026-05-02
+date_authored_initial_draft: 2026-05-02
+date_authored_current_draft: 2026-05-02
+authors:
+  - Michael Staton
+at_semantic_version: 0.0.1.0
+tags:
+  - Issue
+lede: Claude returns 60 URLs but zero per-claim citations — web_search_20260209's dynamic filter loses the attachment, so no inline markers.
+summary: Diagnostic issue tracing why perplexed's Ask Claude command produced no citations. Distinguishes the two failure modes (Claude never called the search tool, versus it called it but attached nothing per claim), maps the four response block types and what each could yield if parsed, and proposes instrumenting addCitations before expanding the extractor. Unresolved; the suggested fix for inline markers is switching to the older web_search_20250305 tool version, which reliably attaches per-claim citations.
 from: perplexed
 from_path: issues/Getting-Claude-to-Respond-With-Research.md
 ---
 <!-- Rolled up from perplexed/context-v/issues/Getting-Claude-to-Respond-With-Research.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
 
-
-
-
-  1. Claude decided not to actually use the tool. The model decides when to search. With tool_choice:
+1. Claude decided not to actually use the tool. The model decides when to search. With tool_choice:
    { type: "auto" } (default — what I'm using) and Opus 4.7's training cutoff at January 2026, it
   already knows about DevDay 2025, AgentKit, Klarna's two-thirds stat, Salesforce Agentforce, etc.
   Its narrative "I'll research this... Let me dig into..." is polite preamble — Claude is

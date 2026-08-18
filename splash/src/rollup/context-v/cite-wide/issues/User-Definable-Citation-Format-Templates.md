@@ -1,6 +1,6 @@
 ---
 title: Users need to define their own citation format — the Lossless house style is hardcoded
-lede: Cite Wide bakes one person's citation convention into string concatenation across four services. Every other Obsidian user wants APA, MLA, Chicago, IEEE, or their own house style. Templating is the feature; centralizing the format is the prerequisite.
+lede: ">-"
 date_created: 2026-08-08
 date_modified: 2026-08-08
 authors:
@@ -23,6 +23,10 @@ tags:
   - Citation-Templates
   - Obsidian-Plugin-Settings
   - Extensibility
+site_uuid: 3d22b1f3-0650-427c-aea8-c1c907d18035
+hex_code: qnf5g6
+date_authored_initial_draft: 2026-08-08
+date_authored_current_draft: 2026-08-08
 from: cite-wide
 from_path: issues/User-Definable-Citation-Format-Templates.md
 ---

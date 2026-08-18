@@ -7,6 +7,11 @@ applies_to: any plugin in the lossless-group/content-farm ecosystem
 authors:
   - Michael Staton
 augmented_with: Claude Code on Claude Opus 4.7 (1M context)
+site_uuid: dcbacfd1-7c7a-45be-9a56-60065a733c4f
+hex_code: 7olij6
+date_created: 2026-05-04
+lede: "The Obsidian API is the source of truth: `any`, innerHTML, and var are all outright bans, and Electron breaks browser muscle memory."
+summary: Short authoritative reminder in filestarter's context-v; an identical copy exists in every content-farm plugin. Read it before writing code against the Obsidian API, and re-read it whenever the community review bot flags something. It lists the seven most frequent rejection reasons and the three canonical documentation links. The deeper rules live in content-farm's Obsidian-Type-Safety.md and Obsidian-Marketplace-Compliance.md.
 from: filestarter
 from_path: reminders/This-is-an-Obsidian-plugin-Read-Obsidian-API-Docs.md
 ---

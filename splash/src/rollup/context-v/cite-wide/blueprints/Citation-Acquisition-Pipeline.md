@@ -1,6 +1,6 @@
 ---
 title: Citation Acquisition Pipeline — Agent Architecture, Phases, Output Contract
-lede: "The HOW for filling the Lossless Citation schema. Decouples the capture moment (a URL pasted into a doc) from the canonicalization moment (the source promoted into the knowledge base). Specifies the agent that does the work: where it runs, what tools it has, what phases it executes, what it emits, how it fails gracefully, and how multiple clients (Obsidian plugin, CLI, Investment Memo Orchestrator) share the same agent."
+lede: ">-"
 date_authored_initial_draft: 2026-05-01
 date_authored_current_draft: 2026-05-01
 status: Draft
@@ -18,6 +18,8 @@ tags:
 sibling_docs:
   - Lossless-Citation-Standards.md
   - Citation-Field-Acquisition-Guide.md
+site_uuid: 00d4935e-c156-4fc9-b699-36b59a08ca82
+hex_code: w9cyuy
 from: cite-wide
 from_path: blueprints/Citation-Acquisition-Pipeline.md
 ---

@@ -1,9 +1,21 @@
 ---
+site_uuid: 152ca702-e559-476c-8491-eb705d2edb7e
+hex_code: vi1wde
+title: Parse Common Citation Formats
+date_created: 2026-05-01
+date_authored_initial_draft: 2026-05-01
+date_authored_current_draft: 2026-05-01
+authors:
+  - Michael Staton
+at_semantic_version: 0.0.1.0
+tags:
+  - Blueprint
+lede: Six citation patterns coexist in one file; the existing regex only matches [1], so Google's [1, 2, 3] and Perplexity's [1][2] slip through.
+summary: Blueprint explaining why cite-wide's whole-file scripts fail on real, messy, multi-source files, and proposing a provider-aware parser that clusters citations by the emitting LLM's pattern, transforms what it can, and flags what it cannot. Carries a coverage table of the six coexisting patterns and long verbatim Google, Perplexity, and Claude outputs to test a parser against. The Modal-for-Pasting-LLM-Native-Content spec is the UI intended to feed this parser.
 from: cite-wide
 from_path: blueprints/Parse-Common-Citation-Formats.md
 ---
 <!-- Rolled up from cite-wide/context-v/blueprints/Parse-Common-Citation-Formats.md. Edit at the source, not here. Re-run `pnpm rollup:sync` to refresh. -->
-
 
 # Troubleshooting Implementation
 
