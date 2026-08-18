@@ -1,6 +1,7 @@
 ---
 title: "Citation Resolution and the Canonical Source"
-lede: "Three problems that look separate — link-rot recovery, smart cite-wide save with lookup-before-create, and content preservation as a future RAG corpus — are actually three operations on one underlying entity. This doc names that entity, sketches the data model, and proposes a v1 scope."
+lede: >-
+  Link-rot recovery, lookup-before-create on save, and content preservation for RAG are three operations on one underlying entity.
 date_created: 2026-05-06
 date_modified: 2026-05-06
 status: Exploration

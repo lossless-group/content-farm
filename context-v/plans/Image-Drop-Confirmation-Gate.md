@@ -1,6 +1,7 @@
 ---
 title: "Image Drop Confirmation Gate"
-lede: "An Obsidian plugin that intercepts every image drag-drop and paste, then asks — before anything touches the disk or the network — where this image should go. The default is the vault. The point is to make the decision deliberate, because some of the imagery we work with is private and a chart on imgur is a phone call we don't want to make."
+lede: >-
+  An Obsidian plugin that asks where a dropped image goes before anything hits disk or network — a private chart on imgur is a phone call.
 date_created: 2026-05-09
 date_modified: 2026-05-09
 status: Draft

@@ -11,6 +11,8 @@ site_uuid: 44bd58c8-97c7-411c-8b90-dcea3ef29168
 hex_code: acit3e
 date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
+lede: "The streaming pipeline silently drops Perplexity's images array — port the [IMAGE N] marker pattern the article generator already uses."
+summary: "Open issue against perplexed explaining why generated profiles come back image-less or carrying marketing hero shots instead of illustrative screenshots. Names the exact code paths (directoryTemplateService.ts, findImagesService.ts, perplexityService.ts processContentWithImages) and ranks mitigations in three tiers. An agent working image acquisition should implement Tier 1 only — the port of the already-working article-generator pattern — and stop there; Tiers 2 and 3 are explicitly flagged as premature. Acceptance criteria and open questions are at the bottom."
 ---
 
 # Hotfix:

@@ -1,6 +1,7 @@
 ---
 title: "A Component Inserter"
-lede: "An Obsidian command that scaffolds the right block — HTML, codefence, callout, embed — at the cursor, with frontmatter-driven defaults. Makes Lossless Flavored Markdown extension blocks feel like first-class citizens of the editor instead of patterns you have to remember."
+lede: >-
+  An Obsidian command that scaffolds the right block — HTML, codefence, callout, embed — at the cursor, with frontmatter-driven defaults.
 date_created: 2025-08-11
 date_modified: 2026-05-05
 status: Draft

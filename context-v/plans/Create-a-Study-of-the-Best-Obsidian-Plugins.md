@@ -1,6 +1,7 @@
 ---
 title: "Create a Study of the Best Obsidian Plugins"
-lede: "Before we ship more plugins of our own, take a deliberate read of what's working in the Obsidian community. Catalog the plugins doing the most interesting work, what they get right, what we'd do differently, and which ideas are worth borrowing — and pin the most relevant ones as a real study in content-farm so we read their code instead of paraphrasing from training data."
+lede: >-
+  Pin the 10–15 most interesting Obsidian plugins as a real study, so we read their code instead of paraphrasing from training data.
 date_created: 2026-05-04
 date_modified: 2026-05-19
 status: Draft

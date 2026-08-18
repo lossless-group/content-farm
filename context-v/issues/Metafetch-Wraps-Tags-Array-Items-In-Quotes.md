@@ -1,6 +1,7 @@
 ---
 title: Metafetch wraps tags array items in quotes
-lede: "Metafetch's fetch and insert commands re-serialize the *entire* frontmatter block, not just the `og_` keys they own. The zealous quote-everything rule that keeps URLs from breaking YAML also quotes every item of every array — and silently turns an inline `tags: [a, b]` into a single quoted string."
+lede: >-
+  Metafetch re-serializes the whole frontmatter, so its quote-everything rule turns an inline `tags: [a, b]` into one quoted string.
 date_created: 2026-08-17
 date_modified: 2026-08-17
 type: issue
