@@ -6,6 +6,10 @@ status: proposed
 target_repo: cite-wide
 related:
   - "[[Auto-Hyperlink-Feature-Names-In-Tables]]"
+site_uuid: bb2e1dc4-11a8-4fab-9fc6-7cb2cf85d377
+hex_code: cityz8
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Cite-Wide — dedupe inline repetition of identical hex citations

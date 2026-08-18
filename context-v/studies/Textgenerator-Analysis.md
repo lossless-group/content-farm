@@ -6,6 +6,10 @@ subject: third-party Obsidian plugin (`obsidian-textgenerator-plugin`)
 upstream: https://github.com/nhaouari/obsidian-textgenerator-plugin
 local_path: plugin-modules/obsidian-textgenerator-plugin
 version_studied: 0.8.8-beta
+site_uuid: 66522cb0-7b67-48c5-922d-2a1020ed83e8
+hex_code: q8rn50
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Textgenerator — Architecture & Feature Analysis

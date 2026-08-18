@@ -14,6 +14,10 @@ tags:
   - Grab-Reference
   - Content-Farm
   - Dependency-Upgrades
+site_uuid: 17b381b0-23b9-4ee9-8b06-84086fc918a7
+hex_code: 89skms
+date_authored_initial_draft: 2026-07-24
+date_authored_current_draft: 2026-07-24
 ---
 
 # What to do with grab-reference

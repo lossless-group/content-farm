@@ -15,6 +15,10 @@ tags:
   - API-Integrations
   - Metafetch
   - cite-wide
+site_uuid: 00064195-421d-49de-bdca-4a3b898f13da
+hex_code: w2bi3v
+date_authored_initial_draft: 2026-05-06
+date_authored_current_draft: 2026-05-06
 ---
 
 ## When to use this prompt

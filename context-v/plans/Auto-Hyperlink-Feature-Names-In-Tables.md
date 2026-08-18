@@ -6,6 +6,10 @@ status: deferred
 related:
   - "[[Per-Directory-Profile-Templates]]"
   - "[[Moving-Beyond-Simple-API-Calls]]"
+site_uuid: 62b67384-03c3-4a25-8883-b968ca6be302
+hex_code: vrbzut
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Auto-Hyperlink Feature Names in Generated Tables

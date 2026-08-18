@@ -19,6 +19,10 @@ tags:
 related_files:
   - context-v/issues/Obsidian-Review-Bot-Feedback-on-Perplexed-Submission.md
   - context-v/reminders/Obsidian-Type-Safety.md
+site_uuid: 7dd87ecf-2524-41f2-a377-9191b652ab64
+hex_code: hc15tu
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 ## Why This Document Exists

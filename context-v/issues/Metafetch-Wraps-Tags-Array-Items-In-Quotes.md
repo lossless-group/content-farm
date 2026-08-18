@@ -19,6 +19,8 @@ tags:
   - YAML
   - Issue-Resolution
   - Obsidian-Plugins
+date_authored_initial_draft: 2026-08-17
+date_authored_current_draft: 2026-08-17
 ---
 
 # Metafetch wraps tags array items in quotes

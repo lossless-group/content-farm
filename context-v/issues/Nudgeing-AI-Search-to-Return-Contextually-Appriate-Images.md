@@ -7,6 +7,10 @@ target_repo: perplexed
 related:
   - "[[Auto-Hyperlink-Feature-Names-In-Tables]]"
   - "[[Per-Directory-Profile-Templates]]"
+site_uuid: 44bd58c8-97c7-411c-8b90-dcea3ef29168
+hex_code: acit3e
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Hotfix:

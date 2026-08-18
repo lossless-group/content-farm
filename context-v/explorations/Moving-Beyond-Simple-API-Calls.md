@@ -6,6 +6,10 @@ status: open
 tags: [llm, orchestration, langchain, ai-sdk, mastra, adk, obsidian-plugin]
 related:
   - "[[Textgenerator-Analysis]]"
+site_uuid: d3a78400-e9d9-4661-95fb-be1d66a2e17e
+hex_code: j68ryw
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Moving Beyond Simple API Calls

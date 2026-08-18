@@ -9,6 +9,8 @@ related_files:
   - src/styles/claude-modal.css
   - src/styles/perplexity-modal.css   # counter-example (narrow)
   - src/styles/text-enhancement-modal.css   # mixed example (sets max-width on contentEl, partial effect)
+site_uuid: 69ac11d1-0a1e-4fe8-bf83-8ac0f681f0d7
+hex_code: sd34o5
 ---
 
 ## TL;DR

@@ -6,6 +6,10 @@ status: spike
 related:
   - "[[Moving-Beyond-Simple-API-Calls]]"
   - "[[Textgenerator-Analysis]]"
+site_uuid: e1131a1f-0704-4855-89bb-80ec0013d923
+hex_code: a6n1g6
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Per-Directory Profile Templates — v0.1 Spike

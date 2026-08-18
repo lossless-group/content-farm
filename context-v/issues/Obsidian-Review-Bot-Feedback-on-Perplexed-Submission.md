@@ -24,6 +24,10 @@ related_files:
   - content-farm/context-v/issues/Dependabot-Alerts-Triage-Playbook-For-Lossless-Repos.md
   - content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md
   - content-farm/changelog/2026-05-18_01.md
+site_uuid: ff02717b-7ede-4e22-a56f-720c50e90eeb
+hex_code: 88jx54
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 > **2026-05-18 update — this document is now historical.** The PR-based queue this issue was written against (`obsidianmd/obsidian-releases#12513`) was retired by Obsidian sometime between 2026-05-09 and 2026-05-17. PR #12513 itself now returns 404. The submission flow as of writing is the hosted portal at **community.obsidian.md**, which runs an additional set of automated scans on top of the eslint-plugin findings captured below. All three Lossless plugins (cite-wide, image-gin, perplexed) shipped through the new portal on 2026-05-17 → 2026-05-18; the round-by-round story is captured in [`content-farm/changelog/2026-05-18_01.md`](../../changelog/2026-05-18_01.md). The forward-looking compliance checklist distilled from both this issue and the May 17-18 portal rounds lives at [`content-farm/context-v/reminders/Obsidian-Marketplace-Compliance.md`](../reminders/Obsidian-Marketplace-Compliance.md) — that's the doc to consult for new submissions. **See Appendix A below for the post-PR-queue findings that aren't in this issue's original body.**

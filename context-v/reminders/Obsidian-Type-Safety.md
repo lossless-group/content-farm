@@ -7,6 +7,8 @@ applies_to: cite-wide Obsidian community plugin
 authors:
   - Michael Staton
 augmented_with: Claude Code (Opus 4.7, 1M context)
+site_uuid: 3194c0fc-52bd-4586-9f6d-eb8205ef052e
+hex_code: jgz1zj
 ---
 
 ## Why This Document Exists

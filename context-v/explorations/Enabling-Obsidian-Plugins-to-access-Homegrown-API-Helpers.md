@@ -10,6 +10,10 @@ tags:
   - Serverless
   - Obsidian-Plugins
   - Stenographer
+site_uuid: 3c7b25cc-93c8-4715-b743-cbdf9b29274c
+hex_code: 1qb9x1
+date_authored_initial_draft: 2026-05-08
+date_authored_current_draft: 2026-05-08
 ---
 
 ## The Problem: The "JavaScript Wall"

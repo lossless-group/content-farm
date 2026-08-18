@@ -19,6 +19,10 @@ tags:
 related_files:
   - plugin-modules/cite-wide/src/modals/CitationModal.ts
   - context-v/plans/Create-a-Study-of-the-Best-Obsidian-Plugins.md
+site_uuid: 3fce085b-a15c-4b37-82a2-73ae738b30bc
+hex_code: hpayce
+date_authored_initial_draft: 2026-05-09
+date_authored_current_draft: 2026-05-09
 ---
 
 # Image Drop Confirmation Gate
