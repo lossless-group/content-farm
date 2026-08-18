@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
 import { STATIC_SEO } from '../../lib/seo';
 
 const base = import.meta.env.BASE_URL;
@@ -47,6 +48,43 @@ const groups: Group[] = [...groupMap.entries()]
     if (bi !== -1) return 1;
     return a.key.localeCompare(b.key);
   });
+
+// Provenance filter. `from` is injected by the rollup sync; documents authored
+// in this repo have no `from`, so they fall back to 'content-farm'. Sorted with
+// the parent first, then plugins alphabetically — the parent is the one a
+// reader is most likely to want on its own.
+const fromCounts = new Map<string, number>();
+for (const e of entries) {
+  const from = (e.data.from as string | undefined) ?? 'content-farm';
+  fromCounts.set(from, (fromCounts.get(from) ?? 0) + 1);
+}
+const typeCounts = new Map<string, number>();
+for (const e of entries) {
+  const key = deriveSection(e.id);
+  typeCounts.set(key, (typeCounts.get(key) ?? 0) + 1);
+}
+const typeOptions = [...typeCounts.entries()]
+  .map(([value, count]) => ({
+    value,
+    label: value.charAt(0).toUpperCase() + value.slice(1).replace(/-/g, ' '),
+    count,
+  }))
+  .sort((a, b) => {
+    const ai = sectionOrder.indexOf(a.value);
+    const bi = sectionOrder.indexOf(b.value);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.value.localeCompare(b.value);
+  });
+
+const filterOptions = [...fromCounts.entries()]
+  .map(([value, count]) => ({ value, label: value, count }))
+  .sort((a, b) => {
+    if (a.value === 'content-farm') return -1;
+    if (b.value === 'content-farm') return 1;
+    return a.value.localeCompare(b.value);
+  });
 ---
 
 <BaseLayout title={STATIC_SEO.contextVIndex.title} description={STATIC_SEO.contextVIndex.description}>
@@ -73,13 +111,38 @@ const groups: Group[] = [...groupMap.entries()]
           </p>
         </div>
       ) : (
+        <>
+        <div class="filter-stack">
+          <div class="filter-row">
+            <span class="filter-caption">Type</span>
+            <ContentCollectionSelectorRow
+              options={typeOptions}
+              targetSelector=".groups"
+              matchAttribute="data-type"
+              groupSelector=".group"
+              label="Filter notes by type"
+            />
+          </div>
+          <div class="filter-row">
+            <span class="filter-caption">Source</span>
+            <ContentCollectionSelectorRow
+              options={filterOptions}
+              targetSelector=".groups"
+              matchAttribute="data-from"
+              label="Filter notes by source repo"
+            />
+          </div>
+        </div>
         <div class="groups">
           {groups.map((g) => (
             <section class="group">
               <h2 class="group-label">{g.label}</h2>
               <ul class="group-list">
                 {g.entries.map((entry) => (
-                  <li>
+                  <li
+                    data-from={(entry.data.from as string | undefined) ?? 'content-farm'}
+                    data-type={g.key}
+                  >
                     <a href={`${base}context-v/${entry.id}`}>
                       {entry.data.from && entry.data.from !== 'content-farm' && (
                         <span class="from-tag">{entry.data.from}</span>
@@ -99,12 +162,38 @@ const groups: Group[] = [...groupMap.entries()]
             </section>
           ))}
         </div>
+        </>
       )
     }
   </main>
 </BaseLayout>
 
 <style>
+  .filter-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+  .filter-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .filter-caption {
+    font-family: var(--ff-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--clr-text-soft);
+    min-width: 3.5rem;
+  }
+  /* The selector carries its own bottom margin for standalone use; inside the
+     stack the gap handles spacing. */
+  .filter-row :global(.cc-selector) {
+    margin-bottom: 0;
+  }
   .archive {
     padding: clamp(3rem, 8vh, 6rem) 0 var(--space-16);
   }

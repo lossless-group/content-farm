@@ -22,6 +22,13 @@
  *     <li data-from="cite-wide">…</li>
  *     <li data-from="content-farm">…</li>
  *   </ul>
+ *
+ * When the items are spread across several sub-lists under section headings,
+ * point `targetSelector` at a common ancestor and pass `groupSelector` so a
+ * section whose items all filter out is hidden along with its heading —
+ * otherwise you get a run of headings with nothing underneath them:
+ *
+ *   <ContentCollectionSelectorRow … targetSelector=".groups" groupSelector=".group" />
  */
 
 interface Option {
@@ -46,6 +53,11 @@ interface Props {
   label?: string;
   /** Optional id; useful only if multiple rows exist on the same page. */
   id?: string;
+  /**
+   * Optional selector (within the target) for section wrappers. Any section
+   * left with no visible items is hidden too, so headings don't strand.
+   */
+  groupSelector?: string;
 }
 
 const {
@@ -55,6 +67,7 @@ const {
   defaultValue = 'all',
   label = 'Filter by source',
   id,
+  groupSelector,
 } = Astro.props;
 
 const totalCount = options.reduce((acc, o) => acc + (o.count ?? 0), 0);
@@ -70,6 +83,7 @@ const merged: Option[] = [
   aria-label={label}
   data-target-selector={targetSelector}
   data-match-attribute={matchAttribute}
+  {...(groupSelector ? { 'data-group-selector': groupSelector } : {})}
 >
   <ul class="cc-selector-list" role="list">
     {
@@ -158,37 +172,73 @@ const merged: Option[] = [
 
 <script>
   // Wires up every ContentCollectionSelector--Row on the page.
-  // Each instance is independent: its target list and match attribute come
-  // from its own data-* attributes, so multiple selectors filtering different
-  // lists can coexist.
-  document.querySelectorAll<HTMLElement>('.cc-selector').forEach((root) => {
-    const targetSelector = root.dataset.targetSelector;
-    const matchAttribute = root.dataset.matchAttribute;
-    if (!targetSelector || !matchAttribute) return;
+  //
+  // Rows that share a `targetSelector` filter the SAME list and are combined
+  // with AND: an item stays visible only if it satisfies every row. That is
+  // what lets a page offer "filter by type" and "filter by source repo" at once
+  // — filtering each independently would have the two rows overwrite each
+  // other's `hidden` flags and produce nonsense.
+  const roots = Array.from(document.querySelectorAll<HTMLElement>('.cc-selector'));
 
+  // Group rows by the list they act on.
+  const byTarget = new Map<string, HTMLElement[]>();
+  roots.forEach((root) => {
+    const t = root.dataset.targetSelector;
+    if (!t || !root.dataset.matchAttribute) return;
+    if (!byTarget.has(t)) byTarget.set(t, []);
+    byTarget.get(t)!.push(root);
+  });
+
+  byTarget.forEach((group, targetSelector) => {
     const list = document.querySelector(targetSelector);
     if (!list) return;
 
-    const items = Array.from(list.querySelectorAll<HTMLElement>(`[${matchAttribute}]`));
+    const attrs = group.map((r) => r.dataset.matchAttribute!) as string[];
+    // An item is filterable if it carries any of the attributes in play.
+    const items = Array.from(
+      list.querySelectorAll<HTMLElement>(attrs.map((a) => `[${a}]`).join(',')),
+    );
+    const groupSelector = group.find((r) => r.dataset.groupSelector)?.dataset.groupSelector;
 
-    root.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement | null;
-      const btn = target?.closest<HTMLButtonElement>('button[data-cc-value]');
-      if (!btn) return;
+    function activeValue(root: HTMLElement): string {
+      const pressed = root.querySelector<HTMLButtonElement>('button[aria-pressed="true"]');
+      return pressed?.dataset.ccValue ?? 'all';
+    }
 
-      const value = btn.dataset.ccValue;
-      if (value === undefined) return;
-
-      // Update aria-pressed state across the row.
-      root.querySelectorAll<HTMLButtonElement>('button[data-cc-value]').forEach((b) => {
-        b.setAttribute('aria-pressed', b.dataset.ccValue === value ? 'true' : 'false');
+    function apply(): void {
+      items.forEach((item) => {
+        const visible = group.every((root) => {
+          const value = activeValue(root);
+          if (value === 'all') return true;
+          return item.getAttribute(root.dataset.matchAttribute!) === value;
+        });
+        item.toggleAttribute('hidden', !visible);
       });
 
-      // Filter items via the native `hidden` attribute. Preserves layout
-      // (no display: none flicker) and survives without any extra CSS.
-      items.forEach((item) => {
-        const matches = value === 'all' || item.getAttribute(matchAttribute) === value;
-        item.toggleAttribute('hidden', !matches);
+      // Hide any section left with nothing in it — a heading with no items
+      // under it reads as a rendering bug.
+      if (groupSelector) {
+        list.querySelectorAll<HTMLElement>(groupSelector).forEach((section) => {
+          const anyVisible = Array.from(
+            section.querySelectorAll<HTMLElement>(attrs.map((a) => `[${a}]`).join(',')),
+          ).some((item) => !item.hasAttribute('hidden'));
+          section.toggleAttribute('hidden', !anyVisible);
+        });
+      }
+    }
+
+    group.forEach((root) => {
+      root.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement | null;
+        const btn = target?.closest<HTMLButtonElement>('button[data-cc-value]');
+        if (!btn) return;
+        const value = btn.dataset.ccValue;
+        if (value === undefined) return;
+
+        root.querySelectorAll<HTMLButtonElement>('button[data-cc-value]').forEach((b) => {
+          b.setAttribute('aria-pressed', b.dataset.ccValue === value ? 'true' : 'false');
+        });
+        apply();
       });
     });
   });
