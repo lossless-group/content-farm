@@ -10,7 +10,7 @@ export interface NavSlot {
   href?: string;
   /** Title shown in the slot — clamped to two lines via line-clamp. */
   title?: string;
-  /** ISO date string shown below the title in mono. */
+  /** ISO date string (YYYY-MM-DD). Rendered long-form, e.g. "May 9, 2026". */
   date?: string;
   /** Override for the boundary "you're at the end" copy. */
   disabledLabel?: string;
@@ -39,6 +39,27 @@ const {
   ariaLabel = 'Adjacent entries',
   variant = 'default',
 } = Astro.props;
+
+/**
+ * "2026-05-09" -> "May 9, 2026".
+ *
+ * Split on the dash and build the Date from parts rather than passing the
+ * string to `new Date()`: an ISO date-only string is parsed as UTC, so in any
+ * timezone behind it the rendered day lands one earlier. Anything that isn't a
+ * plain YYYY-MM-DD is passed through untouched.
+ */
+function formatDate(value?: string): string | undefined {
+  if (!value) return undefined;
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) return value;
+  const [, y, m, d] = match;
+  const date = new Date(Number(y), Number(m) - 1, Number(d));
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+const prevDate = formatDate(prev?.date);
+const nextDate = formatDate(next?.date);
 ---
 
 <nav class={`entry-nav entry-nav--${variant}`} aria-label={ariaLabel}>
@@ -46,7 +67,7 @@ const {
     <a class="entry-nav__slot entry-nav__slot--prev" href={prev.href}>
       <span class="entry-nav__direction">← Newer</span>
       {prev.title && <span class="entry-nav__title">{prev.title}</span>}
-      {prev.date && <span class="entry-nav__date mono">{prev.date}</span>}
+      {prevDate && <span class="entry-nav__date">{prevDate}</span>}
     </a>
   ) : (
     <span class="entry-nav__slot entry-nav__slot--disabled">
@@ -66,7 +87,7 @@ const {
     <a class="entry-nav__slot entry-nav__slot--next" href={next.href}>
       <span class="entry-nav__direction">Older →</span>
       {next.title && <span class="entry-nav__title">{next.title}</span>}
-      {next.date && <span class="entry-nav__date mono">{next.date}</span>}
+      {nextDate && <span class="entry-nav__date">{nextDate}</span>}
     </a>
   ) : (
     <span class="entry-nav__slot entry-nav__slot--disabled">
@@ -83,8 +104,11 @@ const {
     max-width: 70ch;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: var(--space-3);
+    /* minmax(0, …) on the outer columns so long titles can shrink instead of
+       forcing the track wider — without it the centre pill gets squeezed. */
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: stretch;
     align-items: stretch;
   }
   .entry-nav--default {
@@ -155,8 +179,13 @@ const {
   .entry-nav__back {
     display: flex;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: var(--space-2);
-    padding: var(--space-4) var(--space-5);
+    /* Tighter than the side slots on purpose: this is a utility control, and
+       its `white-space: nowrap` means every bit of horizontal padding is taken
+       straight out of the two entry titles either side. */
+    padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-md);
     border: 1px solid var(--clr-border);
     background: var(--clr-bg-soft);
@@ -174,9 +203,25 @@ const {
   }
   .entry-nav__back-icon { font-size: 1rem; }
 
+  /* Between 640 and 900 the three-across layout still fits, but the centre
+     pill's nowrap label eats into both titles. Give it its own row first. */
+  @media (max-width: 900px) {
+    .entry-nav {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .entry-nav__back {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
   @media (max-width: 640px) {
     .entry-nav {
       grid-template-columns: 1fr;
+    }
+    .entry-nav__back {
+      grid-column: auto;
+      grid-row: auto;
     }
     .entry-nav__slot--next { text-align: left; }
     .entry-nav__back { justify-content: center; }
