@@ -1,6 +1,6 @@
 ---
 title: Wall-clock timeout cuts off long deep-research streams
-lede: ">-"
+lede: The directory-template runtime caps every stream by wall clock, so a 7,500-word deep-research draft terminated mid-sentence.
 date_created: 2026-05-26
 date_modified: 2026-05-26
 date_resolved: 2026-05-26

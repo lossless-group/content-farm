@@ -1,6 +1,6 @@
 ---
 title: Paste LLM Content drops prose structure and emits link-only citations
-lede: ">-"
+lede: Paste rewrites citation tokens and nothing else — headings flatten, refs become self-referential links, and one URL gets two hex codes.
 date_created: 2026-08-08
 date_modified: 2026-08-08
 authors:

@@ -1,6 +1,6 @@
 ---
 title: Users need to define their own citation format — the Lossless house style is hardcoded
-lede: ">-"
+lede: Cite Wide hardcodes one house style across four services. Templating is the feature; centralizing the format is the prerequisite.
 date_created: 2026-08-08
 date_modified: 2026-08-08
 authors:

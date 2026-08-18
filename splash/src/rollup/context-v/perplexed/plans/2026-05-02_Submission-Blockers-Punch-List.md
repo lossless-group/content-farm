@@ -7,7 +7,7 @@ authors:
   - Michael Staton
 augmented_with: Claude Code (Opus 4.7, 1M context)
 related_plan: ./20206-05-02_Assuring-Obsidian-Community-Plugin-Requirements.md
-source_audit: null
+source_audit: "Audit triggered by re-reading the canonical submission docs:\n- https://docs.obsidian.md/Plugins/Releasing/Submission+requirements+for+plugins\n- https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin\n- https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines\n- https://docs.obsidian.md/Reference/Manifest\nRaw markdown sourced from `obsidianmd/obsidian-developer-docs` via `gh api`."
 site_uuid: 447588fe-2768-4dd9-9636-275707fe1864
 hex_code: 3ea88r
 date_created: 2026-05-02

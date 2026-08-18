@@ -1,6 +1,6 @@
 ---
 title: Citation Acquisition Pipeline — Agent Architecture, Phases, Output Contract
-lede: ">-"
+lede: "The HOW for filling the Lossless Citation schema: decouples the cheap capture moment from the expensive canonicalization moment."
 date_authored_initial_draft: 2026-05-01
 date_authored_current_draft: 2026-05-01
 status: Draft

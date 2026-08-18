@@ -1,6 +1,6 @@
 ---
 title: Lossless Citation Standards — Schema, Audiences, Portability Thesis
-lede: ">-"
+lede: "The schema layer: what fields exist, why each exists, and how they outlive any one rendering target. The WHAT and WHY, not the HOW."
 date_authored_initial_draft: 2026-05-01
 date_authored_current_draft: 2026-05-01
 status: Draft

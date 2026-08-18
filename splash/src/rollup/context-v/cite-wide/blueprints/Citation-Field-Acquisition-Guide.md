@@ -1,6 +1,6 @@
 ---
 title: Citation Field Acquisition Guide — Per-Field Reference for Filling the Lossless Schema
-lede: ">-"
+lede: "Per-field reference for the acquisition agent: source of truth, cheap path, expensive fallback, validation rule, and failure behavior."
 date_authored_initial_draft: 2026-05-01
 date_authored_current_draft: 2026-05-01
 status: Draft

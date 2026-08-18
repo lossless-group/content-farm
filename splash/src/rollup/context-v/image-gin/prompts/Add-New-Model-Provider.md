@@ -1,6 +1,6 @@
 ---
 title: Prompt — Add a New Model Provider to Image Gin
-lede: ">-"
+lede: "Agent-facing instruction for adding an image provider to Image Gin: the blueprint, the Recraft/Ideogram/Magnific prior art, the exact files."
 date_created: 2026-05-04
 date_modified: 2026-05-05
 status: Authoritative
