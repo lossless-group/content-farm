@@ -1,16 +1,16 @@
 ---
 title: "Metafetch source notes — fetch from any journal URL, not just `url`"
-lede: "A note about a paper keys its link as `arxiv:`, not `url:` — and metafetch couldn't see it. Phase 1 ships a URL picker across every frontmatter property; phases 2–3 make what comes back worth having for journals and trade press."
+lede: "A note about a paper keys its link as `arxiv:`, not `url:` — and metafetch couldn't see it. A URL picker across every frontmatter property, a scholarly metadata tier, and vault-wide identity codes now make a source note worth having."
 date_created: 2026-08-17
 date_modified: 2026-08-17
 date_authored_initial_draft: 2026-08-17
 date_authored_current_draft: 2026-08-17
 type: spec
-status: Phases-1-and-2-Shipped
+status: Phases-1-2-and-2.5-Shipped
 target_repo: content-farm
 site_uuid: 1e24af09-b927-4a0c-8664-7079e03a878a
 hex_code: qclh88
-at_semantic_version: 0.0.2.0
+at_semantic_version: 0.0.3.0
 authors:
   - Michael Staton
 augmented_with:
@@ -211,6 +211,61 @@ Open questions for this phase:
   matching cite-wide's schema. That is the intended reading and needs no guard:
   you would not run metafetch on a document you wrote.
 
+## Phase 2.5 — the vault identity code (shipped)
+
+Opt-in setting: stamp a short, vault-unique code on fetched notes.
+
+**Why a code at all.** Once a source note has one, it can be referenced from
+anywhere in the vault — and across the sites the vault rolls up into — by
+something stabler than its filename. `[[Some Note]]` is ambiguous the moment two
+notes share a title, and it breaks on rename. A minted code doesn't.
+
+**These are not hexadecimal, and the name is historical.** We deliberately do
+not restrict to `[0-9a-f]`. Six characters of `[a-z0-9]` costs exactly the same
+on disk and buys roughly 130× the space:
+
+| Alphabet | Size | 6-char space |
+|---|---|---|
+| hex `[0-9a-f]` | 16 | 16.7 million |
+| ours `[a-z0-9]` | 36 | 2.18 billion |
+
+There is no reason to pay for the narrower alphabet. Generation uses rejection
+sampling rather than modulo, so no character is marginally more likely than
+another — a small bias, but a pointless one in an identifier whose entire job
+is not colliding.
+
+**Write-once, enforced.** An existing code is never overwritten or regenerated.
+A code that changes on the next fetch is worse than no code, because every
+reference to the old one rots silently.
+
+**Vault-wide uniqueness is checked, not assumed.** Each mint reads existing
+codes from Obsidian's metadata cache. That cache lags `vault.modify`, so batch
+runs additionally thread a run-scoped set — without it, two files processed
+seconds apart could be handed the same code.
+
+Settings: on/off (default **off**, since it writes a property the note did not
+ask for), field name (default `hex_code`), and length (4–12, default 6). Wired
+into all three write paths — the script commands, the picker, and batch.
+
+## Phase 4 — hand off to cite-wide (proposed)
+
+The natural continuation of this journey, raised while reviewing Phase 2.5.
+
+Once a source note carries complete metadata *and* an identity code, the
+remaining gap is **format translation**: a cite-wide command that takes the
+frontmatter metafetch produced and emits it in cite-wide's own citation format.
+
+That closes the loop between the two plugins along their real seam. metafetch
+is good at *acquiring* metadata about a source and putting it in frontmatter;
+cite-wide is good at *rendering* a source as a citation inside a document. The
+identity code is the join key — the same code that identifies the note is the
+hex cite-wide already uses for footnote markers.
+
+Nothing designed yet. Open questions: whether the command lives in cite-wide
+(reading a note's frontmatter) or metafetch (emitting cite-wide format), and
+whether it writes a citation *into* a target document or copies one to the
+clipboard.
+
 ## Relationship to `grab-reference`
 
 [[What-To-Do-With-Grab-Reference]] is an open operator decision between four
@@ -243,7 +298,8 @@ but does not fix it. Worth its own issue.
 - `plugin-modules/metafetch/src/utils/frontmatterUrls.ts` — Phase 1 discovery
 - `plugin-modules/metafetch/src/modals/SelectUrlModal.ts` — Phase 1 picker
 - `plugin-modules/metafetch/src/services/directFetchService.ts` — Phase 2 `citation_*` tier
-- `plugin-modules/metafetch/tests/` — 52 cases across the three units
+- `plugin-modules/metafetch/src/utils/hexCode.ts` — Phase 2.5 identity codes
+- `plugin-modules/metafetch/tests/` — 71 cases across four units
 - `plugin-modules/cite-wide/context-v/blueprints/Lossless-Citation-Standards.md` — the field vocabulary to adopt
 - `plugin-modules/cite-wide/context-v/blueprints/Citation-Field-Acquisition-Guide.md` — per-field acquisition strategy
 - [[What-To-Do-With-Grab-Reference]] — the open decision this informs
