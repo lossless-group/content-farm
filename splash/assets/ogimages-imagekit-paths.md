@@ -1,8 +1,8 @@
 ---
 site_uuid: 2565b435-e44a-40e9-971e-24b01958252d
 hex_code: qbb9pa
-title: "Stenographer OG images — ImageKit paths"
-lede: "CDN URLs and alt text for the seven Stenographer share images. Absolute URLs, because a relative path will not unfurl."
+title: "Plugin OG images — ImageKit paths in use"
+lede: "The CDN URLs the splash actually references for plugin share imagery, and why they are CDN URLs and not /public paths — Git LFS plus GitHub Pages serves a pointer file, not an image."
 date_created: 2026-08-18
 date_modified: 2026-08-18
 date_authored_initial_draft: 2026-08-18
@@ -17,113 +17,162 @@ tags:
   - OG-Images
   - ImageKit
   - Stenographer
+  - Perplexed
   - Share-Imagery
 publish: false
 ---
 
-# Stenographer OG images — ImageKit paths
+# Plugin OG images — ImageKit paths in use
 
-Seven share images for the Stenographer plugin, uploaded to ImageKit on 2026-08-18.
-Local originals live in `splash/public/`; **these CDN URLs are what should be
-referenced in `og:image` tags.** An unfurler fetching a relative path gets nothing.
+The share-image URLs referenced from `src/content/plugin-highlights/*.md`.
+Every one below was verified HTTP 200 on 2026-08-18.
 
-## The URLs
+## Why these are CDN URLs and not `/public` paths
 
-### Banner — 1312×736 (16:9)
+`*.jpg` is tracked by **Git LFS** in this repo, and GitHub Pages serves the LFS
+**pointer file** rather than the image. A site-relative path answers `200` with
+`content-type: image/jpeg` and about **131 bytes of text** — so it looks healthy
+to a link checker and renders as nothing to a human. This is the single reason
+the imagery moved to ImageKit; it is not a preference.
 
-Default OpenGraph / Twitter card. The safe pick for any surface that doesn't specify.
+Local originals still live in `public/` as the source of truth for regeneration.
+They are not what gets served.
+
+## Stenographer
+
+### `banner_image` — 16:9
+
+Default OpenGraph / Twitter card.
 
 ```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--Banner_20260818T034605Z.jpg
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--Banner_20260817T222205Z.jpg
 ```
 
-**Alt text:** Isometric illustration: a purple studio microphone on a turquoise floor against a dark wall, with a long ribbon of printed transcript paper running diagonally across the floor and arching past the microphone base
+**Alt:** Isometric illustration: a purple studio microphone on a turquoise floor against a dark wall, with a long ribbon of printed transcript paper running diagonally across the floor and arching past the microphone base
 
-### Default — 1312×736 (16:9)
-
-Byte-identical to Banner — see the note below.
-
-```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--Default_20260818T034605Z.jpg
-```
-
-**Alt text:** Isometric illustration: a purple studio microphone on a turquoise floor against a dark wall, with a long ribbon of printed transcript paper running diagonally across the floor and arching past the microphone base
-
-### BannerTall — 864×1152 (3:4)
+### `banner_tall_image` — 3:4
 
 Taller crop for feeds that letterbox 16:9.
 
 ```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--BannerTall_20260818T034605Z.jpg
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--BannerTall_20260817T223629Z.jpg
 ```
 
-**Alt text:** Isometric illustration: a purple microphone with a rectangular mesh head in a yoke mount, standing where a turquoise floor meets a dark wall, with a ribbon of printed transcript paper curling in an S-shape around its base
+**Alt:** Isometric illustration: a purple microphone with a rectangular mesh head in a yoke mount, standing where a turquoise floor meets a dark wall, with a ribbon of printed transcript paper curling in an S-shape around its base
 
-### BannerTallMax — 832×1248 (2:3)
+### `banner_tall_max_image` — 2:3
 
 Most extreme banner ratio.
 
 ```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--BannerTallMax_20260818T034605Z.jpg
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--BannerTallMax_20260817T223630Z.jpg
 ```
 
-**Alt text:** Isometric illustration: a charcoal condenser microphone suspended in a black shock-mount cradle above a turquoise floor, encircled by a loop of printed transcript paper, with purple and orange rounded hills along the horizon
+**Alt:** Isometric illustration: a charcoal condenser microphone suspended in a black shock-mount cradle above a turquoise floor, encircled by a loop of printed transcript paper, with purple and orange rounded hills along the horizon
 
-### Portrait — 896×1120 (4:5)
+### `portrait_image` — 4:5
 
 Instagram-style portrait.
 
 ```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--Portrait_20260818T034605Z.jpg
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--Portrait_20260817T223631Z.jpg
 ```
 
-**Alt text:** Isometric illustration: a purple microphone with a gold mesh head on a turquoise floor, two sheets of printed transcript paper lying flat beneath it, teal rolling hills along the horizon under a dark sky
+**Alt:** Isometric illustration: a purple microphone with a gold mesh head on a turquoise floor, two sheets of printed transcript paper lying flat beneath it, teal rolling hills along the horizon under a dark sky
 
-### PortraitTall — 736×1312 (9:16)
+### `portrait_tall_image` — 9:16
 
-WhatsApp / iMessage tall unfurl and story formats.
-
-```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--PortraitTall_20260818T034605Z.jpg
-```
-
-**Alt text:** Isometric illustration: a magenta microphone with a brass grille suspended in a purple shock-mount cradle, a ribbon of printed transcript paper spiralling around its base on a turquoise floor
-
-### Square — 1024×1024 (1:1)
-
-Avatar, gallery tile, and square card slots.
+WhatsApp / iMessage tall unfurl, story formats.
 
 ```
-https://ik.imagekit.io/xvpgfijuw/stenographer/og-images/Ogimage__Stenographer--Square_20260818T034605Z.jpg
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--PortraitTall_20260817T223632Z.jpg
 ```
 
-**Alt text:** Isometric illustration: a bold purple microphone on a round stand against a dark herringbone-textured wall, with a ribbon of printed transcript paper curling across the turquoise floor toward the lower left
+**Alt:** Isometric illustration: a magenta microphone with a brass grille suspended in a purple shock-mount cradle, a ribbon of printed transcript paper spiralling around its base on a turquoise floor
+
+### `square_image` — 1:1
+
+Avatar, gallery tile, square card.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/stenographer-og/Stenographer__Obsidian-Community-Plugin--Square_20260817T223633Z.jpg
+```
+
+**Alt:** Isometric illustration: a bold purple microphone on a round stand against a dark herringbone-textured wall, with a ribbon of printed transcript paper curling across the turquoise floor toward the lower left
+
+## Perplexed
+
+### `banner_image` — 16:9
+
+Default OpenGraph / Twitter card.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--Banner_20260817T221604Z.jpg
+```
+
+### `banner_tall_image` — 3:4
+
+Taller crop for feeds that letterbox 16:9.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--BannerTall_20260817T225002Z.jpg
+```
+
+### `banner_tall_max_image` — 2:3
+
+Most extreme banner ratio.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--BannerTallMax_20260817T225003Z.jpg
+```
+
+### `portrait_image` — 4:5
+
+Instagram-style portrait.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--Portrait_20260817T225004Z.jpg
+```
+
+### `portrait_tall_image` — 9:16
+
+WhatsApp / iMessage tall unfurl, story formats.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--PortraitTall_20260817T225005Z.jpg
+```
+
+### `square_image` — 1:1
+
+Avatar, gallery tile, square card.
+
+```
+https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-Community-Plugin--Square_20260817T225006Z.jpg
+```
+
+> **Alt text still to be written.** These six have not been looked at,
+> and alt text written without seeing an image is worse than none —
+> it satisfies a linter while telling a screen-reader user nothing.
 
 ## Notes
 
-**`Default` is a byte-identical copy of `Banner`.** Same md5, same 1312×736. Both
-were uploaded so every documented name resolves, but they are one image. Worth
-deciding whether `Default` should be a distinct composition or simply dropped in
-favour of pointing default consumers at `Banner`.
-
-**The uploaded filenames read `Ogimage__`, not `ogimage__`.** The prep script
-Title-Cases every segment, which collides with the house convention where a
-lowercase leading token marks a *kind of asset* rather than a proper noun —
-`ogimage__Lossless-At--Banner.jpg` is the documented shape. The URLs above are
-correct as uploaded; the script is what needs fixing, not these links.
-
-**Uploaded as JPEG deliberately.** ImageKit content-negotiates: a JPEG source
-serves WebP to browsers that accept it and falls back to JPEG for unfurlers.
-Uploading WebP instead makes that fallback a PNG up to three times larger.
-
-**Re-running the upload will not overwrite these.** The ISO timestamp makes every
-run produce new filenames, so published URLs are safe — at the cost of
-accumulating near-duplicates in the folder. Prune deliberately:
+**A duplicate set exists at `/stenographer/og-images/`.** Uploaded 2026-08-18,
+byte-identical to the `/content-farm/stenographer-og/` set above, from a run that
+did not check whether the imagery was already hosted. Nothing references it. It
+should be purged:
 
 ```bash
 node ~/.claude/skills/prep-images-for-embed/scripts/prep-images.mjs \
-  --list-folder /stenographer/og-images
+  --purge-folder /stenographer/og-images
 ```
 
-**Responsive variants need no re-upload** — append an ImageKit transformation,
-e.g. `?tr=w-800`.
+**Uploads are JPEG on purpose.** ImageKit content-negotiates on `Accept`: a JPEG
+source serves WebP where accepted and falls back to JPEG everywhere else.
+Measured on the banner — 66KB JPEG, 30KB WebP. Uploading WebP instead makes the
+fallback a PNG up to three times larger.
+
+**Responsive variants need no re-upload** — append a transformation, `?tr=w-800`.
+
+**Re-running an upload never overwrites a live URL.** The ISO timestamp in each
+filename makes every run unique — which is also how the duplicate above happened.
+Check `--list-folder` before uploading.
