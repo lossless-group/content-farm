@@ -55,11 +55,22 @@ function childrenOf(n: any): any[] {
 {type === "heading" && (() => {
   const heading = node as Heading;
   const text = toString(heading);
-  const id = text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
+  // Prefer the id LFM already computed (remark-lfm-heading-ids, 0.4.0+). It is
+  // the same id published in `tree.data.headings`, so an anchor TOC built from
+  // that outline is guaranteed to match what renders here.
+  //
+  // Two slugifiers is the failure mode worth avoiding: ours differs from LFM's
+  // on headings ending in a version number — "…, 0.5.1" slugs to `-051` here
+  // and `-05` there — which is exactly the shape of our release-narrative
+  // headings. The local slug stays as a fallback for content parsed without
+  // the plugin.
+  const id =
+    ((heading as any).data?.id as string | undefined) ??
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
 
   const level = heading.depth ?? 1;
 
