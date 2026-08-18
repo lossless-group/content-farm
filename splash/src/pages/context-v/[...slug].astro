@@ -8,7 +8,7 @@ import { getPluginOgImage } from '../../lib/seo';
 
 function navSlotFor(e: any | undefined) {
   if (!e) return undefined;
-  const d = e.data.date_modified ?? e.data.date_updated ?? e.data.date_created ?? e.data.date_authored_current_draft ?? e.data.date_authored_initial_draft;
+  const d = e.data.date_modified ?? e.data.date_last_updated ?? e.data.date_created ?? e.data.date_authored_current_draft ?? e.data.date_authored_initial_draft;
   return {
     href: `${import.meta.env.BASE_URL}context-v/${e.id}`,
     title: e.data.title ?? e.id.split('/').pop(),
@@ -36,11 +36,11 @@ const { entry } = Astro.props;
 // the site's component registry.
 const tree = await parseMarkdown(entry.body ?? '');
 const citations = ((tree as any)?.data?.citations?.ordered ?? []) as any[];
-const date = entry.data.date_modified ?? entry.data.date_updated ?? entry.data.date_created ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft;
+const date = entry.data.date_modified ?? entry.data.date_last_updated ?? entry.data.date_created ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft;
 const base = import.meta.env.BASE_URL;
 
 // Derive prev/next entries for the bottom nav. Sort: newest first by
-// date_modified > date_updated > date_created. "Previous" (←) = newer
+// date_modified > date_last_updated > date_created. "Previous" (←) = newer
 // entry (index-1); "Next" (→) = older entry (index+1). Boundaries render
 // as disabled stubs so the three-slot layout stays stable.
 type Entry = (typeof entry);
@@ -49,8 +49,8 @@ try {
   allEntries = (await getCollection('context-v'))
     .filter((e) => e.data.publish !== false)
     .sort((a, b) => {
-      const dA = a.data.date_modified ?? a.data.date_updated ?? a.data.date_created ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);
-      const dB = b.data.date_modified ?? b.data.date_updated ?? b.data.date_created ?? b.data.date_authored_current_draft ?? b.data.date_authored_initial_draft ?? new Date(0);
+      const dA = a.data.date_modified ?? a.data.date_last_updated ?? a.data.date_created ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);
+      const dB = b.data.date_modified ?? b.data.date_last_updated ?? b.data.date_created ?? b.data.date_authored_current_draft ?? b.data.date_authored_initial_draft ?? new Date(0);
       return new Date(dB).getTime() - new Date(dA).getTime();
     });
 } catch {
@@ -73,7 +73,7 @@ const pageDescription =
   `${sectionLabel.charAt(0).toUpperCase() + sectionLabel.slice(1)} note from ${entry.data.from ?? 'content-farm'}.`;
 const pluginOg = await getPluginOgImage(entry.data.from);
 const publishedTime = (entry.data.date_created ?? entry.data.date_authored_initial_draft)?.toISOString();
-const modifiedTime = (entry.data.date_modified ?? entry.data.date_updated ?? entry.data.date_created ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft)?.toISOString();
+const modifiedTime = (entry.data.date_modified ?? entry.data.date_last_updated ?? entry.data.date_created ?? entry.data.date_authored_current_draft ?? entry.data.date_authored_initial_draft)?.toISOString();
 const articleAuthor = entry.data.authors?.[0];
 const articleTags = entry.data.tags;
 ---

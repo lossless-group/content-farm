@@ -95,7 +95,7 @@ export const GET: APIRoute = async () => {
       bodyParts.push(`- Source (\`from\`): \`${from}\``);
       bodyParts.push(`- Source path: \`${sourcePath}\``);
       bodyParts.push(`- Canonical URL: ${url}`);
-      const dm = data.date_modified ?? data.date_updated;
+      const dm = data.date_modified ?? data.date_last_updated;
       if (dm) {
         const d = dm instanceof Date ? dm : new Date(dm);
         if (!Number.isNaN(d.getTime())) bodyParts.push(`- Last modified: ${d.toISOString().slice(0, 10)}`);

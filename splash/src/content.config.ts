@@ -143,7 +143,9 @@ const contextVSchema = z
     date_authored_initial_draft: lenientDate,
     date_authored_current_draft: lenientDate,
     date_modified: lenientDate,
-    date_updated: lenientDate,
+    // `date_last_updated` is the canonical 'any touch' key (35 files use it).
+    // `date_updated` was declared here but appears in zero documents.
+    date_last_updated: lenientDate,
     last_verified: lenientDate,
     authors: lenientStringArray,
     tags: lenientStringArray,
