@@ -158,8 +158,12 @@ https://ik.imagekit.io/xvpgfijuw/content-farm/perplexed-og/Perplexed__Obsidian-C
 
 **A duplicate set exists at `/stenographer/og-images/`.** Uploaded 2026-08-18,
 byte-identical to the `/content-farm/stenographer-og/` set above, from a run that
-did not check whether the imagery was already hosted. Nothing references it. It
-should be purged:
+did not check whether the imagery was already hosted. Nothing references it, and
+it is **deliberately left in place** — redundant objects on the CDN cost nothing
+and carry no risk. Noted only so a future reader knows which set is canonical:
+the one referenced from frontmatter, above.
+
+If it is ever worth clearing:
 
 ```bash
 node ~/.claude/skills/prep-images-for-embed/scripts/prep-images.mjs \
