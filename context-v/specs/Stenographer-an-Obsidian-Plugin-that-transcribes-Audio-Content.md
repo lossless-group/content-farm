@@ -32,7 +32,7 @@ Stenographer is an Obsidian plugin that follows a "listenable link" — YouTube,
 
 ## Prior art
 
-- [[Create-an-Audio-Transcriber-plus-Layered-Value]] — the broader vision spec that frames audio-to-note as a value-layered workflow (transcript + summary + citations + …). Stenographer is the focused first cut: provider metadata + accurate transcript, nothing more layered yet. References [`obra/Youtube2Webpage`](https://github.com/obra/Youtube2Webpage) as a working precedent for the YouTube-to-document shape.
+- [`obra/Youtube2Webpage`](https://github.com/obra/Youtube2Webpage) — a working precedent for the YouTube-to-document shape. Carried over from the one-day stub spec that preceded this one ("Create an Audio Transcriber, with extra layers of value", 2026-05-06), which held nothing else and has been removed.
 - [[../explorations/Using-APIs-to-Ingest-More-Data]] — explores third-party fetchers (Jina Reader, Firecrawl, etc.) and the "metadata to frontmatter, body to note" pattern Metafetch already implements for OpenGraph. Stenographer is the audio-shaped sibling.
 - `plugin-modules/metafetch/` — established pattern for "fetch from a URL → write frontmatter to a note" inside Obsidian.
 - `plugin-modules/perplexed/` — established pattern for streaming AI responses into the editor in real time.
@@ -213,7 +213,7 @@ a job in flight when the app closes is lost.
 - [x] **Filename derivation?** Provider title slug, optional date prefix (setting), collision-safe.
 - [x] **Very long content?** Async job + polling + progress reporting + configurable timeout.
       No chunking; no resume across restart.
-- [ ] How much should overlap with the broader [[Create-an-Audio-Transcriber-plus-Layered-Value]] spec — does Stenographer subsume it, or stay strictly the "raw transcript" cut while the broader spec covers layered value? *(Still open. That spec is a two-line stub; Stenographer has outgrown it. Candidate resolution: Stenographer subsumes the raw-transcript cut and the broader spec becomes the `intelligence:`/summary/citation layer on top.)*
+- [x] How much should overlap with the broader "layered value" framing — does Stenographer subsume it? **Resolved 2026-08-18: yes.** That spec never got past a link and a bullet, and Stenographer outgrew it within a day. It has been removed rather than left as a stub competing for the same subject. The layered value it gestured at — summary, citations, an `intelligence:` layer over the raw transcript — belongs in this spec's Wish List, not a separate document.
 
 ## Deferred to v2
 
@@ -230,7 +230,6 @@ Named here so the v1 boundary is legible rather than accidental:
 
 ## Related
 
-- [[Create-an-Audio-Transcriber-plus-Layered-Value]]
 - [[../explorations/Using-APIs-to-Ingest-More-Data]]
 - `plugin-modules/metafetch/`
 - `plugin-modules/perplexed/`
