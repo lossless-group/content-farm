@@ -19,9 +19,20 @@
  * Output layout:
  *   splash/src/rollup/
  *     changelog/
- *       <plugin>/<filename>.md       (legacy entries get a 'legacy: true' flag)
+ *       <plugin>/<filename>.md            (legacy entries get a 'legacy: true' flag)
+ *       <plugin>/releases/<version>.md    (release narratives — see below)
  *     context-v/
  *       <plugin>/<section>/<filename>.md
+ *
+ * Release narratives: per the changelog-conventions skill, a plugin's release
+ * messages live at `changelog/releases/<version>.md` — inside changelog/, so
+ * this sync picks them up for free (the Content API walk is recursive and the
+ * subpath is preserved). They are ordinary changelog documents with frontmatter
+ * and `category: Release`, which is how a page can tell them apart from the
+ * dated ship notes they sit alongside.
+ *
+ * They were invisible to this sync until 2026-08-18, because the plugins kept
+ * them in a root-level `release-notes/` directory that nothing rolled up.
  *
  * Each written file gets injected provenance frontmatter (`from`, `from_path`,
  * optional `legacy`) so pages can render where each entry came from.
@@ -90,7 +101,13 @@ async function main(): Promise<void> {
     await writeFile(out, materialize(entry), 'utf8');
     changelogWritten++;
   }
-  console.log(`[rollup-sync] changelog: wrote ${changelogWritten} files`);
+  const releaseCount = changelog.entries.filter((e) =>
+    e.fromPath.startsWith('releases/'),
+  ).length;
+  console.log(
+    `[rollup-sync] changelog: wrote ${changelogWritten} files ` +
+      `(${releaseCount} release narratives, ${changelogWritten - releaseCount} dated entries)`,
+  );
 
   // ─── context-v ────────────────────────────────────────────────────────────
   console.log('[rollup-sync] fetching context-v…');
