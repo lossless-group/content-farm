@@ -99,7 +99,7 @@ export const STATIC_SEO = {
       'Version-anchored release narratives for the content-farm plugin family — Cite-Wide, Image Gin, Perplexed, and siblings. Each release rolls up its underlying per-day changelog work into a single user-facing story.',
   } satisfies SeoEntry,
   contextVIndex: {
-    title: 'Notes (context-v)',
+    title: 'Context (context-v)',
     description:
       "Specs, plans, blueprints, chores. The thinking that underwrites the code, kept in the repo's context-v/ and rendered when marked publishable.",
   } satisfies SeoEntry,

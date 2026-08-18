@@ -91,7 +91,7 @@ const filterOptions = [...fromCounts.entries()]
   <main class="container archive">
     <header class="archive-head">
       <p class="eyebrow">The thinking</p>
-      <h1>Notes</h1>
+      <h1>Context</h1>
       <p class="archive-lede">
         Specs, plans, blueprints, chores. Living documentation that underwrites the code, kept in
         the repo's <code>context-v/</code> and rendered here when marked publishable.
@@ -104,7 +104,7 @@ const filterOptions = [...fromCounts.entries()]
     {
       groups.length === 0 ? (
         <div class="archive-empty">
-          <p>No published notes yet.</p>
+          <p>No published context yet.</p>
           <p class="dim">
             Drop files into <code>content-farm/context-v/</code>, mark them <code>publish: true</code>
             (or omit the field), and they'll appear here on the next deploy.
@@ -120,7 +120,7 @@ const filterOptions = [...fromCounts.entries()]
               targetSelector=".groups"
               matchAttribute="data-type"
               groupSelector=".group"
-              label="Filter notes by type"
+              label="Filter context by type"
             />
           </div>
           <div class="filter-row">
@@ -129,7 +129,7 @@ const filterOptions = [...fromCounts.entries()]
               options={filterOptions}
               targetSelector=".groups"
               matchAttribute="data-from"
-              label="Filter notes by source repo"
+              label="Filter context by source repo"
             />
           </div>
         </div>

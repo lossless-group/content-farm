@@ -93,7 +93,7 @@ const articleTags = entry.data.tags;
       prev={navSlotFor(prevEntry)}
       next={navSlotFor(nextEntry)}
       backHref={`${base}context-v`}
-      backLabel="All notes"
+      backLabel="All context"
       ariaLabel="Adjacent notes (top)"
       variant="compact"
     />
@@ -119,14 +119,14 @@ const articleTags = entry.data.tags;
         </div>
       </header>
 
-      <MarkdownReader tree={tree} citations={citations} backHref={`${base}context-v`} backLabelTxt="All notes" />
+      <MarkdownReader tree={tree} citations={citations} backHref={`${base}context-v`} backLabelTxt="All context" />
     </article>
 
     <EntryNav
       prev={navSlotFor(prevEntry)}
       next={navSlotFor(nextEntry)}
       backHref={`${base}context-v`}
-      backLabel="All notes"
+      backLabel="All context"
       ariaLabel="Adjacent notes (bottom)"
     />
   </main>
