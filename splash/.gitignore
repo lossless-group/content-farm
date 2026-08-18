@@ -4,3 +4,12 @@ dist/
 .env
 .env.production
 .DS_Store
+
+# Image-prep working directories — never committed.
+# .image-staging/ holds resized, EXIF-stripped intermediates on their way to the
+# CDN; .ideogram-candidates/ holds the rejected generations from an image run.
+# Both are scratch: what ships is the CDN URL, or the chosen file copied into
+# public/. See the prep-images-for-embed and generate-consistent-og-images
+# skills.
+.image-staging/
+.ideogram-candidates/
