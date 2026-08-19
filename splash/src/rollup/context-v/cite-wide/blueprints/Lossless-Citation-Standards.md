@@ -20,6 +20,7 @@ sibling_docs:
   - Citation-Field-Acquisition-Guide.md
 site_uuid: 51c34d70-443b-4564-9bbd-d291b1b4e5ec
 hex_code: i97f8x
+publish: true
 from: cite-wide
 from_path: blueprints/Lossless-Citation-Standards.md
 ---

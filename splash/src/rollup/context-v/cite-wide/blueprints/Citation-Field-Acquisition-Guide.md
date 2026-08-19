@@ -19,6 +19,7 @@ sibling_docs:
   - Citation-Acquisition-Pipeline.md
 site_uuid: 0ecc4baf-c4ca-4267-b2a0-9f4021a5bb63
 hex_code: xw1xco
+publish: true
 from: cite-wide
 from_path: blueprints/Citation-Field-Acquisition-Guide.md
 ---

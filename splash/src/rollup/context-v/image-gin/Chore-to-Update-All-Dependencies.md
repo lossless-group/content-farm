@@ -12,6 +12,7 @@ tags:
   - Context-Vigilance
 lede: TS 6 forced moduleResolution bundler and a node types entry — and revealed esbuild had been silently dropping the Freepik stylesheet.
 summary: "Post-hoc record of a TypeScript 6 dependency upgrade in image-gin: four numbered findings, each with the fix that was applied. Read it before repeating the upgrade in a sibling plugin — the tsconfig change and the Uint8Array-versus-ArrayBuffer typing conflict will recur, and the silently-ignored CSS import is a class of bug worth grepping for elsewhere. Also notes the known-cosmetic @codemirror peer-dep warnings that can be safely ignored."
+publish: true
 from: image-gin
 from_path: Chore-to-Update-All-Dependencies.md
 ---

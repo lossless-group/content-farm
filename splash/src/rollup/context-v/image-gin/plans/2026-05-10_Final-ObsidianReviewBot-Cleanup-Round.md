@@ -16,6 +16,7 @@ hex_code: dy2ql3
 date_created: 2026-05-10
 lede: Local lint is clean but the bot flags 49 sentence-case hits — its default brand list has no Magnific or Ideogram, so they get a /skip reply.
 summary: The last cleanup round before image-gin's approval. Explains the two reasons local lint and the server-side bot disagree (our brands allowlist versus the plugin's DEFAULT_BRANDS, and the recommended config turning require-await off), triages the 49 findings into genuine violations versus brand-name false positives, and stages three semantically-clean commits plus a drafted /skip comment. Reusable as the template for any bot round where local lint passes and the server does not.
+publish: true
 from: image-gin
 from_path: plans/2026-05-10_Final-ObsidianReviewBot-Cleanup-Round.md
 ---

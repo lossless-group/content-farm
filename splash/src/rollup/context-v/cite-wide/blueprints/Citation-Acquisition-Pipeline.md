@@ -20,6 +20,7 @@ sibling_docs:
   - Citation-Field-Acquisition-Guide.md
 site_uuid: 00d4935e-c156-4fc9-b699-36b59a08ca82
 hex_code: w9cyuy
+publish: true
 from: cite-wide
 from_path: blueprints/Citation-Acquisition-Pipeline.md
 ---

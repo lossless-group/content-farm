@@ -26,6 +26,7 @@ site_uuid: 63d2b036-8262-469c-a52a-be7f466d049f
 hex_code: 9cm09u
 date_authored_initial_draft: 2026-05-26
 date_authored_current_draft: 2026-05-26
+publish: true
 from: perplexed
 from_path: issues/Wall-Clock-Timeout-Cuts-Off-Long-Deep-Research-Streams.md
 ---
