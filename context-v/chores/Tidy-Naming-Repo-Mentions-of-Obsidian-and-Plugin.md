@@ -20,6 +20,7 @@ site_uuid: 49b5412f-5a7d-42a8-ab85-4235a9228e23
 hex_code: ae2h95
 date_authored_initial_draft: 2026-05-05
 date_authored_current_draft: 2026-05-05
+publish: true
 ---
 
 # Tidy Naming — Repo Mentions of "Obsidian" and "Plugin"

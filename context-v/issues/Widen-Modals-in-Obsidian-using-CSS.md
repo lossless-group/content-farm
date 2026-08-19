@@ -13,6 +13,7 @@ site_uuid: 69ac11d1-0a1e-4fe8-bf83-8ac0f681f0d7
 hex_code: sd34o5
 lede: "Modal width lives on this.modalEl, not this.contentEl — the plugin-template convention that everyone copies is why modals stay narrow."
 summary: "Resolved issue that doubles as the canonical how-to for modal sizing in any Lossless Obsidian plugin. Includes a copy-paste CSS starter file, the theme-token table, width budgets per modal kind, the BEM scoping rationale, a responsive breakpoint, and six named gotchas. Verification receipts point at a working example, a counter-example, and a partial-fix attempt in the perplexed repo. An agent asked to widen, restyle, or lay out an Obsidian modal should follow this rather than improvising."
+publish: true
 ---
 
 ## TL;DR

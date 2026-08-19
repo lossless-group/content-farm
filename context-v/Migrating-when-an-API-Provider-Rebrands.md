@@ -19,6 +19,7 @@ site_uuid: 6472f8ec-75cc-4b64-8e9d-9ea7e5ebe1ff
 hex_code: p3x48y
 date_authored_initial_draft: 2026-05-05
 date_authored_current_draft: 2026-05-05
+publish: true
 ---
 
 # Migrating When an API Provider Rebrands

@@ -12,6 +12,7 @@ date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
 lede: "Text Generator runs a local Koa proxy and a runtime package loader — borrow its async Handlebars helpers, not its remote-code surface."
 summary: "Study of the third-party obsidian-textgenerator-plugin at 0.8.8-beta, read as prior art for the content-farm plugin family. Maps its directory structure, roughly thirty commands, provider matrix, template and Handlebars engine, extractor framework, streaming and proxy layer, and settings shape, then names three patterns worth borrowing and three to avoid. Section 6 maps the functional overlap with perplexed, metafetch, grab-reference, and cite-wide. Use it as the reference point when weighing how far a Lossless plugin should grow."
+publish: true
 ---
 
 # Textgenerator — Architecture & Feature Analysis

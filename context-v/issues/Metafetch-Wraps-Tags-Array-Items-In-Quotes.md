@@ -22,6 +22,7 @@ tags:
   - Obsidian-Plugins
 date_authored_initial_draft: 2026-08-17
 date_authored_current_draft: 2026-08-17
+publish: true
 ---
 
 # Metafetch wraps tags array items in quotes

@@ -27,6 +27,7 @@ tags:
 related:
   - "[[What-To-Do-With-Grab-Reference]]"
   - "[[Metafetch-Wraps-Tags-Array-Items-In-Quotes]]"
+publish: true
 ---
 
 # Metafetch source notes — fetch from any journal URL

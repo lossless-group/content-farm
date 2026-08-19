@@ -24,6 +24,7 @@ site_uuid: 3fce085b-a15c-4b37-82a2-73ae738b30bc
 hex_code: hpayce
 date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
+publish: true
 ---
 
 # Image Drop Confirmation Gate

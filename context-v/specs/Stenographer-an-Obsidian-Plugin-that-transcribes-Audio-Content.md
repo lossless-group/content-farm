@@ -20,6 +20,7 @@ site_uuid: 1f90459b-5a73-490f-b3ac-696b9316ef2f
 hex_code: j9rma8
 date_authored_initial_draft: 2026-05-07
 date_authored_current_draft: 2026-05-07
+publish: true
 ---
 
 # Stenographer: an Obsidian Plugin that Transcribes Audio Content

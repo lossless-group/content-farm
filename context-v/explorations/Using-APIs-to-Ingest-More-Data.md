@@ -20,6 +20,7 @@ site_uuid: 1b348d66-19f0-4141-b533-92b18cbc3a53
 hex_code: 1nq3vp
 date_authored_initial_draft: 2026-05-06
 date_authored_current_draft: 2026-05-06
+publish: true
 ---
 
 ## What we can do with Jina.ai

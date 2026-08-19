@@ -12,6 +12,7 @@ date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
 lede: "Locks the `cf` codefence grammar and holds the line on direct vendor SDKs — Vercel AI SDK if we outgrow them, never LangChain."
 summary: "Exploration that fixes the LLM-orchestration posture for every content-farm plugin. Carries the locked D0-D4 decisions for the cf/cft codefence grammar (fence invariants, longest-prefix verb resolution, execution model, template registry under zz-cf-lib/) alongside the framework comparison and its decision table. An agent about to add LLM calls to a plugin should read the decision table before choosing a dependency, and read D0-D4 before touching codefence parsing. Per-Directory-Profile-Templates is the narrow first slice actually specced for build; everything else here is deferred."
+publish: true
 ---
 
 # Moving Beyond Simple API Calls

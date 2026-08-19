@@ -23,6 +23,7 @@ site_uuid: 4ae5cc7d-cc8a-4aee-8493-65a562976317
 hex_code: 5bqe46
 date_authored_initial_draft: 2026-07-24
 date_authored_current_draft: 2026-07-24
+publish: true
 ---
 
 # Dependency-upgrade loop for the Obsidian plugin family

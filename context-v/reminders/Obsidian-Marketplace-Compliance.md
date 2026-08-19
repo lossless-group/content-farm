@@ -25,6 +25,7 @@ date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
 lede: "The portal pins scans to a (tag, commit) pair, so a re-scan needs a new release tag — plus the description that lives in three places."
 summary: "Authoritative pre-submission checklist for every Lossless Obsidian plugin, and the doc to consult instead of the historical issue it was distilled from. Two halves: the twelve eslint-plugin rules with a canonical fix for each, and the portal-era rules that are not in eslint scope (description in three places including the GitHub About field, strict three-digit semver across four surfaces, no v-prefixed tag, LICENSE at repo root, exactly three release assets, a real fundingUrl, honest minAppVersion, new tag for every re-scan). Walk the Adoption Checklist at the bottom before opening any submission."
+publish: true
 ---
 
 ## Why This Document Exists

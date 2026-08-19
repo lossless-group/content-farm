@@ -18,6 +18,7 @@ site_uuid: d20d7929-996d-4479-ab12-535013dafb3c
 hex_code: ftvg8i
 date_authored_initial_draft: 2026-07-20
 date_authored_current_draft: 2026-07-20
+publish: true
 ---
 
 # Self-Hosting the Vault via Ignis — Team-Wide Browser Access to Content Farm

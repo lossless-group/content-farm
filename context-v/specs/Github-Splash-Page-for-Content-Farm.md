@@ -18,6 +18,7 @@ site_uuid: 77d58b13-a71f-4a3c-ba41-b6e22d378acf
 hex_code: pdlqre
 date_authored_initial_draft: 2026-05-04
 date_authored_current_draft: 2026-05-04
+publish: true
 ---
 
 # Github Splash Page for Content Farm

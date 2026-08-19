@@ -22,6 +22,7 @@ site_uuid: 0acc5ad8-5a82-4944-9c77-38f40f804aef
 hex_code: 7pj0h5
 date_authored_initial_draft: 2026-08-08
 date_authored_current_draft: 2026-08-08
+publish: true
 ---
 
 # Symlinked vault folders are invisible to the Obsidian index

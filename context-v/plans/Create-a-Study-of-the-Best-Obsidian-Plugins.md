@@ -29,6 +29,7 @@ site_uuid: d85185ec-ebe7-4848-8863-77b8e721c21b
 hex_code: zzr5rb
 date_authored_initial_draft: 2026-05-04
 date_authored_current_draft: 2026-05-04
+publish: true
 ---
 
 # Create a Study of the Best Obsidian Plugins

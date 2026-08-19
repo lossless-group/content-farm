@@ -12,6 +12,7 @@ date_authored_initial_draft: 2026-05-09
 date_authored_current_draft: 2026-05-09
 lede: "Crawls the entity's domain to turn feature-table cells into links to the real feature pages — deferred until the headless crawler exists."
 summary: "Deferred plan (v0.4-or-later) for a post-filter over directory-template output. It shares entity-page-fetch infrastructure with the planned headless-screenshot service, so it should not be started standalone — build the crawler first. Specifies the table-detection heuristic, the confidence threshold that prevents fabricated links, per-entity crawl caching within a batch run, and a deliberately table-only scope."
+publish: true
 ---
 
 # Auto-Hyperlink Feature Names in Generated Tables
