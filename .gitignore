@@ -23,3 +23,6 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# context-v/extra: local-only working files (client exports, scratch). Never committed.
+context-v/extra/
