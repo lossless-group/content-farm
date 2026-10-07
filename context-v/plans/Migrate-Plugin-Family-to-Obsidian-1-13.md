@@ -4,7 +4,7 @@ lede: "Obsidian 1.13 changed how settings render and get searched, and pnpm 11 c
 summary: "Fan-out plan applying the image-gin 0.3.0 migration (declarative settings, minAppVersion 1.13.0, current toolchain, zero-dependency tests, own pnpm settings file) to every Lossless-authored plugin in plugin-modules/, Cite Wide first because its commands stopped loading on Obsidian 1.14. Third-party submodules are only fetched and re-pointed. Releases are gated on the operator."
 publish: true
 date_created: 2026-10-06
-date_modified: 2026-10-06
+date_modified: 2026-10-07
 date_authored_initial_draft: 2026-10-06
 date_authored_current_draft: 2026-10-06
 date_authored_final_draft:
@@ -62,11 +62,13 @@ Reference implementation: `plugin-modules/image-gin`, commits `f828afd` … `48f
 
 ## The family
 
+Current status and the per-plugin checklist live in [[2026-10-07_Upgrading-Plugins-to-Obsidian-1-13-and-the-Current-Stack]] (handoffs/).
+
 | Plugin | Repo | Version | Listed in directory | Settings tab | Own pnpm file | Order |
 |---|---|---|---|---|---|---|
 | image-gin | lossless-group/image-gin | **0.3.0, shipped** | yes | ✅ declarative | ✅ | done |
-| **cite-wide** | lossless-group/cite-wide | 0.2.3 | yes | `CiteWideSettings.ts` | ✅ (fixed 230a5ee) | **1, commands not loading** |
-| perplexed | lossless-group/perplexed-plugin | 0.3.1 | yes | in `main.ts` | ✅ | 2 |
+| cite-wide | lossless-group/cite-wide | **0.3.0, shipped** | yes | ✅ declarative | ✅ | done |
+| perplexed | lossless-group/perplexed-plugin | **0.4.0, shipped** | yes | ✅ declarative | ✅ | done |
 | metafetch | lossless-group/metafetch | 0.1.7 | submitted | `settings-tab.ts` | ✅ | 3 |
 | stenographer | lossless-group/stenographer | 0.1.0 | — | `settings-tab.ts` | ✅ | 4 |
 | plunk-it | lossless-group/plunk-it | 1.0.0 | — | `SettingsTab.ts` | ❌ | 5 |
