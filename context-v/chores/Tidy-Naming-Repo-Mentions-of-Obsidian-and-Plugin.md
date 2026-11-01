@@ -21,6 +21,7 @@ hex_code: ae2h95
 date_authored_initial_draft: 2026-05-05
 date_authored_current_draft: 2026-05-05
 publish: true
+type: Chores
 ---
 
 # Tidy Naming — Repo Mentions of "Obsidian" and "Plugin"

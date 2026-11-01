@@ -1,7 +1,7 @@
 ---
 title: Cite-Wide — dedupe inline repetition of identical hex citations
 date_created: 2026-05-09
-type: plan
+type: Plans
 status: proposed
 target_repo: cite-wide
 related:

@@ -1,7 +1,7 @@
 ---
 title: Per-Directory Profile Templates — v0.1 Spike
 date_created: 2026-05-09
-type: spec
+type: Specs
 status: spike
 related:
   - "[[Moving-Beyond-Simple-API-Calls]]"

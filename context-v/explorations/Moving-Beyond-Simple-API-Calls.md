@@ -1,7 +1,7 @@
 ---
 title: Moving Beyond Simple API Calls — LLM Orchestration Options for Our Plugins
 date_created: 2026-05-09
-type: exploration
+type: Explorations
 status: open
 tags: [llm, orchestration, langchain, ai-sdk, mastra, adk, obsidian-plugin]
 related:

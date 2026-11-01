@@ -26,6 +26,7 @@ related:
   - "[[Moving-Beyond-Simple-API-Calls]]"
   - "[[Folder-Aware-Frontmatter-Templates-and-Fetch-Recipes]]"
   - "[[Add-New-API-Provider-to-Plugin]]"
+type: Blueprints
 ---
 
 # Blueprint — Model Recipes: Any LLM API, Configured the Same Way in Every Plugin

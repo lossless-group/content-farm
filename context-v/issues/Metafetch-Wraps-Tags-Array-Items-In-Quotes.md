@@ -4,7 +4,7 @@ lede: >-
   Metafetch re-serializes the whole frontmatter, so its quote-everything rule turns an inline `tags: [a, b]` into one quoted string.
 date_created: 2026-08-17
 date_modified: 2026-08-17
-type: issue
+type: Issues
 status: Resolved
 target_repo: content-farm
 site_uuid: 806b080b-66fa-459a-a76f-a633040c021b

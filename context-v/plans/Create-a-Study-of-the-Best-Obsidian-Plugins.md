@@ -30,6 +30,7 @@ hex_code: zzr5rb
 date_authored_initial_draft: 2026-05-04
 date_authored_current_draft: 2026-05-04
 publish: true
+type: Plans
 ---
 
 # Create a Study of the Best Obsidian Plugins

@@ -21,6 +21,7 @@ hex_code: uzm1zo
 date_authored_initial_draft: 2026-07-24
 date_authored_current_draft: 2026-07-24
 publish: true
+type: Plans
 ---
 
 # Dependency upgrades across the plugin family

@@ -1,7 +1,7 @@
 ---
 title: Nudging AI search to return contextually appropriate images
 date_created: 2026-05-09
-type: issue
+type: Issues
 status: open
 target_repo: perplexed
 related:

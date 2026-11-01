@@ -3,7 +3,7 @@ title: Symlinked vault folders are invisible to the Obsidian index
 lede: "Half our vault's top-level folders are symlinks into the monorepo. `vault.getAbstractFileByPath()` doesn't reliably see them, so every plugin that checks 'does this folder exist' before creating it is one symlink away from an EEXIST crash."
 date_created: 2026-08-08
 date_modified: 2026-08-08
-type: issue
+type: Issues
 status: open
 target_repo: content-farm
 authors:

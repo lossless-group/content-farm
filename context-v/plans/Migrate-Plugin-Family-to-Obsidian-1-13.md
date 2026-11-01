@@ -22,6 +22,7 @@ tags:
   - Obsidian-1-13
   - Pseudomonorepos
   - Dependency-Upgrades
+type: Plans
 ---
 
 # Plan — Migrate the Lossless Plugin Family to Obsidian 1.13

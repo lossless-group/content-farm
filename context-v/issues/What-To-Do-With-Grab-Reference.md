@@ -19,6 +19,7 @@ hex_code: 89skms
 date_authored_initial_draft: 2026-07-24
 date_authored_current_draft: 2026-07-24
 publish: true
+type: Issues
 ---
 
 # What to do with grab-reference

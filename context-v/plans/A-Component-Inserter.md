@@ -21,6 +21,7 @@ hex_code: pk8wnv
 date_authored_initial_draft: 2025-08-11
 date_authored_current_draft: 2025-08-11
 publish: true
+type: Plans
 ---
 
 # A Component Inserter

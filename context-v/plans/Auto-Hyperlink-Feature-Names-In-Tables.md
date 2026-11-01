@@ -1,7 +1,7 @@
 ---
 title: Auto-Hyperlink Feature Names in Generated Tables
 date_created: 2026-05-09
-type: plan
+type: Plans
 status: deferred
 related:
   - "[[Per-Directory-Profile-Templates]]"

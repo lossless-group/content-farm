@@ -26,6 +26,7 @@ related:
   - "[[2026-10-07_Upgrading-Plugins-to-Obsidian-1-13-and-the-Current-Stack]]"
   - "[[Model-Recipes-for-Any-LLM-API]]"
   - "[[Folder-Aware-Frontmatter-Templates-and-Fetch-Recipes]]"
+type: Handoffs
 ---
 
 # Handoff — Metafetch 0.2.0: Built, Pushed, Waiting on an In-Obsidian Check and a Release

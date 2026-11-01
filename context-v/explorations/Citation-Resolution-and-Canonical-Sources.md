@@ -27,6 +27,7 @@ hex_code: gpt0ee
 date_authored_initial_draft: 2026-05-06
 date_authored_current_draft: 2026-05-06
 publish: true
+type: Explorations
 ---
 
 ## The three problems on the table

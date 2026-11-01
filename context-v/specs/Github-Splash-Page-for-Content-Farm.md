@@ -19,6 +19,7 @@ hex_code: pdlqre
 date_authored_initial_draft: 2026-05-04
 date_authored_current_draft: 2026-05-04
 publish: true
+type: Specs
 ---
 
 # Github Splash Page for Content Farm

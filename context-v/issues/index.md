@@ -1,0 +1,8 @@
+# Issues
+
+* [Metafetch wraps tags array items in quotes](Metafetch-Wraps-Tags-Array-Items-In-Quotes.md) - Metafetch re-serializes the whole frontmatter, so its quote-everything rule turns an inline `tags: [a, b]` into one quoted string.
+* [Nudging AI search to return contextually appropriate images](Nudgeing-AI-Search-to-Return-Contextually-Appriate-Images.md) - The streaming pipeline silently drops Perplexity's images array — port the [IMAGE N] marker pattern the article generator already uses.
+* [Obsidian Review Bot Feedback on Perplexed Submission](Obsidian-Review-Bot-Feedback-on-Perplexed-Submission.md) - 165 bot findings, all in main.ts — plus the Appendix: the PR queue died mid-fix, and the plugin description lives in three places.
+* [Symlinked vault folders are invisible to the Obsidian index](Symlinked-Vault-Folders-Are-Invisible-To-The-Obsidian-Index.md) - Half our vault's top-level folders are symlinks into the monorepo. `vault.getAbstractFileByPath()` doesn't reliably see them, so every plugin that checks 'does this folder exist' before creating it is one symlink away from an EEXIST crash.
+* [What to do with grab-reference — a citation-manager web stack living in the Obsidian plugin family](What-To-Do-With-Grab-Reference.md) - grab-reference turns out not to be an Obsidian plugin: it's a private 'citation-manager' pnpm workspace (web app + Prisma API + Docker) on a 2024-era toolchain. Decide its fate before spending any upgrade effort on it.
+* [Widening (and Re-Sizing) Obsidian Plugin Modals via CSS](Widen-Modals-in-Obsidian-using-CSS.md) - Modal width lives on this.modalEl, not this.contentEl — the plugin-template convention that everyone copies is why modals stay narrow.

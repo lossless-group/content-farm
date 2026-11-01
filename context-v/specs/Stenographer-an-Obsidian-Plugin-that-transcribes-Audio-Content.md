@@ -21,6 +21,7 @@ hex_code: j9rma8
 date_authored_initial_draft: 2026-05-07
 date_authored_current_draft: 2026-05-07
 publish: true
+type: Specs
 ---
 
 # Stenographer: an Obsidian Plugin that Transcribes Audio Content

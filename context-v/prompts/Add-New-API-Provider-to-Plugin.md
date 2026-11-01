@@ -20,6 +20,7 @@ hex_code: w2bi3v
 date_authored_initial_draft: 2026-05-06
 date_authored_current_draft: 2026-05-06
 publish: true
+type: Prompts
 ---
 
 ## When to use this prompt

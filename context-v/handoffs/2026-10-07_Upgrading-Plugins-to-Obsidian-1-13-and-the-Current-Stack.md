@@ -22,6 +22,7 @@ tags:
   - Obsidian-1-13
   - Dependency-Upgrades
   - Release-Process
+type: Handoffs
 ---
 
 # Handoff — Upgrading the Remaining Plugins to Obsidian 1.13 and the Current Stack
