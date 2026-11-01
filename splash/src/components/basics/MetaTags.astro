@@ -17,8 +17,8 @@
  * via BaseLayout). Pass title/description directly, or look them up via
  * src/lib/seo.ts (STATIC_SEO, getPluginOgImage).
  *
- * The site is hosted at a base path on GitHub Pages (`/content-farm/`),
- * so local OG image paths get the base prepended before being made absolute.
+ * If the site is served under a base path,
+ * local OG image paths get the base prepended before being made absolute.
  */
 import {
   SITE_NAME,
@@ -99,7 +99,7 @@ const resolvedAlt =
 
 // Resolve absolute URLs. Astro.site is configured in astro.config.mjs;
 // fall back to Astro.url.origin if absent. Append BASE_URL for local paths
-// because GitHub Pages serves under /content-farm/.
+// in case the site is ever served under a base path again.
 const siteOrigin = (Astro.site?.toString() ?? Astro.url.origin).replace(/\/$/, '');
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 

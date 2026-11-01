@@ -1,6 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-
 export interface SubmoduleEntry {
   /** Section name from `[submodule "..."]`, e.g. `plugin-modules/cite-wide`. */
   name: string;
@@ -21,18 +18,11 @@ const KEY_VALUE_RE = /^\s*([^=\s]+)\s*=\s*(.+?)\s*$/;
 const GITHUB_URL_RE = /^https:\/\/github\.com\/([^/]+\/[^/]+?)(?:\.git)?\/?$/;
 
 /**
- * Parse a `.gitmodules` file at the given absolute path and return the list of
- * submodule entries. Returns an empty array when the file is missing — that's
- * a valid state for a fresh repo.
+ * Parse the text of a `.gitmodules` file and return the list of submodule
+ * entries. Empty text gives an empty list — that's a valid state for a fresh
+ * repo.
  */
-export async function parseGitmodules(gitmodulesPath: string): Promise<SubmoduleEntry[]> {
-  let text: string;
-  try {
-    text = await readFile(gitmodulesPath, 'utf8');
-  } catch {
-    return [];
-  }
-
+export function parseGitmodules(text: string): SubmoduleEntry[] {
   const entries: SubmoduleEntry[] = [];
   let current: Partial<SubmoduleEntry> | null = null;
 
@@ -75,9 +65,4 @@ function flushCurrent(entries: SubmoduleEntry[], partial: Partial<SubmoduleEntry
     ownerRepo,
     slug,
   });
-}
-
-/** Resolve `<repo-root>/.gitmodules` by walking up from a starting directory. */
-export function resolveGitmodulesPath(startDir: string): string {
-  return resolve(startDir, '..', '.gitmodules');
 }

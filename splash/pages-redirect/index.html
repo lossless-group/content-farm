@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>content-farm has moved</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="__SPLASH_URL__/">
+  <meta http-equiv="refresh" content="3; url=__SPLASH_URL__/">
+  <script>
+    // Used as both index.html and 404.html, so every old deep link keeps its page.
+    var path = location.pathname.replace(/^\/content-farm/, '') || '/';
+    location.replace('__SPLASH_URL__' + path + location.search + location.hash);
+  </script>
+</head>
+<body>
+  <p>content-farm has moved to <a href="__SPLASH_URL__/">__SPLASH_URL__</a>.</p>
+</body>
+</html>

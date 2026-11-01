@@ -1,14 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCorpus, type CorpusEntry } from '../../lib/corpus';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
 import { STATIC_SEO } from '../../lib/seo';
 
 const base = import.meta.env.BASE_URL;
 
-let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+let entries: CorpusEntry[] = [];
 try {
-  entries = (await getCollection('changelog'))
+  entries = (await getCorpus('changelog'))
     .filter((e) => e.data.publish !== false)
     .sort((a, b) => {
       const dateA = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);

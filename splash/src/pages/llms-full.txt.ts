@@ -17,6 +17,7 @@
 
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { getCorpus } from '../lib/corpus';
 import { SITE_NAME } from '../lib/seo';
 import template from '../llms/llms-full.md?raw';
 
@@ -29,7 +30,7 @@ interface Section {
 }
 
 export const GET: APIRoute = async () => {
-  const site = import.meta.env.SITE ?? 'https://lossless-group.github.io';
+  const site = import.meta.env.SITE;
   const base = import.meta.env.BASE_URL ?? '/';
   const root = new URL(base, site).toString().replace(/\/$/, '');
 
@@ -44,7 +45,7 @@ export const GET: APIRoute = async () => {
   });
 
   // Changelog — published only; sort by from, then date desc, then title.
-  const changelogAll = await getCollection('changelog');
+  const changelogAll = await getCorpus('changelog');
   const changelogPublished = changelogAll.filter((e) => (e.data as any).publish !== false);
   changelogPublished.sort((a, b) => {
     const fa = ((a.data as any).from || 'content-farm').toLowerCase();
@@ -61,7 +62,7 @@ export const GET: APIRoute = async () => {
   });
 
   // Context-V — published only; sort by from, then title alpha.
-  const contextVAll = await getCollection('context-v');
+  const contextVAll = await getCorpus('context-v');
   const contextVPublished = contextVAll.filter((e) => (e.data as any).publish !== false);
   contextVPublished.sort((a, b) => {
     const fa = ((a.data as any).from || 'content-farm').toLowerCase();

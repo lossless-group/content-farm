@@ -11,7 +11,8 @@
 //
 // Semantic tokens only (BaseLayout's `:root`). No hard-coded colors.
 
-import { getCollection, getEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { getCorpus, type CorpusEntry } from '../../lib/corpus';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
@@ -26,9 +27,9 @@ const tags = plugin?.data.tags ?? ['Search', 'AI', 'Directory templates'];
 
 // Recent ship notes from this plugin. Tolerate the empty case — the
 // changelog collection may not have any perplexed entries yet.
-let pluginChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+let pluginChangelog: CorpusEntry[] = [];
 try {
-  pluginChangelog = (await getCollection('changelog'))
+  pluginChangelog = (await getCorpus('changelog'))
     .filter((e) => e.data.from === 'perplexed' && e.data.publish !== false)
     .sort((a, b) => {
       const da = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);

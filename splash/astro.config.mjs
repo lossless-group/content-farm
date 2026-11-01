@@ -1,32 +1,19 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 
-// Splash for the content-farm pseudomonorepo.
-// Hosted on GitHub Pages from lossless-group/content-farm.
-// Live URL: https://lossless-group.github.io/content-farm/
+// Splash for the content-farm pseudomonorepo, served by Vercel.
 //
-// If a custom domain is added later, set `site` to that domain and `base` to '/'.
-// (Distinct from any future custom-domain marketing site — that would live elsewhere.)
+// Rendered per request, so a document pushed to any plugin's changelog/ or
+// context-v/ appears without a rebuild. See src/loaders/corpus.ts.
+//
+// Set SITE_URL when a custom domain is added. Otherwise Vercel tells us the
+// project's production URL at build time.
+const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 export default defineConfig({
-  site: 'https://lossless-group.github.io',
-  base: '/content-farm/',
+  site: process.env.SITE_URL ?? (productionHost ? `https://${productionHost}` : 'http://localhost:4321'),
+  output: 'server',
+  adapter: vercel(),
   trailingSlash: 'ignore',
-
-  integrations: [
-    // @astrojs/sitemap auto-generates sitemap-index.xml + sitemap-0.xml from
-    // every page Astro emits. Filter excludes the llms.txt endpoints (those
-    // serve LLMs, not search engines) and the 404 page.
-    sitemap({
-      filter: (page) =>
-        !page.includes('/llms.txt') &&
-        !page.includes('/llms-full.txt') &&
-        !page.endsWith('/404/') &&
-        !page.endsWith('/404'),
-    }),
-  ],
-
-  build: {
-    format: 'directory',
-  },
 });

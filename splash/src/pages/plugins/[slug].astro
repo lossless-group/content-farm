@@ -1,28 +1,19 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { getCorpus, type CorpusEntry } from '../../lib/corpus';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-export async function getStaticPaths() {
-  const plugins = await getCollection('plugin-highlights');
-  // Skip plugins that have a hand-rolled static page at /plugins/<slug>.astro.
-  // Right now: perplexed (custom command-palette layout).
-  const customPaged = new Set(['perplexed']);
-  return plugins
-    .filter((plugin) => !customPaged.has(plugin.id))
-    .map((plugin) => ({
-      params: { slug: plugin.id },
-      props: { plugin },
-    }));
-}
-
-const { plugin } = Astro.props;
+// /plugins/perplexed has its own page (custom command-palette layout), and Astro
+// routes that static path ahead of this one.
+const plugin = (await getCollection('plugin-highlights')).find((p) => p.id === Astro.params.slug);
+if (!plugin) return new Response('Not found.', { status: 404 });
 const { Content } = await render(plugin);
 const base = import.meta.env.BASE_URL;
 
 // Recent ship notes from this plugin (top 5).
-let pluginChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
+let pluginChangelog: CorpusEntry[] = [];
 try {
-  pluginChangelog = (await getCollection('changelog'))
+  pluginChangelog = (await getCorpus('changelog'))
     .filter((e) => e.data.from === plugin.id && e.data.publish !== false)
     .sort((a, b) => {
       const da = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);

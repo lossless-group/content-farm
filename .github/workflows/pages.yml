@@ -1,4 +1,11 @@
-name: Deploy splash to GitHub Pages
+name: Redirect GitHub Pages to the splash
+
+# The splash renders per request now, which Pages can't do, so Vercel serves it.
+# Pages publishes only a redirect, so old links land on the same page at the new
+# address.
+#
+# Set the repo variable SPLASH_URL (no trailing slash) to the new address. Without
+# it this fails on purpose, and Pages keeps serving what it already has.
 
 on:
   push:
@@ -17,59 +24,31 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: splash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # No submodules needed — rolled-up content lives in splash/src/rollup/
-          # already, synced manually via `pnpm rollup:sync` and committed to
-          # the repo. Build is pure file IO.
           fetch-depth: 1
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: splash/pnpm-lock.yaml
-
-      - name: Install
-        # --ignore-workspace because the parent content-farm/pnpm-workspace.yaml
-        # would otherwise pull pnpm up to the repo root and skip installing
-        # splash's deps in splash/node_modules. Matches the lfm and astro-knots
-        # splash workflows.
-        run: pnpm install --frozen-lockfile=false --ignore-workspace
-
-      - name: Build
-        run: pnpm build
-        # No GITHUB_TOKEN needed — rolled-up content is pre-synced in
-        # splash/src/rollup/. Run `pnpm rollup:sync` locally and commit
-        # to refresh.
+      - name: Build redirect
         env:
-          # OpenPanel clientId is publicly visible in rendered HTML, so it
-          # lives as a repo Variable, not a Secret. Set in repo settings →
-          # Secrets and variables → Actions → Variables.
-          OPENPANEL_CLIENT_ID: ${{ vars.OPENPANEL_CLIENT_ID }}
+          SPLASH_URL: ${{ vars.SPLASH_URL }}
+        run: |
+          if [ -z "$SPLASH_URL" ]; then
+            echo "::error::Set the SPLASH_URL repo variable before Pages can redirect."
+            exit 1
+          fi
+          mkdir -p _site
+          sed "s|__SPLASH_URL__|$SPLASH_URL|g" splash/pages-redirect/index.html > _site/index.html
+          cp _site/index.html _site/404.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          # Auto-enable Pages on first run so the workflow bootstraps itself
-          # even when "Get Pages site" returns 404 the very first time.
-          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: splash/dist
+          path: _site
 
   deploy:
     needs: build
