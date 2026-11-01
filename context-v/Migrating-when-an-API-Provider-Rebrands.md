@@ -3,7 +3,7 @@ title: "Migrating When an API Provider Rebrands"
 lede: "A vendor rebrands mid-integration — different name, different domain, sometimes different auth surface. What do you fix today, what do you leave alone, and what's the safe order? A short runbook from the day Freepik turned into Magnific."
 date_created: 2026-05-02
 date_modified: 2026-05-05
-status: Authoritative
+status: Active
 category: Runbook
 authors:
   - Michael Staton

@@ -14,3 +14,4 @@ okf_version: "0.2"
 * [Prompts](prompts/) - Reusable implementation prompts
 * [Reminders](reminders/) - Rules to re-read before working on a plugin
 * [Specs](specs/) - What we're building and why
+* [Studies](studies/) - Read-throughs of third-party plugins as prior art

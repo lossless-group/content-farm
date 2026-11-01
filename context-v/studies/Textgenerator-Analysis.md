@@ -1,7 +1,8 @@
 ---
 title: Textgenerator Plugin — Analysis
 date_created: 2026-05-09
-type: study
+type: Studies
+status: Reference
 subject: third-party Obsidian plugin (`obsidian-textgenerator-plugin`)
 upstream: https://github.com/nhaouari/obsidian-textgenerator-plugin
 local_path: plugin-modules/obsidian-textgenerator-plugin

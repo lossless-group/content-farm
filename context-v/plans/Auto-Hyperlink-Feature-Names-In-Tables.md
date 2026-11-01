@@ -3,6 +3,7 @@ title: Auto-Hyperlink Feature Names in Generated Tables
 date_created: 2026-05-09
 type: Plans
 status: Deferred
+deferral_note: "From the doc itself: a v0.4-or-later feature that shares entity-page-fetch infrastructure with the planned headless-screenshot service. Build the crawler first."
 related:
   - "[[Per-Directory-Profile-Templates]]"
   - "[[Moving-Beyond-Simple-API-Calls]]"

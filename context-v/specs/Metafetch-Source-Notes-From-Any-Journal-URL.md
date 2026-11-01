@@ -7,6 +7,7 @@ date_authored_initial_draft: 2026-08-17
 date_authored_current_draft: 2026-08-17
 type: Specs
 status: Partially-Shipped
+date_first_published: 2026-08-17
 target_repo: content-farm
 site_uuid: 1e24af09-b927-4a0c-8664-7079e03a878a
 hex_code: qclh88
