@@ -3,7 +3,7 @@ title: "Using APIs to Ingest More Data"
 lede: "Beyond OpenGraph.io — what Jina.ai already gives us (we pay for it), what other fetching services do, and a rough sketch of how a portfolio-company site crawler would actually work."
 date_created: 2026-05-06
 date_modified: 2026-05-06
-status: Exploration
+status: Draft
 category: Exploration
 authors:
   - Michael Staton

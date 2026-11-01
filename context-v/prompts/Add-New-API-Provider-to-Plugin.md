@@ -3,7 +3,7 @@ title: "Add a New API Provider to a Metadata-Fetching Plugin"
 lede: "Reusable prompt for wiring a new third-party metadata API (e.g. Microlink, Jina Reader, OpenGraph.io) into an Obsidian plugin like Metafetch as an additional fetcher, without breaking the existing flows."
 date_created: 2026-05-06
 date_modified: 2026-05-06
-status: Authoritative
+status: Active
 category: Prompt
 authors:
   - Michael Staton
@@ -14,7 +14,7 @@ tags:
   - Prompt
   - API-Integrations
   - Metafetch
-  - cite-wide
+  - Cite-Wide
 site_uuid: 00064195-421d-49de-bdca-4a3b898f13da
 hex_code: w2bi3v
 date_authored_initial_draft: 2026-05-06

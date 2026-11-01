@@ -15,7 +15,6 @@ tags:
   - Loop
   - Dependency-Upgrades
   - Obsidian-Plugins
-  - Content-Farm
   - Changelog-Conventions
   - Git-Conventions
 status: Draft

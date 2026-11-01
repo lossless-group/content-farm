@@ -14,7 +14,6 @@ loop_reference: "[[../loops/Dependency-Upgrade-Loop-For-Obsidian-Plugin-Family]]
 tags:
   - Dependency-Upgrades
   - Obsidian-Plugins
-  - Content-Farm
   - Plans
 site_uuid: 228097e5-c813-4cbc-bcb8-cabe5fb51c9d
 hex_code: uzm1zo

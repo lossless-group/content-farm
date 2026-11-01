@@ -4,7 +4,7 @@ lede: "Half our vault's top-level folders are symlinks into the monorepo. `vault
 date_created: 2026-08-08
 date_modified: 2026-08-08
 type: Issues
-status: open
+status: Open
 target_repo: content-farm
 authors:
   - Michael Staton

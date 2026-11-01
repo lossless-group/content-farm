@@ -2,7 +2,7 @@
 title: Per-Directory Profile Templates — v0.1 Spike
 date_created: 2026-05-09
 type: Specs
-status: spike
+status: Shipped
 related:
   - "[[Moving-Beyond-Simple-API-Calls]]"
   - "[[Textgenerator-Analysis]]"
@@ -13,6 +13,9 @@ date_authored_current_draft: 2026-05-09
 lede: "One Perplexity call per file, four template zones, and `***` as the scratch terminator — aborts rather than merge if the body has prose."
 summary: "The v0.1 spike spec — the narrow first slice of Moving-Beyond-Simple-API-Calls, with everything else in that exploration explicitly deferred. Defines the template file's four zones, the zone-to-request map, the two interpolation variables, the single run command and its flow, output write logic, settings, execution pseudocode, and seven acceptance criteria. Also carries v0.2 feedback that supersedes parts of the spec (stream instead of buffer-then-write; wrap reasoning-model think blocks in a fenced block) and five open questions intended for sign-off before implementation."
 publish: true
+date_modified: 2026-08-18
+authors:
+  - Michael Staton
 ---
 
 # Per-Directory Profile Templates — v0.1 Spike

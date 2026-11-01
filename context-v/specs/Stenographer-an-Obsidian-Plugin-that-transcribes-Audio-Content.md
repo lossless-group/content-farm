@@ -12,10 +12,9 @@ semantic_version: 0.0.1.0
 tags:
   - Spec
   - Obsidian-Plugins
-  - Content-Farm
   - Audio-Transcription
   - Streaming-AI
-status: In Progress
+status: Implementing
 site_uuid: 1f90459b-5a73-490f-b3ac-696b9316ef2f
 hex_code: j9rma8
 date_authored_initial_draft: 2026-05-07

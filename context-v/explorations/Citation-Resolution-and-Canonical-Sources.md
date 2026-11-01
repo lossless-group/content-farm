@@ -4,7 +4,7 @@ lede: >-
   Link-rot recovery, lookup-before-create on save, and content preservation for RAG are three operations on one underlying entity.
 date_created: 2026-05-06
 date_modified: 2026-05-06
-status: Exploration
+status: Draft
 category: Exploration
 authors:
   - Michael Staton
@@ -21,7 +21,6 @@ tags:
   - Link-Rot
   - Content-Preservation
   - RAG
-  - cite-wide
 site_uuid: 46119f7e-939a-4475-ab9b-91d0801031d8
 hex_code: gpt0ee
 date_authored_initial_draft: 2026-05-06

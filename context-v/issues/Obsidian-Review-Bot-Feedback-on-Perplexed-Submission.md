@@ -2,7 +2,7 @@
 title: "Obsidian Review Bot Feedback on Perplexed Submission"
 date_created: 2026-05-09
 date_modified: 2026-05-18
-status: Resolved (perplexed + cite-wide + image-gin all in the directory as of 2026-05-18)
+status: Resolved
 applies_to: perplexed, cite-wide, image-gin, and any future Lossless plugin submitted to the community marketplace
 authored_in_context_of: "GitHub PR obsidianmd/obsidian-releases#12513 — 'Add plugin: Perplexed' (the queue this PR sat in has since been retired; see Appendix A)"
 authors:

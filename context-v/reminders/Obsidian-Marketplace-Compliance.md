@@ -1,7 +1,7 @@
 ---
 title: "Obsidian Marketplace Compliance — Rules the Review Bot Enforces"
 purpose: "Source-of-truth for the patterns that get a Lossless plugin past Obsidian's automated marketplace review. Read before opening any submission, and ideally before writing the code that will be submitted. Companion to cite-wide's `Obsidian-Type-Safety.md` (which covers the `any`-rule). Originally distilled from the eslint-bot's feedback on perplexed PR #12513 (May 9); expanded with portal-era findings from the cite-wide / image-gin / perplexed submission rounds (May 17-18)."
-status: Authoritative
+status: Active
 date_created: 2026-05-09
 date_modified: 2026-05-18
 last_verified: 2026-05-18

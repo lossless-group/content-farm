@@ -2,7 +2,7 @@
 title: Cite-Wide — dedupe inline repetition of identical hex citations
 date_created: 2026-05-09
 type: Plans
-status: proposed
+status: In-Review
 target_repo: cite-wide
 related:
   - "[[Auto-Hyperlink-Feature-Names-In-Tables]]"
@@ -13,6 +13,9 @@ date_authored_current_draft: 2026-05-09
 lede: "One backreferenced regex collapses runs like [^jtas3k] [^jtas3k] — a different problem from dedupe-by-URL, which must stay untouched."
 summary: "Proposed plan scoped tightly enough to implement without a spike: one helper in cite-wide's citationService.ts wired into two call sites. Gives the exact regex, a table of where it fires and where it must not, the four edge cases that must never be collapsed, and seven acceptance criteria. An agent implementing this should not extend dedupeByUrlService and should not add a new command surface — the user wants it built into Convert-All-To-Hex."
 publish: true
+date_modified: 2026-08-18
+authors:
+  - Michael Staton
 ---
 
 # Cite-Wide — dedupe inline repetition of identical hex citations

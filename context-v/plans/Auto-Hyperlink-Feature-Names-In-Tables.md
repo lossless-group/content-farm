@@ -2,7 +2,7 @@
 title: Auto-Hyperlink Feature Names in Generated Tables
 date_created: 2026-05-09
 type: Plans
-status: deferred
+status: Deferred
 related:
   - "[[Per-Directory-Profile-Templates]]"
   - "[[Moving-Beyond-Simple-API-Calls]]"
@@ -13,6 +13,9 @@ date_authored_current_draft: 2026-05-09
 lede: "Crawls the entity's domain to turn feature-table cells into links to the real feature pages — deferred until the headless crawler exists."
 summary: "Deferred plan (v0.4-or-later) for a post-filter over directory-template output. It shares entity-page-fetch infrastructure with the planned headless-screenshot service, so it should not be started standalone — build the crawler first. Specifies the table-detection heuristic, the confidence threshold that prevents fabricated links, per-entity crawl caching within a batch run, and a deliberately table-only scope."
 publish: true
+date_modified: 2026-08-18
+authors:
+  - Michael Staton
 ---
 
 # Auto-Hyperlink Feature Names in Generated Tables

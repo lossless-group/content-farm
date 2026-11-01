@@ -2,7 +2,7 @@
 title: "Enabling Obsidian Plugins to Access Homegrown API Helpers"
 lede: "Architecture patterns for bridging Obsidian's JavaScript environment to powerful, non-JS backend logic (Python, Rust, CLI tools) via lightweight cloud proxies."
 date_created: 2026-05-08
-status: Exploration
+status: Draft
 authors:
   - Gemini CLI (Senior Engineer)
 tags:
@@ -15,6 +15,7 @@ hex_code: 1qb9x1
 date_authored_initial_draft: 2026-05-08
 date_authored_current_draft: 2026-05-08
 publish: true
+date_modified: 2026-08-18
 type: Explorations
 ---
 

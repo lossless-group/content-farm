@@ -12,7 +12,6 @@ tags:
   - Spec
   - Astro-Knots
   - Github-Pages
-  - Content-Farm
 status: Draft
 site_uuid: 77d58b13-a71f-4a3c-ba41-b6e22d378acf
 hex_code: pdlqre
