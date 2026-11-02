@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Splash for the content-farm pseudomonorepo",
+  "description": "GitHub Pages splash for the content-farm pseudomonorepo",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -11,9 +11,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/vercel": "^10.0.8",
+    "@astrojs/sitemap": "^3.7.4",
     "@lossless-group/lfm": "npm:@jsr/lossless-group__lfm@^0.5.1",
     "astro": "^6.3.1",
     "mdast-util-to-string": "^4.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/mdast": "^4.0.4",
+    "typescript": "^6.0.3"
   }
 }

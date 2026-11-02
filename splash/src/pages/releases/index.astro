@@ -1,5 +1,5 @@
 ---
-import { getCorpus, type CorpusEntry } from '../../lib/corpus';
+import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
 import { STATIC_SEO } from '../../lib/seo';
@@ -12,9 +12,9 @@ const base = import.meta.env.BASE_URL;
 // `<repo>/changelog/releases/<version>.md`. This catches both the
 // magazine-style new narratives and any legacy releases that predate the
 // frontmatter convention.
-let entries: CorpusEntry[] = [];
+let entries: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
 try {
-  entries = (await getCorpus('changelog'))
+  entries = (await getCollection('changelog'))
     .filter((e) => {
       if (e.data.publish === false) return false;
       const fromPath = e.data.from_path as string | undefined;
@@ -82,7 +82,7 @@ function deriveVersion(entry: typeof entries[number]): string | undefined {
           <p>No release narratives published yet.</p>
           <p class="dim">
             Release narratives live at <code>&lt;plugin&gt;/changelog/releases/&lt;version&gt;.md</code>
-            in each plugin submodule and appear here as soon as they're pushed.
+            in each plugin submodule and get rolled up here after <code>pnpm rollup:sync</code>.
             Check back after the next versioned release.
           </p>
         </div>

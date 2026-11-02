@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import { getCorpus, type CorpusEntry } from '../lib/corpus';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PluginCard from '../components/PluginCard.astro';
 import { STATIC_SEO } from '../lib/seo';
@@ -21,9 +20,9 @@ const inspirationalPlugins = allPlugins.filter((p) => p.data.category === 'inspi
 
 // Latest changelog entries, if any. Tolerate the empty case — content-farm's
 // changelog/ may be sparse for a while.
-let latestChangelog: CorpusEntry[] = [];
+let latestChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
 try {
-  const all = await getCorpus('changelog');
+  const all = await getCollection('changelog');
   latestChangelog = all
     .filter((e) => e.data.publish !== false)
     .sort((a, b) => {

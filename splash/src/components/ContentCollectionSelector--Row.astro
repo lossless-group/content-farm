@@ -218,7 +218,7 @@ const merged: Option[] = [
       // Hide any section left with nothing in it — a heading with no items
       // under it reads as a rendering bug.
       if (groupSelector) {
-        list.querySelectorAll<HTMLElement>(groupSelector).forEach((section) => {
+        list!.querySelectorAll<HTMLElement>(groupSelector).forEach((section) => {
           const anyVisible = Array.from(
             section.querySelectorAll<HTMLElement>(attrs.map((a) => `[${a}]`).join(',')),
           ).some((item) => !item.hasAttribute('hidden'));

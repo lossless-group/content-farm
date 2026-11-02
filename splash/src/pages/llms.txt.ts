@@ -14,16 +14,22 @@
  * plugins (sorted by `order`), changelog (grouped by `from`), context-v
  * (grouped by `from`). Provenance is the `from` field; this site does not
  * use `source_repo_slug`.
+ *
+ * Conformance note: the spec assumes the file lives at the host root
+ * (https://host/llms.txt). The splash deploys under a path
+ * (/content-farm/), so the file lives at
+ * https://lossless-group.github.io/content-farm/llms.txt. Tools pointed
+ * explicitly at that URL still work; convention-based discovery starts
+ * working once `astro.config.mjs` flips `base` to '/'.
  */
 
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { getCorpus } from '../lib/corpus';
 import { SITE_NAME } from '../lib/seo';
 import template from '../llms/llms.md?raw';
 
 export const GET: APIRoute = async () => {
-  const site = import.meta.env.SITE;
+  const site = import.meta.env.SITE ?? 'https://lossless-group.github.io';
   const base = import.meta.env.BASE_URL ?? '/';
   const root = new URL(base, site).toString().replace(/\/$/, '');
 
@@ -47,7 +53,7 @@ export const GET: APIRoute = async () => {
   }
 
   // ── Changelog (rolled-up; same publish gate as [...slug].astro) ──────
-  const changelogAll = await getCorpus('changelog');
+  const changelogAll = await getCollection('changelog');
   const changelogPublished = changelogAll.filter((e) => (e.data as any).publish !== false);
 
   const changelogByFrom = new Map<string, typeof changelogPublished>();
@@ -85,7 +91,7 @@ export const GET: APIRoute = async () => {
   }
 
   // ── Context-V (rolled-up; same publish gate as [...slug].astro) ──────
-  const contextVAll = await getCorpus('context-v');
+  const contextVAll = await getCollection('context-v');
   const contextVPublished = contextVAll.filter((e) => (e.data as any).publish !== false);
 
   const contextVByFrom = new Map<string, typeof contextVPublished>();

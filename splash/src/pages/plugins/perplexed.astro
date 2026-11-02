@@ -1,6 +1,5 @@
 ---
-import { getEntry } from 'astro:content';
-import { getCorpus, type CorpusEntry } from '../../lib/corpus';
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
@@ -13,9 +12,9 @@ const repo = plugin?.data.repo ?? 'https://github.com/lossless-group/perplexed-p
 const status = plugin?.data.status;
 
 // Recent ship notes from this plugin.
-let pluginChangelog: CorpusEntry[] = [];
+let pluginChangelog: Awaited<ReturnType<typeof getCollection<'changelog'>>> = [];
 try {
-  pluginChangelog = (await getCorpus('changelog'))
+  pluginChangelog = (await getCollection('changelog'))
     .filter((e) => e.data.from === 'perplexed' && e.data.publish !== false)
     .sort((a, b) => {
       const da = a.data.date_modified ?? a.data.date_created ?? a.data.date ?? a.data.date_authored_current_draft ?? a.data.date_authored_initial_draft ?? new Date(0);

@@ -1,0 +1,15 @@
+# This file exists for two reasons.
+#
+# 1. ISOLATION. pnpm stops at the nearest workspace root, so this file keeps the
+#    splash from resolving against a parent's workspace. See
+#    context-v/reminders/Pseudomonorepo-Settings.md at the anchor monorepo root.
+#
+# 2. BUILD SCRIPTS. pnpm blocks dependency build scripts by default, and fails
+#    the install on pnpm 12. --ignore-workspace skips this file along with these
+#    approvals, so don't pass it here.
+packages:
+  - '.'
+
+allowBuilds:
+  esbuild: true
+  sharp: true

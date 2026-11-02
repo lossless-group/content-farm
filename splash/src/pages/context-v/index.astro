@@ -1,14 +1,14 @@
 ---
-import { getCorpus, type CorpusEntry } from '../../lib/corpus';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ContentCollectionSelectorRow from '@components/ContentCollectionSelector--Row.astro';
 import { STATIC_SEO } from '../../lib/seo';
 
 const base = import.meta.env.BASE_URL;
 
-let entries: CorpusEntry[] = [];
+let entries: Awaited<ReturnType<typeof getCollection<'context-v'>>> = [];
 try {
-  entries = (await getCorpus('context-v')).filter((e) => e.data.publish !== false);
+  entries = (await getCollection('context-v')).filter((e) => e.data.publish !== false);
 } catch {
   entries = [];
 }
@@ -49,7 +49,7 @@ const groups: Group[] = [...groupMap.entries()]
     return a.key.localeCompare(b.key);
   });
 
-// Provenance filter. `from` is set by the live loader; documents authored
+// Provenance filter. `from` is injected by the rollup sync; documents authored
 // in this repo have no `from`, so they fall back to 'content-farm'. Sorted with
 // the parent first, then plugins alphabetically — the parent is the one a
 // reader is most likely to want on its own.

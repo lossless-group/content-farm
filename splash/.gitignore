@@ -13,6 +13,3 @@ dist/
 # skills.
 .image-staging/
 .ideogram-candidates/
-
-# Vercel project link and local build output.
-.vercel/

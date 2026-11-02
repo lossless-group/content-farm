@@ -1,15 +1,12 @@
-name: Redirect GitHub Pages to the splash
-
-# The splash renders per request now, which Pages can't do, so Vercel serves it.
-# Pages publishes only a redirect, so old links land on the same page at the new
-# address.
-#
-# Set the repo variable SPLASH_URL (no trailing slash) to the new address. Without
-# it this fails on purpose, and Pages keeps serving what it already has.
+name: Deploy splash to GitHub Pages
 
 on:
   push:
     branches: [main]
+  # Picks up new changelog and context-v documents from content-farm and every
+  # plugin. Off the top of the hour, when GitHub delays scheduled runs the most.
+  schedule:
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -24,31 +21,57 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: splash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # No submodules needed — documents are read through the GitHub API
+          # during the build. See splash/src/loaders/corpus.ts.
           fetch-depth: 1
 
-      - name: Build redirect
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 12
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: splash/pnpm-lock.yaml
+
+      - name: Install
+        # splash/pnpm-workspace.yaml makes splash its own workspace root, so this
+        # installs into splash/node_modules. It also holds the esbuild and sharp
+        # build approvals, which --ignore-workspace would skip.
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build
+        run: pnpm build
         env:
-          SPLASH_URL: ${{ vars.SPLASH_URL }}
-        run: |
-          if [ -z "$SPLASH_URL" ]; then
-            echo "::error::Set the SPLASH_URL repo variable before Pages can redirect."
-            exit 1
-          fi
-          mkdir -p _site
-          sed "s|__SPLASH_URL__|$SPLASH_URL|g" splash/pages-redirect/index.html > _site/index.html
-          cp _site/index.html _site/404.html
+          # Reads every repo's documents. A repo that can't be read fails the
+          # build, and Pages keeps serving the last good site.
+          GITHUB_TOKEN: ${{ github.token }}
+          # OpenPanel clientId is publicly visible in rendered HTML, so it
+          # lives as a repo Variable, not a Secret. Set in repo settings →
+          # Secrets and variables → Actions → Variables.
+          OPENPANEL_CLIENT_ID: ${{ vars.OPENPANEL_CLIENT_ID }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Auto-enable Pages on first run so the workflow bootstraps itself
+          # even when "Get Pages site" returns 404 the very first time.
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: splash/dist
 
   deploy:
     needs: build
