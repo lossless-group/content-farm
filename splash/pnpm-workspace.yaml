@@ -13,3 +13,6 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
+
+minimumReleaseAgeExclude:
+  - '@jsr/lossless-group__lfm@0.7.0'
