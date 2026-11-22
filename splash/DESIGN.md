@@ -562,6 +562,17 @@ Everything else — style reference, palette, negative prompt, seed, rendering s
 - **Varying the seed across requests in the same set.** Different seeds produce different visual interpretations of identical parameters. Only override the seed when you're knowingly iterating one prompt at a time.
 - **Subject-first framing for overlay-bearing imagery.** Saying *"subject in the lower third"* alone is not strong enough — the subject grows up into the overlay zone regardless. **Lead with the empty region as a first-class rendered subject** ("Top 1/3 of frame is empty negative space, dark gradient sky.") and put the actual subject in the second clause. Reinforce in `negative_prompt` with the specific failure mode (`subject in top half`). The lesson from iter1–iter3: empty space won't be left as residue; it has to be declared, named, and given content.
 
+### Trademark pack
+
+In `public/`, every piece outlined to paths (an `<img>` cannot load web fonts).
+
+| Piece | File |
+|---|---|
+| appIcon | `appIcon__Content-Farm.svg` |
+| favicon | `favicon.svg` |
+| wordmark | `wordmark__Content-Farm--{Dark,Light}-Mode.svg`: *content-farm* in JetBrains Mono 700, -0.04em, with *farm* in primary cyan (violet in light mode) |
+| trademark | `trademark__Content-Farm--{Dark,Light}-Mode.svg`: appIcon + wordmark |
+
 ## Do's and Don'ts
 
 - **Do** use monospace headlines on per-component cards and Inter on section H2s. The split is intentional: section H2s persuade, card headlines name.
