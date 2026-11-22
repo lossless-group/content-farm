@@ -2,8 +2,12 @@
 title: 'Update an Older Codebase one Dependency at a time.'
 date_created: 2025-06-07
 date_modified: 2026-03-30
-type: refactor-plan
+type: Plans
 status: Refactored
+authors:
+  - Michael Staton
+site_uuid: f19edbca-bf99-42aa-acd0-5b1b39dba328
+hex_code: cix166
 ---
 
 # Incremental Refactor Plan: 

@@ -7,7 +7,8 @@ date_authored_final_draft: null
 date_first_published: null
 at_semantic_version: 0.0.0.1
 status: To-Prompt
-augmented_with: Windsurf Cascade on Claude 3.5 Sonnet
+augmented_with:
+  - Windsurf Cascade on Claude 3.5 Sonnet
 category: Prompts
 date_created: 2025-04-16
 date_modified: 2025-04-22
@@ -18,6 +19,8 @@ authors:
   - Michael Staton
 portrait_image: https://ik.imagekit.io/xvpgfijuw/uploads/lossless/reminders/2025-05-05_portrait_image_Create-Permanent-Project-Memory-for-YAML-Handling_812a67e7-8d73-487a-b7f8-0532dbe39abc_gSMVotXRZ.webp
 banner_image: https://ik.imagekit.io/xvpgfijuw/uploads/lossless/reminders/2025-05-05_banner_image_Create-Permanent-Project-Memory-for-YAML-Handling_ed2548c1-41f2-441e-8011-5ba854287043_kUI2Ga0Do.webp
+hex_code: 8yux8s
+type: Reminders
 ---
 # Context
 We have been set back over a week as of the initial draft of this prompt. You don't remember this, but we worked 16 hour days together, seven days a week, in an endless loop of trying to fix the same errors in the same files. Let's prevent this by creating a permanent project memory and ruleset so we just never have a setback due to YAML frontmatter again.  

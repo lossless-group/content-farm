@@ -9,7 +9,8 @@ at_semantic_version: 0.0.0.1
 status: To-Do
 authors:
   - Michael Staton
-augmented_with: Windsurf on Claude 3.7 Sonnet
+augmented_with:
+  - Windsurf on Claude 3.7 Sonnet
 category: Code-Generators
 tags:
   - Workflow-Management
@@ -21,6 +22,9 @@ date_modified: 2025-04-17
 image_prompt: "A sprawling, color-coded mind map of YAML keys, values, and syntax rules, with highlighted error icons and best-practice callouts, all on a digital whiteboard."
 portrait_image: https://ik.imagekit.io/xvpgfijuw/uploads/lossless/reminders/2025-05-05_portrait_image_Exhuastive-List-of-YAML-Properties-and-Value-Syntax_ad80439d-7b68-44f5-989e-eb52774f39c3_5VaGeHnuQ.webp
 banner_image: https://ik.imagekit.io/xvpgfijuw/uploads/lossless/reminders/2025-05-05_banner_image_Exhuastive-List-of-YAML-Properties-and-Value-Syntax_2bdb2359-ccb3-4ad9-8b97-a1b47cdeb39f_ThAFz-iyQ.webp
+site_uuid: c80056e6-26db-418f-92cb-5446943e6f6c
+hex_code: d5ct8j
+type: Reminders
 ---
 # YAML Properties and Value Syntax
 

@@ -7,3 +7,4 @@
 * [Dependency upgrades across the Obsidian plugin family — full bump inventory, safe → major → forks](Dependency-Upgrades-Across-Plugin-Family.md) - Every outdated dependency in the ten Lossless-original modules plus the umbrella, grouped patch → minor → major, with upstream release-notes research attached to every major before it moves.
 * [Image Drop Confirmation Gate](Image-Drop-Confirmation-Gate.md) - An Obsidian plugin that asks where a dropped image goes before anything hits disk or network — a private chart on imgur is a phone call.
 * [Plan — Migrate the Lossless Plugin Family to Obsidian 1.13](Migrate-Plugin-Family-to-Obsidian-1-13.md) - Obsidian 1.13 changed how settings render and get searched, and pnpm 11 changed where its settings live. One playbook, nine plugins, each still standing on its own.
+* [Update an Older Codebase one Dependency at a time.](Upgrade-an-Older-Codebase-Dependencies.md)

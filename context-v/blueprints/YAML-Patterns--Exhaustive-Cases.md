@@ -7,7 +7,8 @@ date_authored_final_draft:
 date_first_published: 
 at_semantic_version: 0.0.0.1
 status: Routine
-augmented_with: Windsurf Cascade on Claude 3.5 Sonnet
+augmented_with:
+  - Windsurf Cascade on Claude 3.5 Sonnet
 category: Prompts
 image_prompt: A robot at a giant clipboard, checking off a massive list of YAML patterns, surrounded by digital checklists and automation icons—symbolizing thoroughness and precision.
 date_created: 2025-03-24
@@ -18,6 +19,8 @@ tags: [Workflow, YAML-Handling, YAML-Conventions, Bug-Prevention, Filesystem-Obs
 authors:
   - Michael Staton
 banner_image: https://ik.imagekit.io/xvpgfijuw/uploads/lossless/reminders/2025-05-05_banner_image_YAML-Patterns--Exhaustive-Cases_bd7bb3ee-cfe7-476e-b078-3b6a4c8bcfb8_uqwepesN4.webp
+hex_code: o0jxh5
+type: Blueprints
 ---
 # YAML Patterns for Data Integrity
 
