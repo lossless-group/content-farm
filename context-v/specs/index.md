@@ -1,5 +1,6 @@
 # Specs
 
+* [Frontmatter Standard for Books](Frontmatter-Standard-for-Books.md) - One shape for every file in sources/Books, rich enough to generate an annotated bibliography in any citation style.
 * [Github Splash Page for Content Farm](Github-Splash-Page-for-Content-Farm.md) - An in-repo Astro site that turns the content-farm pseudomonorepo into a public landing page — hero, plugin gallery, changelog and context-v rendering — deployed for free off GitHub Pages while we wait for a real marketing surface.
 * [Metafetch source notes — fetch from any journal URL, not just `url`](Metafetch-Source-Notes-From-Any-Journal-URL.md) - A note about a paper keys its link as `arxiv:`, not `url:` — and metafetch couldn't see it. A URL picker across every frontmatter property, a scholarly metadata tier, and vault-wide identity codes now make a source note worth having.
 * [Per-Directory Profile Templates — v0.1 Spike](Per-Directory-Profile-Templates.md) - One Perplexity call per file, four template zones, and `***` as the scratch terminator — aborts rather than merge if the body has prose.
