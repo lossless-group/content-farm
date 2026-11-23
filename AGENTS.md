@@ -67,16 +67,11 @@ edited here.
   - Never commit a `main.js` whose version field disagrees with
     `manifest.json`
 
-## Branch tier model
+## Branches and shipping
 
-Three tiers, mirrored from the root: **`development` → `main` → `master`**.
-
-Parent on tier X → all submodules on tier X. See the root `AGENTS.md`
-and `context-v/skills/pseudomonorepos/references/branch-alignment.md` for
-the FF mechanics, divergence checks, and push-to-default-branch caveats.
-
-Some plugin modules have their own `AGENTS.md` with module-specific
-guidance — those override anything here for their own scope.
+Same as the root `AGENTS.md`: when work is done, commit it, merge it, push, and bring
+`development`, `main`, `master` (and any working branch) to the same commit. Bump parent
+submodule pointers whenever a child moves, and sync the parents the same way.
 
 ## Local RAG over the Lossless corpus (ChromaDB)
 
